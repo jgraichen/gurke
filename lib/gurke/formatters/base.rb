@@ -7,6 +7,10 @@ module Gurke
         @main, @options = main, options
       end
 
+      def current
+        Gurke.current
+      end
+
       class << self
         def gurkig?
           true

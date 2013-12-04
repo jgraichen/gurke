@@ -23,7 +23,7 @@ module Gurke
       end
 
       def dir
-        File.mkdir
+        options[:dir] || 'report/recoding'
       end
 
       def recording?
@@ -47,6 +47,13 @@ module Gurke
         # TODO: Dir / Template / Whatever - just test atm
       end
 
+      def before_feature(feature)
+        dir = File.join(self.dir.to_s, feature.short_name.to_s)
+
+        FileUtils.rm_rf dir if File.exists? dir
+        FileUtils.mkdir_p dir
+      end
+
       # -- Intercept scenarios --
 
       def before_feature_element(scenario)
@@ -59,14 +66,19 @@ module Gurke
         if recording?
           if scenario.failed? || record_all?
             # TODO: Dir / Template / Whatever - just test atm
-            file = File.join('report', "#{scenario.name}.flv")
+
+            file = File.join(dir, current.feature.short_name, scenario.name, 'video.webm')
+            FileUtils.mkdir_p File.dirname file
+
+            STDERR.puts file
+
             @headless.video.stop_and_save file
           else
             @headless.video.stop_and_discard
           end
         end
 
-        # TODO: Dir / Template / Whatever - just test atm
+        @index = 0
       end
 
       # -- Intercept steps --
@@ -87,10 +99,11 @@ module Gurke
       def take_sceenshot(step)
         return if step.background?
 
-        filename = "#{step.keyword}#{step.name}".downcase.gsub(/[^A-z0-9]+/, '_')
-
         # TODO: Dir / Template / Whatever - just test atm
-        @headless.take_screenshot "report/#{@index += 1}_#{filename}.png"
+        file = File.join(dir, current.feature.short_name, current.scenario.name, "#{@index += 1} - #{step.keyword}#{step.name}.png")
+
+        FileUtils.mkdir_p File.dirname file
+        @headless.take_screenshot "'#{file.gsub("'", "\\'")}'"
       end
     end
   end

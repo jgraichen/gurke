@@ -1,6 +1,6 @@
 module Gurke
   class Current
-    attr_accessor :scenario, :step
+    attr_accessor :scenario, :step, :feature
 
     class << self
       def instance
@@ -9,6 +9,10 @@ module Gurke
 
       def scenario
         instance.scenario
+      end
+
+      def feature
+        instance.feature
       end
 
       def step
@@ -23,6 +27,10 @@ module Gurke
 
       def before_step(step)
         Current.instance.step = step
+      end
+
+      def before_feature(feature)
+        Current.instance.feature = feature
       end
     end
 
