@@ -97,7 +97,7 @@ module Gurke
 
     def after_feature_element(element)
       invoke :after, :feature_element, [element]
-      invoke :before, :scenario, args: [element]
+      invoke :after, :scenario, args: [element]
     end
 
     def after_step_result(keyword, step_match, multiline_arg, status, exception, source_indent, background, file_colon_line)
