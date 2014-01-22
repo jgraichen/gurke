@@ -12,6 +12,8 @@ module Gurke
         @tmpdir   = options.delete(:tmpdir) { |el| Dir.mktmpdir }
         @headless = ::Headless.new video: video_options
         @index    = 0
+
+        at_exit { @headless.destroy if @headless }
       end
 
       def video_options
@@ -42,8 +44,6 @@ module Gurke
       end
 
       def after_features(features)
-        destroy
-
         # TODO: Dir / Template / Whatever - just test atm
       end
 
