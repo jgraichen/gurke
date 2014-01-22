@@ -67,10 +67,8 @@ module Gurke
           if scenario.failed? || record_all?
             # TODO: Dir / Template / Whatever - just test atm
 
-            file = File.join(dir, current.feature.short_name, scenario.name, 'video.webm')
+            file = File.join(dir, (current.feature.short_name || 'nil'), (scenario.name || 'nil'), 'video.webm')
             FileUtils.mkdir_p File.dirname file
-
-            STDERR.puts file
 
             @headless.video.stop_and_save file
           else

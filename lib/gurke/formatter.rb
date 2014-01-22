@@ -17,6 +17,8 @@ module Gurke
         end
       end
 
+      at_exit { invoke :after, :all }
+
       self.class.instance = self
     end
 
@@ -31,6 +33,7 @@ module Gurke
     ## -- Before callbacks --
 
     def before_features(features)
+      invoke :before, :all
       invoke :before, :features, [features]
     end
 
