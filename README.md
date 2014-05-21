@@ -16,9 +16,9 @@ Or add it to your `Gemfile` and install it using bundler.
 
 ## Usage
 
-### 1. Put features in `features/`.
+#### 1. Put features in `features/`.
 
-### 2. Put support and configuration files as ruby into `features/support/**`.
+#### 2. Put support and configuration files as ruby into `features/support/**`.
 
 e.g.
 
@@ -37,7 +37,7 @@ Gurke.configure do |c|
 end
 ```
 
-### 3. Put your step definitions into `features/support/**`.
+#### 3. Put your step definitions into `features/support/**`.
 
 ```
 # features/support/steps/file_steps.rb
