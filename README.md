@@ -1,74 +1,66 @@
 # Gurke
 
-**Gurke** is a highly opinionated cucumber toolkit overtaking cucumbers formatter to add webm flv video recording with headless (xvfb), multiple output formatters, global available current step and scenario and additional hooks.
+**Gurke** is an experimental, alternative cucumber runner. It ~~steals~~ borrows ideas and concepts from [turnip](https://github.com/jnicklas/turnip), [rspec](http://rspec.info) and tries to avoid [cucumber](https://github.com/cucumber/cucumber/).
 
-Unfinished, not recommended, highly dangerous!
+That includes * Step definitions in modules * Before, After and Around hooks * Formatters * Partial step inclusion (via modules) * etc. Also new ideas like keyword depended step definitions are planned.
+
+But still **Gurke** is unfinished, not recommended and highly dangerous!
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'gurke'
-
-And then execute:
-
-    $ bundle
 
 Or install it yourself as:
 
     $ gem install gurke
 
+Or add it to your `Gemfile` and install it using bundler.
+
 ## Usage
 
+### 1. Put features in `features/`.
+
+### 2. Put support and configuration files as ruby into `features/support/**`.
+
+e.g.
+
 ```
-require 'gurke'
+# features/support/gurke.rb
+require 'gurke/rspec'
+require 'tmpdir'
 
-require 'cucumber/formatter/pretty'
-require 'cucumber/formatter/junit'
-require 'gurke/formatters/headless'
-
-class MyExternalTool < ::Gurke::Formatters::Base
-  def quiet?
-    options[:quiet]
+Gurke.configure do |c|
+  c.around(:scenario) do |scenario|
+    Dir.mktmpdir('gurke') do |dir|
+      @__root = Pathname.new(dir)
+      scenario.call
+    end
   end
+end
+```
 
-  def before_features(features)
-    puts 'BUUUH!' unless quiet?
+### 3. Put your step definitions into `features/support/**`.
+
+```
+# features/support/steps/file_steps.rb
+module FileSteps
+  step(/a file "(.*?)" with the following content exists/) do |path, step|
+    file = @__root.join(path)
+
+    FileUtils.mkdir_p(File.dirname(file))
+    File.write(file, step.doc_string)
   end
 end
 
-Gurke::Formatter.config do
-  use Cucumber::Formatter::Pretty
-  use Cucumber::Formatter::JUnit
-  use MyExternalTool, quiet: true
-  use Gurke::Formatters::Headless, dir: 'report/html', recording: true, record_all: true
-end
-```
-
-```
-Gurke.current.step
-Gurke.current.scenario
-
-Gurke.before :features do |*args|
-  # ...
-end
-
-Gurke.before :feature_element do |*args|
-  # ...
-end
-
-Gurke.after :step_result do |*args|
-  # ...
-end
-
-#...
-
+Gurke.configure{|c| c.include FileSteps }
 ```
 
 ## TODO
 
-* Headless Dir & HTML Template
+* Lot of things.
+
+## History
+
+Now: * Can finally (start to) test itself.
 
 ## Contributing
 
-Don't even think about it.
+Send me code.
