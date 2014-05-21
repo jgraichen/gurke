@@ -55,7 +55,7 @@ Gurke.configure{|c| c.include FileSteps }
 
 ## TODO
 
-* Lot of things.
+* Lots of things.
 
 ## History
 
