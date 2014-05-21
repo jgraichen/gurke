@@ -22,7 +22,7 @@ Or add it to your `Gemfile` and install it using bundler.
 
 e.g.
 
-```
+```ruby
 # features/support/gurke.rb
 require 'gurke/rspec'
 require 'tmpdir'
@@ -39,7 +39,7 @@ end
 
 #### 3. Put your step definitions into `features/support/**`.
 
-```
+```ruby
 # features/support/steps/file_steps.rb
 module FileSteps
   step(/a file "(.*?)" with the following content exists/) do |path, step|
