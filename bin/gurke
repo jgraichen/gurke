@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require 'gurke'
+require 'gurke/cli'
+
+Gurke::CLI.new.run(ARGV)
