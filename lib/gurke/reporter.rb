@@ -13,7 +13,7 @@ module Gurke
     end
 
     def start_scenario(scenario)
-      $stdout.puts "    Scenario: #{scenario.name}"
+      $stdout.puts "  Scenario: #{scenario.name}"
     end
 
     def start_background(_)
@@ -32,21 +32,21 @@ module Gurke
     def finish_step(step)
       case step.state
         when :pending
-          $stdout.puts "      #{step.keyword}#{step.name}".yellow
+          $stdout.puts "    #{step.keyword}#{step.name}".yellow
 
-          $stdout.puts "        #{step.exception.class}".red
-          $stdout.puts "          #{step.exception.message.split("\n").join("\n          ")}".red
-          $stdout.puts "        #{step.exception.backtrace.join("\n        ")}".red
+          $stdout.puts "      #{step.exception.class}".red
+          $stdout.puts "        #{step.exception.message.split("\n").join("\n          ")}".red
+          $stdout.puts "      #{step.exception.backtrace.join("\n        ")}".red
           $stdout.puts
         when :failed
-          $stdout.puts "      #{step.keyword}#{step.name}".red
+          $stdout.puts "    #{step.keyword}#{step.name}".red
 
-          $stdout.puts "        #{step.exception.class}".red
-          $stdout.puts "          #{step.exception.message.split("\n").join("\n          ")}".red
-          $stdout.puts "        #{step.exception.backtrace.join("\n        ")}".red
+          $stdout.puts "      #{step.exception.class}".red
+          $stdout.puts "        #{step.exception.message.split("\n").join("\n          ")}".red
+          $stdout.puts "      #{step.exception.backtrace.join("\n        ")}".red
           $stdout.puts
         else
-          $stdout.puts "      #{step.keyword}#{step.name}".green
+          $stdout.puts "    #{step.keyword}#{step.name}".green
       end
     end
 
