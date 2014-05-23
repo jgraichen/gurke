@@ -9,4 +9,3 @@ gem 'pry'
 gem 'pry-nav'
 
 gem 'rspec-expectations'
-gem 'childprocess'

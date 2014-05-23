@@ -51,15 +51,6 @@ module Gurke
     attr_reader :exception
 
     # @api private
-    def run(reporter, feature)
-      reporter.start_scenario(self)
-      with_hooks do
-        run_with_error_handling(reporter, feature)
-      end
-      reporter.finish_scenario(self)
-    end
-
-    # @api private
     def failed!(error)
       @exception = error
       @state     = :failed
@@ -67,48 +58,25 @@ module Gurke
 
     # @api private
     def pending!(error)
+      return if failed?
+
       @exception = error
       @state     = :pending
     end
 
     private
 
-    def with_hooks(&block)
-      Gurke::Configuration::AROUND_HOOKS.for(:scenario).each do |hook|
-        hook.run(world, block)
-      end
-    end
-
     def world
       @world ||= begin
         cls = Class.new
         cls.send :include, Gurke.world
 
-        Gurke.configuration.inclusions.each do |incl|
+        Gurke.config.inclusions.each do |incl|
           cls.send :include, incl.mod
         end
         cls.send :include, Gurke::Steps
         cls.new
       end
-    end
-
-    def run_with_error_handling(reporter, feature)
-      run_backgrounds(reporter, feature.backgrounds)
-      run_scenario_steps(reporter)
-    end
-
-    def run_backgrounds(reporter, backgrounds)
-      backgrounds.each do |background|
-        background.run(reporter, self, world)
-      end
-    end
-
-    def run_scenario_steps(reporter)
-      reporter.start_steps(self)
-      steps.each do |step|
-        step.run(reporter, self, world)
-      end
-      reporter.finish_steps(self)
     end
   end
 end

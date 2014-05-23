@@ -49,12 +49,5 @@ module Gurke
     def name
       raw.name
     end
-
-    # @api private
-    def run(reporter)
-      reporter.start_feature(self)
-      scenarios.each{|s| s.run(reporter, self) }
-      reporter.finish_feature(self)
-    end
   end
 end

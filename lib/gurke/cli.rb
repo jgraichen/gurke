@@ -27,7 +27,7 @@ module Gurke
         Dir[options[:require]].each{|f| require File.expand_path(f) }
       end
 
-      Runner.new(files, options).run
+      Kernel.exit Runner.new(files, options).run
     end
 
     def print_version

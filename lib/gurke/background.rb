@@ -29,14 +29,5 @@ module Gurke
     def steps
       @steps ||= []
     end
-
-    # @api private
-    def run(reporter, scenario, world)
-      reporter.start_background(self)
-      steps.each do |step|
-        step.run(reporter, scenario, world)
-      end
-      reporter.finish_background(self)
-    end
   end
 end

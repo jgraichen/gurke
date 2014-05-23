@@ -2,6 +2,11 @@ require 'gurke/version'
 
 #
 module Gurke
+  require 'gurke/feature'
+  require 'gurke/background'
+  require 'gurke/scenario'
+  require 'gurke/step'
+
   require 'gurke/dsl'
   require 'gurke/builder'
   require 'gurke/configuration'
@@ -9,11 +14,6 @@ module Gurke
   require 'gurke/steps'
   require 'gurke/step_definition'
   require 'gurke/reporter'
-
-  require 'gurke/feature'
-  require 'gurke/background'
-  require 'gurke/scenario'
-  require 'gurke/step'
 
   class Error < StandardError; end
   class StepPending < Error; end
@@ -25,15 +25,15 @@ module Gurke
     # @return [Path] Feature directory.
     #
     def root
-      @root ||= Path.getwd.join('features')
+      @root ||= Pathname.new(Dir.getwd).join('features')
     end
 
     # Return configuration object.
     #
     # @return [Configuration] Configuration object.
     #
-    def configuration
-      @configuration ||= Configuration.new
+    def config
+      @config ||= Configuration.new
     end
 
     # Yield configuration object.
@@ -42,7 +42,7 @@ module Gurke
     # @yieldparam config [Configuration] Configuration object.
     #
     def configure
-      yield configuration if block_given?
+      yield config if block_given?
     end
 
     # @api private

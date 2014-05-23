@@ -3,7 +3,7 @@ require 'colorize'
 module Gurke
   #
   class Reporter
-    def start_features(*)
+    def start_features(features)
     end
 
     def start_feature(feature)
@@ -12,52 +12,54 @@ module Gurke
       $stdout.puts
     end
 
-    def start_scenario(scenario)
+    def start_scenario(scenario, feature)
       $stdout.puts "  Scenario: #{scenario.name}"
+      if feature.backgrounds.any?
+        $stdout.puts "    Background:"
+      end
     end
 
-    def start_background(_)
+    def start_background(*)
+      @background = true
     end
 
-    def finish_background(_)
+    def finish_background(*)
+      @background = false
     end
 
     def start_step(*)
     end
 
-    def start_steps(*)
-
-    end
-
-    def finish_step(step)
+    def finish_step(step, scenario, feature)
+      $stdout.print '  ' if @background
       case step.state
         when :pending
           $stdout.puts "    #{step.keyword}#{step.name}".yellow
 
-          $stdout.puts "      #{step.exception.class}".red
-          $stdout.puts "        #{step.exception.message.split("\n").join("\n          ")}".red
-          $stdout.puts "      #{step.exception.backtrace.join("\n        ")}".red
-          $stdout.puts
+          # $stdout.puts "      #{step.exception.class}".red
+          # $stdout.puts "        #{step.exception.message.split("\n").join("\n          ")}".red
+          # $stdout.puts "      #{step.exception.backtrace.join("\n      ")}".red
+          # $stdout.puts
         when :failed
           $stdout.puts "    #{step.keyword}#{step.name}".red
 
-          $stdout.puts "      #{step.exception.class}".red
+          $stdout.puts "      #{step.exception.class}:".red
           $stdout.puts "        #{step.exception.message.split("\n").join("\n          ")}".red
-          $stdout.puts "      #{step.exception.backtrace.join("\n        ")}".red
+          $stdout.puts "      #{step.exception.backtrace.join("\n      ")}".red
           $stdout.puts
-        else
+        when :success
           $stdout.puts "    #{step.keyword}#{step.name}".green
+        else
+          $stdout.puts "    #{step.keyword}#{step.name}".cyan
       end
+      $stdout.flush
     end
 
-    def finish_steps(*)
-    end
-
-    def finish_scenario(_)
+    def finish_scenario(*)
       $stdout.puts
     end
 
-    def finish_feature(_)
+    def finish_feature(*)
       $stdout.puts
     end
 
