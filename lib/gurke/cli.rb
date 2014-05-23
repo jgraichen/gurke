@@ -25,6 +25,10 @@ module Gurke
         require File.expand_path(Gurke.root.join('gurke.rb'))
       end
 
+      options[:require].each do |r|
+        Dir[r].each{|f| require File.expand_path(f) }
+      end if options[:require].any?
+
       files   = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
       success = Runner.new(files, options).run
 
@@ -47,6 +51,11 @@ module Gurke
         opt :version, 'Show program version information.'
         opt :pattern, 'File pattern matching feature files to be run.',
             default: 'features/**/*.feature'
+        opt :require, 'Files matching this pattern will be required after'\
+                      'loading environment but before running features.',
+            default: ['features/steps/**/*.rb',
+                      'features/support/steps/**/*.rb'],
+            multi: true
       end
     end
   end
