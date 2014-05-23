@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Gurke::VERSION
   spec.authors       = ['Jan Graichen']
   spec.email         = %w(jg@altimos.de)
-  spec.description   = %q{A description}
-  spec.summary       = %q{A summary}
+  spec.description   = %q{An alternative gherkin feature runner inspired by rspec and turnip.}
+  spec.summary       = %q{An alternative gherkin feature runner inspired by rspec and turnip.}
   spec.homepage      = 'https://github.com/jgraichen/gurke'
   spec.license       = 'MIT'
 
@@ -23,4 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'colorize'
 
   spec.add_development_dependency 'bundler', '~> 1.3'
+
+  # Append travis build number for auto-releases
+  spec.version = "#{spec.version}.1.b#{ENV['TRAVIS_BUILD_NUMBER']}" if ENV['TRAVIS_BUILD_NUMBER']
 end
