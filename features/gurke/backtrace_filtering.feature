@@ -20,7 +20,7 @@ Feature: Backtrace filtering
       Gurke.configure{|c| c.include TestSteps }
       """
 
-  Scenario: See backtrace no library backtrace line
+  Scenario: See backtrace without line from libraries
     When I execute "bundle exec gurke"
     Then the program output should include "features/support/steps/test_steps.rb:2"
     Then the program output should not include "gurke/lib/gurke/runner.rb"
