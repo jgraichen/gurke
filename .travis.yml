@@ -1,0 +1,23 @@
+language: ruby
+bundler_args: --without development
+rvm:
+- '2.1'
+- '2.0'
+- 1.9.3
+- jruby
+- rbx
+deploy:
+  provider: rubygems
+  api_key:
+    secure: gNudZK0JaRRweudmkpdkJjUMydItTSW5cXjpYdYCfahqd/cD0xPjxotr2TCHrJibfVauoT/PytbQWcP3jnOYytp6oS0up5Y+uKpGmbqVYx/rZvShWALszcBs71lUh/IZpDXNHc+yo/01HCn10/uQUFRtrjWgMwHtHxXb09xE4wQ=
+  gem: gurke
+  on:
+    branch: develop
+    repo: jgraichen/develop
+    rvm: '2.1'
+matrix:
+  allow_failures:
+    - rvm: jruby
+    - rvm: rbx
+script:
+  - bundle exec gurke
