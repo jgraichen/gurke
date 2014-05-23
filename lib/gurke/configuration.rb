@@ -107,7 +107,11 @@ module Gurke
 
       def run(context, *args)
         block = @block
-        context.instance_exec(*args, &block)
+        if context
+          context.instance_exec(*args, &block)
+        else
+          block.call(*args)
+        end
       end
     end
   end

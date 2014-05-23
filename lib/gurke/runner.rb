@@ -17,7 +17,9 @@ module Gurke
     def run
       files.each{|f| builder.parse(f) }
 
-      run_features builder.features
+      with_hooks(:features, nil, nil) do
+        run_features builder.features
+      end
 
       !builder.features.map(&:scenarios).flatten.any?{|s| s.failed? || s.pending? }
     end
@@ -91,9 +93,15 @@ module Gurke
     end
 
     def with_hooks(scope, context, world, &block)
+      Gurke::Configuration::BEFORE_HOOKS.for(scope).each do |hook|
+        hook.run(world)
+      end
       Gurke::Configuration::AROUND_HOOKS.for(scope).inject(block) do |block, hook|
         proc { hook.run(world, block) }
       end.call
+      Gurke::Configuration::AFTER_HOOKS.for(scope).each do |hook|
+        hook.run(world)
+      end
     end
 
     def world_for(scenario, feature)

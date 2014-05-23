@@ -10,13 +10,13 @@ Gurke.configure do |c|
   c.before do
     next unless self.class.include?(Capybara::DSL)
 
-    if context.metadata[:js]
-      Capybara.current_driver = Capybara.javascript_driver
-    end
-
-    if context.metadata[:driver]
-      Capybara.current_driver = context.metadata[:driver]
-    end
+    # if context.metadata[:js]
+    #   Capybara.current_driver = Capybara.javascript_driver
+    # end
+    #
+    # if context.metadata[:driver]
+    #   Capybara.current_driver = context.metadata[:driver]
+    # end
   end
 
   c.after do

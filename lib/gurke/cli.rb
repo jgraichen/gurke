@@ -21,13 +21,14 @@ module Gurke
     end
 
     def call(options, files)
-      files = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
-
-      if options[:require]
-        Dir[options[:require]].each{|f| require File.expand_path(f) }
+      if File.exist?(Gurke.root.join('gurke.rb'))
+        require File.expand_path(Gurke.root.join('gurke.rb'))
       end
 
-      Kernel.exit Runner.new(files, options).run
+      files   = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
+      success = Runner.new(files, options).run
+
+      Kernel.exit(success)
     end
 
     def print_version
@@ -46,8 +47,6 @@ module Gurke
         opt :version, 'Show program version information.'
         opt :pattern, 'File pattern matching feature files to be run.',
             default: 'features/**/*.feature'
-        opt :require, 'File pattern to include before running features.',
-            default: 'features/support/**/*.rb'
       end
     end
   end
