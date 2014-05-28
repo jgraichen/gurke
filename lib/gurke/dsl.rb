@@ -29,6 +29,7 @@ module Gurke
       end
     end
 
+    # rubocop:disable MethodName
     def Given(pattern, method_name = nil, opts = {}, &block)
       step pattern, method_name, opts.merge(type: :given), &block
     end

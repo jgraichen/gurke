@@ -29,10 +29,10 @@ module Gurke
         Dir[r].each{|f| require File.expand_path(f) }
       end if options[:require].any?
 
-      files   = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
-      success = Runner.new(files, options).run
+      files  = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
+      status = Runner.new(files, options).run
 
-      Kernel.exit(success)
+      Kernel.exit(status)
     end
 
     def print_version

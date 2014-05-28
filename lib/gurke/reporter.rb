@@ -9,7 +9,7 @@ require 'colorize'
 module Gurke
   #
   class Reporter
-    def start_features(features)
+    def start_features(*)
     end
 
     def start_feature(feature)
@@ -20,9 +20,7 @@ module Gurke
 
     def start_scenario(scenario, feature)
       io.puts "  #{yellow('Scenario')}: #{scenario.name}"
-      if feature.backgrounds.any?
-        io.puts light_black('    Background:')
-      end
+      io.puts light_black('    Background:') if feature.backgrounds.any?
     end
 
     def start_background(*)
@@ -35,10 +33,12 @@ module Gurke
 
     def start_step(step, *)
       io.print '  ' if @background
-      io.print "    #{yellow(step.keyword)}#{step.name.gsub(/"(.*?)"/, cyan('\0'))}"
+      io.print '    '
+      io.print yellow(step.keyword)
+      io.print step.name.gsub(/"(.*?)"/, cyan('\0'))
     end
 
-    def finish_step(step, scenario, feature)
+    def finish_step(step, *)
       case step.state
         when :pending
           print_braces yellow('pending')

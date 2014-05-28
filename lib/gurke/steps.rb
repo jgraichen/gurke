@@ -2,6 +2,7 @@ module Gurke
   #
   module Steps
     #
+    # rubocop:disable MethodName
     def Given(step)
       rst = self.class.find_step(step, self, :given)
       send rst.method_name
@@ -25,12 +26,9 @@ module Gurke
         end.compact
 
         case matches.size
-          when 0
-            raise Gurke::StepPending.new step.to_s
-          when 1
-            matches.first
-          else
-            raise Gurke::StepAmbiguous.new step.to_s
+          when 0 then raise Gurke::StepPending.new step.to_s
+          when 1 then matches.first
+          else raise Gurke::StepAmbiguous.new step.to_s
         end
       end
     end

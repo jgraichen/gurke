@@ -91,37 +91,38 @@ module Gurke
     rescue StepPending => e
       scenario.pending! e
       result = StepResult.new(step, :pending, e)
-    rescue Exception => e
+    rescue => e
       scenario.failed! e
       result = StepResult.new(step, :failed, e)
     ensure
       reporter.finish_step(result, scenario, feature)
     end
 
-    def with_hooks(scope, context, world, &block)
-      Gurke::Configuration::BEFORE_HOOKS.for(scope).each do |hook|
+    def with_hooks(scope, _context, world, &block)
+      Configuration::BEFORE_HOOKS.for(scope).each do |hook|
         hook.run(world)
       end
-      Gurke::Configuration::AROUND_HOOKS.for(scope).inject(block) do |block, hook|
-        proc { hook.run(world, block) }
+      Configuration::AROUND_HOOKS.for(scope).reduce(block) do |blk, hook|
+        proc { hook.run(world, blk) }
       end.call
-      Gurke::Configuration::AFTER_HOOKS.for(scope).each do |hook|
+      Configuration::AFTER_HOOKS.for(scope).each do |hook|
         hook.run(world)
       end
     end
 
-    def world_for(scenario, feature)
+    def world_for(scenario, _feature)
       scenario.send(:world)
     end
 
     def with_filtered_backtrace
       yield
-    rescue Exception => e
+    rescue => e
       base = File.expand_path(Gurke.root.dirname)
-      e.backtrace.select!{|line| File.expand_path(line)[0...base.size] == base }
+      e.backtrace.select!{|l| File.expand_path(l)[0...base.size] == base }
       raise
     end
 
+    #
     class StepResult
       attr_reader :step, :exception, :state
 
@@ -130,7 +131,7 @@ module Gurke
       end
 
       Gurke::Step.public_instance_methods(false).each do |m|
-        define_method(m) {|*args| step.send m, *args }
+        define_method(m){|*args| step.send m, *args }
       end
 
       def failed?
