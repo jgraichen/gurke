@@ -56,6 +56,10 @@ module Gurke
             default: ['features/steps/**/*.rb',
                       'features/support/steps/**/*.rb'],
             multi: true
+        opt :tags, 'Only run features and scenarios matching given tag '\
+                   'filtering expression. TODO: Description.',
+            default: ['~wip'],
+            multi: true
       end
     end
   end

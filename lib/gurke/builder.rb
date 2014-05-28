@@ -4,9 +4,10 @@ module Gurke
   #
   class Builder
     #
-    attr_reader :features
+    attr_reader :features, :options
 
-    def initialize
+    def initialize(options)
+      @options  = options
       @features = []
       @language = 'en'
       @parser   = Gherkin::Parser::Parser.new(
@@ -29,7 +30,9 @@ module Gurke
     end
 
     def feature(raw)
-      @current_feature = Feature.new(@file, raw.line, raw)
+      tags = raw.tags.map{|t| Tag.new(@file, t.line, t) }
+
+      @current_feature = Feature.new(@file, raw.line, tags, raw)
       @features << @current_feature
     end
 
@@ -39,8 +42,14 @@ module Gurke
     end
 
     def scenario(raw)
-      @current_context = Scenario.new(@file, raw.line, raw)
-      @current_feature.scenarios << @current_context
+      tags = raw.tags.map{|t| Tag.new(@file, t.line, t) }
+      tags += @current_feature.tags
+
+      @current_context = Scenario.new(@file, raw.line, tags, raw)
+
+      unless filtered?(@current_context)
+        @current_feature.scenarios << @current_context
+      end
     end
 
     def step(raw)
@@ -48,6 +57,7 @@ module Gurke
     end
 
     def eof(*)
+      @features.reject!{|f| f.scenarios.empty? }
       @current_context = nil
       @current_feature = nil
       @file            = nil
@@ -63,6 +73,32 @@ module Gurke
           end
         else
           kw
+      end
+    end
+
+    def tag_sets
+      @tags ||= options[:tags].map do |list|
+        list.strip.split(/[,+\s]\s*/).map{|t| Filter.new(t) }
+      end
+    end
+
+    def filtered?(scenario)
+      !tag_sets.reduce(false) do |memo, set|
+        memo || set.all?{|rule| rule.match? scenario }
+      end
+    end
+
+    class Filter < Struct.new(:tag)
+      def name
+        @name ||= negated? ? tag[1..-1] : tag
+      end
+
+      def negated?
+        tag[0] == '~'
+      end
+
+      def match?(taggable)
+        negated? != taggable.tags.any?{|t| t.name == name}
       end
     end
   end

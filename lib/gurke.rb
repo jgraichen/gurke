@@ -6,6 +6,7 @@ module Gurke
   require 'gurke/background'
   require 'gurke/scenario'
   require 'gurke/step'
+  require 'gurke/tag'
 
   require 'gurke/dsl'
   require 'gurke/builder'

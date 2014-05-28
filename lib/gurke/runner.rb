@@ -3,11 +3,12 @@ module Gurke
   class Runner
     attr_reader :builder
     attr_reader :files
+    attr_reader :options
 
     def initialize(files, options = {})
       @options = options
       @files   = files
-      @builder = Builder.new
+      @builder = Builder.new options
     end
 
     def reporter
@@ -21,7 +22,10 @@ module Gurke
         run_features builder.features
       end
 
-      !builder.features.map(&:scenarios).flatten.any?{|s| s.failed? || s.pending? }
+      !builder.features
+        .map(&:scenarios)
+        .flatten
+        .any?{|s| s.failed? || s.pending? }
     end
 
     def run_features(features)
@@ -50,7 +54,9 @@ module Gurke
       world = world_for(scenario, feature)
 
       with_hooks(:scenario, scenario, world) do
-        feature.backgrounds.each{|b| run_background(b, scenario, feature, world) }
+        feature.backgrounds.each do |b|
+          run_background(b, scenario, feature, world)
+        end
         scenario.steps.each{|s| run_step(s, scenario, feature, world) }
       end
 
