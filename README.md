@@ -53,6 +53,21 @@ end
 Gurke.configure{|c| c.include FileSteps }
 ```
 
+You can also use an existing method as a step:
+
+```ruby
+module MySteps
+  def do_something(arg)
+    # ...
+  end
+
+  step(/I do something: "(.*?)"/, :do_something)
+
+  # Easy call it from another step
+  step(/I do something else/) { do_something('abc') }
+end
+```
+
 ### Keyword specific step definitions
 
 You can also define steps for only a specific keyword. This also allows you to use the same step pattern for different keywords, e.g.
