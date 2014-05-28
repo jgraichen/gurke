@@ -90,7 +90,12 @@ Examples:
 
 ## TODO
 
-* Lots of things.
+* Random run order (rspec)
+* Using strings with placeholders as step pattern (turnip)
+* Custom placeholders (turnip)
+* Define scenario specific after hook in a step (e.g. to close opened resource)
+* More reporters (NyanCat / JUnit / TeamCity / Adapter to run multiple reporters)
+* SimpleCov support (and use it in own tests)
 
 ## History
 
