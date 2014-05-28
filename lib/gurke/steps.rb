@@ -2,16 +2,26 @@ module Gurke
   #
   module Steps
     #
-    def step(step)
-      rst = self.class.find_step(step, self)
+    def Given(step)
+      rst = self.class.find_step(step, self, :given)
+      send rst.method_name
+    end
+
+    def When(step)
+      rst = self.class.find_step(step, self, :when)
+      send rst.method_name
+    end
+
+    def Then(step)
+      rst = self.class.find_step(step, self, :then)
       send rst.method_name
     end
 
     class << self
-      def find_step(step, world)
+      def find_step(step, world, type)
         matches = world.methods.map do |method|
           next unless method.to_s.start_with?('match: ')
-          world.send(method.to_s, step.to_s)
+          world.send(method.to_s, step.to_s, type)
         end.compact
 
         case matches.size

@@ -53,7 +53,9 @@ module Gurke
     end
 
     def step(raw)
-      @current_context.steps << Step.new(@file, raw.line, raw)
+      type = get_type(raw.keyword.strip)
+
+      @current_context.steps << Step.new(@file, raw.line, type, raw)
     end
 
     def eof(*)

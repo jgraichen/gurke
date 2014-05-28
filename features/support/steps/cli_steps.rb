@@ -43,7 +43,7 @@ module CLISteps
        :_cli_not_include_content)
 
   step(/all scenarios have passed/) do
-    _cli_include_content 'scenarios: 0 failed, 0 pending'
+    _cli_include_content 'scenarios: 0 failing, 0 pending'
   end
 end
 

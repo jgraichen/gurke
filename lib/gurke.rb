@@ -18,6 +18,7 @@ module Gurke
 
   class Error < StandardError; end
   class StepPending < Error; end
+  class StepAmbiguous < Error; end
 
   class << self
     #

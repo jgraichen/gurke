@@ -76,7 +76,7 @@ module Gurke
 
       result = nil
       with_filtered_backtrace do
-        match = Steps.find_step(step, world)
+        match = Steps.find_step(step, world, step.type)
 
         if scenario.pending? || scenario.failed?
           result = StepResult.new(step, :skipped)

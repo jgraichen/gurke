@@ -14,12 +14,15 @@ module Gurke
     #
     attr_reader :line
 
+    attr_reader :type
+
     # @api private
     attr_reader :raw
 
     # @api private
-    def initialize(file, line, raw)
-      @file, @line, @raw = file, line, raw
+    def initialize(file, line, type, raw)
+      @file, @line = file, line
+      @type, @raw  = type, raw
     end
 
     def name
