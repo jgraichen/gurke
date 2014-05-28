@@ -16,9 +16,9 @@ Or add it to your `Gemfile` and install it using bundler.
 
 ## Usage
 
-#### 1. Put features in `features/`.
+1. Put features in `features/`.
 
-#### 2. Put support and configuration files as ruby into `features/support/**`.
+2. Put support and configuration files as ruby into `features/support/**`.
 
 e.g.
 
@@ -37,7 +37,7 @@ Gurke.configure do |c|
 end
 ```
 
-#### 3. Put your step definitions into `features/support/**`.
+3. Put your step definitions into `features/support/**`.
 
 ```ruby
 # features/support/steps/file_steps.rb
@@ -52,6 +52,41 @@ end
 
 Gurke.configure{|c| c.include FileSteps }
 ```
+
+### Keyword specific step definitions
+
+You can also define steps for only a specific keyword. This also allows you to use the same step pattern for different keywords, e.g.
+
+```ruby
+module PathSteps
+  Given(/^I am on the start page$/) { visit '/' }
+  Then(/^I am on the start page$/) { assert current_path == '/' }
+end
+```
+
+Therefore you can write your scenarios in a documentary style of facts:
+
+```
+Scenario: Use the back button
+  Given I am on the start page
+  When I click on "Go to another page"
+  And I click the back button
+  Then I am on the start page
+```
+
+`And` and `But` steps will inherit the keyword type from the step before, e.g. the `And` step above will be of the `when` type.
+
+### Use the command line runner
+
+Run all scenarios by just calling `bundle exec gurke`. By default scenarios and features tagged with `@wip` will be ignored.
+
+Specify one or more `--tags` or `-t` arguments to filter for specific tags, negate tag filters with `~`.
+
+Examples:
+
+* `--tags a,b` - only run scenarios with tags `@a` AND `@b`
+* `-t a -t b` - only run scenarios with tags `@a` OR `@b`
+* `-t a,~b` - only run scenarios with `@a` but not `@b`
 
 ## TODO
 
