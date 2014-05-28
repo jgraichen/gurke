@@ -1,5 +1,11 @@
 require 'colorize'
 
+# Colorize colors:
+#   :black, :red, :green, :yellow, :blue,
+#   :magenta, :cyan, :white, :default, :light_black,
+#   :light_red, :light_green, :light_yellow, :light_blue,
+#   :light_magenta, :light_cyan, :light_white
+
 module Gurke
   #
   class Reporter
@@ -7,15 +13,15 @@ module Gurke
     end
 
     def start_feature(feature)
-      $stdout.puts "Feature: #{feature.name}"
-      $stdout.puts '  ' + feature.description.split("\n").join("\n  ")
-      $stdout.puts
+      io.puts "#{yellow('Feature')}: #{feature.name}"
+      io.puts '  ' + light_black(feature.description.split("\n").join("\n  "))
+      io.puts
     end
 
     def start_scenario(scenario, feature)
-      $stdout.puts "  Scenario: #{scenario.name}"
+      io.puts "  #{yellow('Scenario')}: #{scenario.name}"
       if feature.backgrounds.any?
-        $stdout.puts "    Background:"
+        io.puts light_black('    Background:')
       end
     end
 
@@ -28,51 +34,65 @@ module Gurke
     end
 
     def start_step(step, *)
-      $stdout.print '  ' if @background
-      $stdout.print "    #{step.keyword}#{step.name}"
+      io.print '  ' if @background
+      io.print "    #{yellow(step.keyword)}#{step.name.gsub(/"(.*?)"/, cyan('\0'))}"
     end
 
     def finish_step(step, scenario, feature)
-      $stdout.print "\r"
-      $stdout.print '  ' if @background
       case step.state
         when :pending
-          $stdout.puts "    #{step.keyword}#{step.name}".yellow
-
-          # $stdout.puts "      #{step.exception.class}".red
-          # $stdout.puts "        #{step.exception.message.split("\n").join("\n          ")}".red
-          # $stdout.puts "      #{step.exception.backtrace.join("\n      ")}".red
-          # $stdout.puts
+          print_braces yellow('pending')
         when :failed
-          $stdout.puts "    #{step.keyword}#{step.name}".red
+          print_braces red('failure')
+          io.puts
+          io.puts red("      #{step.exception.class}:")
 
-          $stdout.puts "      #{step.exception.class}:".red
-          $stdout.puts "        #{step.exception.message.split("\n").join("\n          ")}".red
-          $stdout.puts "      #{step.exception.backtrace.join("\n      ")}".red
-          $stdout.puts
+          msg = step.exception.message.split("\n").join("\n          ")
+          io.puts red("        #{msg}")
+
+          io.puts red("      #{step.exception.backtrace.join("\n      ")}")
         when :success
-          $stdout.puts "    #{step.keyword}#{step.name}".green
+          print_braces green('success')
         else
-          $stdout.puts "    #{step.keyword}#{step.name}".cyan
+          print_braces cyan('skipped')
       end
-      $stdout.flush
+      io.puts
+      io.flush
     end
 
     def finish_scenario(*)
-      $stdout.puts
+      io.puts
     end
 
     def finish_feature(*)
-      $stdout.puts
+      io.puts
     end
 
     def finish_features(features)
       scenarios = features.map(&:scenarios).flatten
 
-      $stdout.puts "  #{scenarios.size} scenarios: "\
-                     "#{scenarios.select(&:failed?).size} failing, "\
-                     "#{scenarios.select(&:pending?).size} pending"
-      $stdout.puts
+      io.puts "  #{scenarios.size} scenarios: "\
+              "#{scenarios.select(&:failed?).size} failing, "\
+              "#{scenarios.select(&:pending?).size} pending"
+      io.puts
+    end
+
+    private
+
+    def print_braces(str)
+      io.print " (#{str})"
+    end
+
+    def io
+      $stdout
+    end
+
+    [:black, :red, :green, :yellow, :blue,
+     :magenta, :cyan, :white, :default, :light_black,
+     :light_red, :light_green, :light_yellow, :light_blue,
+     :light_magenta, :light_cyan, :light_white].each do |color|
+
+      define_method(color){|str|  io.tty? ? str.send(color) : str }
     end
   end
 end
