@@ -83,7 +83,7 @@ module Gurke
     end
 
     def filtered?(scenario)
-      !tag_sets.reduce(false) do |memo, set|
+      !filter_sets.reduce(false) do |memo, set|
         memo || set.all?{|rule| rule.match? scenario }
       end
     end
