@@ -76,8 +76,8 @@ module Gurke
       end
     end
 
-    def tag_sets
-      @tags ||= options[:tags].map do |list|
+    def filter_sets
+      @filter_sets ||= options[:tags].map do |list|
         list.strip.split(/[,+\s]\s*/).map{|t| Filter.new(t) }
       end
     end
@@ -88,7 +88,7 @@ module Gurke
       end
     end
 
-    class Filter < Struct.new(:tag)
+    Filter = Struct.new(:tag) do
       def name
         @name ||= negated? ? tag[1..-1] : tag
       end
@@ -98,7 +98,7 @@ module Gurke
       end
 
       def match?(taggable)
-        negated? != taggable.tags.any?{|t| t.name == name}
+        negated? != taggable.tags.any?{|t| t.name == name }
       end
     end
   end
