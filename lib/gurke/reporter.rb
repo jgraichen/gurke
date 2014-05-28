@@ -27,10 +27,13 @@ module Gurke
       @background = false
     end
 
-    def start_step(*)
+    def start_step(step, *)
+      $stdout.print '  ' if @background
+      $stdout.print "    #{step.keyword}#{step.name}"
     end
 
     def finish_step(step, scenario, feature)
+      $stdout.print "\r"
       $stdout.print '  ' if @background
       case step.state
         when :pending
