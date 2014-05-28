@@ -35,7 +35,7 @@ Feature: Step keyword specific definitions
           assert name == @copy, "Expected #{name.inspect} but #{@me.inspect} given."
         end
       end
-      Gurke.world.include Steps
+      Gurke.world.send :include, Steps
       """
     When I execute all scenarios
     Then all scenarios have passed
