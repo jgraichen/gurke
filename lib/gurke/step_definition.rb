@@ -2,11 +2,16 @@ module Gurke
   #
   class StepDefinition
     #
-    attr_reader :regexp, :method_name
+    attr_reader :regexp, :method_name, :opts
 
-    def initialize(regexp)
+    def initialize(regexp, opts = {})
       @regexp      = regexp
+      @opts        = opts
       @method_name = regexp.to_s
+    end
+
+    def keyword
+      opts[:keyword] || :any
     end
 
     def match(name)

@@ -1,22 +1,32 @@
 #
 module FileSteps
-  def write_file(path, content)
+  def _write_file(path, content)
     file = @__root.join(path)
 
     FileUtils.mkdir_p(File.dirname(file))
     File.write(file, content)
   end
 
+  def _read_file(path)
+    file = @__root.join(path)
+
+    File.read(file)
+  end
+
   step(/I am in a project using gurke/) do
-    write_file 'Gemfile', <<-EOS
+    _write_file 'Gemfile', <<-EOS
       source 'https://rubygems.org'
       gem 'gurke', path: '#{File.dirname(Gurke.root)}'
     EOS
   end
 
   step(/a file "(.*?)" with the following content exists/) do |path, step|
-    write_file(path, step.doc_string)
+    _write_file(path, step.doc_string)
   end
+
+  # Then(/a file "(.*?)" with the following content exists/) do |path, step|
+  #   expect(_read_file(path)).to eq step.doc_string
+  # end
 end
 
 Gurke.config.include FileSteps

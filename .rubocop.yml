@@ -128,7 +128,7 @@ CaseIndentation:
     - end
   IndentOneStep: true
 
-ClassAndModuleChildren:
+#ClassAndModuleChildren:
   # Checks the style of children definitions at classes and modules.
   #
   # Basically there are two different styles:
@@ -144,10 +144,10 @@ ClassAndModuleChildren:
   #   end
   #
   # The compact style is only forced, for classes / modules with one child.
-  EnforcedStyle: ignore
-  SupportedStyles:
-    - nested
-    - compact
+#  EnforcedStyle: compact
+#  SupportedStyles:
+#    - nested
+#    - compact
 
 ClassLength:
   CountComments: false  # count full line comments?
@@ -355,12 +355,10 @@ SpaceAroundEqualsInParameterDefault:
     - no_space
 
 SpaceBeforeBlockBraces:
-  EnforcedStyle:
-    - space
-    - no_space
-  SupportedStyles:
-    - space
-    - no_space
+ EnforcedStyle: no_space
+ SupportedStyles:
+   - space
+   - no_space
 
 SpaceInsideBlockBraces:
   EnforcedStyle: space
