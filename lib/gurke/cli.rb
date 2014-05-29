@@ -49,6 +49,7 @@ module Gurke
       @parser ||= Trollop::Parser.new do
         opt :help, 'Print this help.'
         opt :version, 'Show program version information.'
+        opt :backtrace, 'Show full error backtraces.'
         opt :pattern, 'File pattern matching feature files to be run.',
             default: 'features/**/*.feature'
         opt :require, 'Files matching this pattern will be required after'\

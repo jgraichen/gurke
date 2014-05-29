@@ -24,3 +24,13 @@ Feature: Backtrace filtering
     When I execute "bundle exec gurke"
     Then the program output should include "features/support/steps/test_steps.rb:2"
     Then the program output should not include "gurke/lib/gurke/runner.rb"
+
+  Scenario: See backtrace when run with --backtrace
+    When I execute "bundle exec gurke --backtrace"
+    Then the program output should include "features/support/steps/test_steps.rb:2"
+    Then the program output should include "gurke/lib/gurke/runner.rb"
+
+  Scenario: See backtrace when run with -b
+    When I execute "bundle exec gurke -b"
+    Then the program output should include "features/support/steps/test_steps.rb:2"
+    Then the program output should include "gurke/lib/gurke/runner.rb"

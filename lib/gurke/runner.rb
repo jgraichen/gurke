@@ -117,8 +117,10 @@ module Gurke
     def with_filtered_backtrace
       yield
     rescue => e
-      base = File.expand_path(Gurke.root.dirname)
-      e.backtrace.select!{|l| File.expand_path(l)[0...base.size] == base }
+      unless options[:backtrace]
+        base = File.expand_path(Gurke.root.dirname)
+        e.backtrace.select!{|l| File.expand_path(l)[0...base.size] == base }
+      end
       raise
     end
 
