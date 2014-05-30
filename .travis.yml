@@ -13,7 +13,7 @@ deploy:
   gem: gurke
   on:
     branch: develop
-    repo: jgraichen/develop
+    repo: jgraichen/gurke
     rvm: '2.1'
 matrix:
   allow_failures:
