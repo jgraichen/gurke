@@ -3,9 +3,15 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in gurke-formatters-headless.gemspec
 gemspec
 
-require 'pp'
+group :test do
+  gem 'rspec'
+  gem 'rspec-expectations'
+end
 
-gem 'pry'
-gem 'pry-nav'
+group :development do
+  gem 'pry'
+  gem 'pry-nav'
 
-gem 'rspec-expectations'
+  gem 'yard'
+  gem 'redcarpet', platform: :ruby
+end
