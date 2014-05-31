@@ -4,8 +4,10 @@ module Gurke
     attr_reader :builder
     attr_reader :files
     attr_reader :options
+    attr_reader :config
 
-    def initialize(files, options = {})
+    def initialize(config, files, options = {})
+      @config  = config
       @options = options
       @files   = files
       @builder = Builder.new options
@@ -24,18 +26,7 @@ module Gurke
     end
 
     def hook(scope, world, &block)
-      Configuration::BEFORE_HOOKS.for(scope).each{|hook| hook.run world }
-      Configuration::AROUND_HOOKS.for(scope).reduce(block) do |blk, hook|
-        proc { hook.run(world, blk) }
-      end.call
-    ensure
-      Configuration::AFTER_HOOKS.for(scope).each do |hook|
-        begin
-          hook.run world
-        rescue => e
-          warn "Rescued error in after hook: #{e}\n#{e.backtrace.join("\n")}"
-        end
-      end
+      config.hooks[scope].run world, &block
     end
 
     def with_filtered_backtrace

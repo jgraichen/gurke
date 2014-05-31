@@ -15,11 +15,15 @@ module Gurke
     # @yield Before any matching action is executed.
     #
     def before(action = :scenario, opts = nil, &block)
-      BEFORE_HOOKS.append action, Hook.new(opts, &block)
+      raise ArgumentError.new "Unknown hook: #{action}" unless hooks[action]
+
+      hooks[action].append :before, Hook.new(opts, &block)
     end
 
     def around(action = :scenario, opts = nil, &block)
-      AROUND_HOOKS.append action, Hook.new(opts, &block)
+      raise ArgumentError.new "Unknown hook: #{action}" unless hooks[action]
+
+      hooks[action].append :around, Hook.new(opts, &block)
     end
 
     # Define a after filter running after given action.
@@ -35,7 +39,9 @@ module Gurke
     # @yield After any matching action is executed.
     #
     def after(action = :scenario, opts = nil, &block)
-      AFTER_HOOKS.append action, Hook.new(opts, &block)
+      raise ArgumentError.new "Unknown hook: #{action}" unless hooks[action]
+
+      hooks[action].append :after, Hook.new(opts, &block)
     end
 
     # Include given module into all or specific features or
@@ -58,7 +64,17 @@ module Gurke
 
     # @api private
     def hooks
-      @hooks ||= Hooks.new
+      @hooks ||= begin
+        hooks = {
+          features: HookSet.new,
+          feature: HookSet.new,
+          scenario: HookSet.new,
+          step: HookSet.new
+        }
+
+        hooks.merge each: hooks[:scenario]
+        hooks
+      end
     end
 
     # @api private
@@ -73,24 +89,34 @@ module Gurke
 
     # @api private
     class HookSet
-      attr_reader :hooks
-
       def initialize
-        @hooks = {}
+        @before = []
+        @after  = []
+        @around = []
       end
 
-      def for(action)
-        hooks[action] ||= []
+      def append(set, hook)
+        case set
+          when :before then @before << hook
+          when :after  then @after << hook
+          when :around then @around << hook
+          else raise ArgumentError.new "Unknown hook set: #{set}"
+        end
       end
 
-      def append(action, hook)
-        self.for(action) << hook
+      def run(world, &block)
+        @before.each{|hook| hook.run world }
+        @around.reduce(block){|blk, hook| proc{ hook.run world, blk }}.call
+      ensure
+        @after.each do |hook|
+          begin
+            hook.run world
+          rescue => e
+            warn "Rescued error in after hook: #{e}\n#{e.backtrace.join("\n")}"
+          end
+        end
       end
     end
-
-    BEFORE_HOOKS = HookSet.new
-    AROUND_HOOKS = HookSet.new
-    AFTER_HOOKS  = HookSet.new
 
     # @api private
     class Hook

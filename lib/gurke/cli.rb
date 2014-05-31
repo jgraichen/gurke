@@ -30,7 +30,7 @@ module Gurke
       end if options[:require].any?
 
       files  = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
-      status = Runner.new(files, options).run
+      status = Runner.new(Gurke.config, files, options).run
 
       Kernel.exit(status)
     end
