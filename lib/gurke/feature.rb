@@ -14,6 +14,18 @@ module Gurke
     #
     attr_reader :line
 
+    # List of scenarios this feature specifies.
+    #
+    # @return [Array<Scenario>] Scenarios.
+    #
+    attr_reader :scenarios
+
+    # List of backgrounds this feature specifies.
+    #
+    # @return [Array<Background>] Backgrounds.
+    #
+    attr_reader :backgrounds
+
     attr_reader :tags
 
     # @api private
@@ -21,7 +33,13 @@ module Gurke
 
     # @api private
     def initialize(file, line, tags, raw)
-      @file, @line, @tags, @raw = file, line, tags, raw
+      @scenarios   = RunList.new
+      @backgrounds = RunList.new
+
+      @file = file
+      @line = line
+      @tags = tags
+      @raw  = raw
     end
 
     def name
@@ -32,24 +50,41 @@ module Gurke
       raw.description
     end
 
-    # Return list of scenarios this feature specifies.
-    #
-    # @return [Array<Scenario>] Scenarios.
-    #
-    def scenarios
-      @scenarios ||= []
-    end
-
-    def backgrounds
-      @backgrounds ||= []
-    end
-
     # Return name of this feature.
     #
     # @return [String] Feature name.
     #
     def name
       raw.name
+    end
+
+    def failed?
+      scenarios.any?(&:failed?)
+    end
+
+    def pending?
+      scenarios.any?(&:pending?)
+    end
+
+    # @api private
+    def run(runner, reporter)
+      reporter.invoke :before_feature, self
+
+      runner.hook :feature, nil do
+        run_feature runner, reporter
+      end
+    ensure
+      reporter.invoke :after_feature
+    end
+
+    private
+
+    def run_feature(runner, reporter)
+      reporter.invoke :start_feature, self
+
+      scenarios.run runner, reporter
+    ensure
+      reporter.invoke :end_feature, self
     end
   end
 end

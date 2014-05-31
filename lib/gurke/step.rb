@@ -37,5 +37,77 @@ module Gurke
     def doc_string
       raw.doc_string.value if raw.doc_string
     end
+
+    # @api private
+    #
+    def run(runner, reporter, scenario, world)
+      reporter.invoke :before_step, self, scenario
+
+      result = runner.hook(:step, world) do
+        run_step runner, reporter, scenario, world
+      end
+    ensure
+      reporter.invoke :after_step, result, scenario
+    end
+
+    private
+
+    def run_step(runner, reporter, scenario, world)
+      reporter.invoke :start_step, self, scenario
+
+      result = nil
+      runner.with_filtered_backtrace do
+        match = Steps.find_step self, world, type
+
+        if scenario.pending? || scenario.failed?
+          result = StepResult.new self, :skipped
+          return result
+        end
+
+        m = world.method match.method_name
+        world.send match.method_name, *(match.params + [self])[0...m.arity]
+      end
+
+      result = StepResult.new self, :success
+    rescue StepPending => e
+      scenario.pending! e
+      result = StepResult.new self, :pending, e
+    rescue => e
+      scenario.failed! e
+      result = StepResult.new self, :failed, e
+    ensure
+      reporter.invoke :end_step, result, scenario
+    end
+
+    #
+    class StepResult
+      attr_reader :step, :exception, :state
+
+      def initialize(step, state, err = nil)
+        @step, @state, @exception = step, state, err
+      end
+
+      Step.public_instance_methods(false).each do |mth|
+        class_eval <<-EOS, __FILE__, __LINE__
+          def #{mth}(*args) @step.send #{mth}, *args; end
+        EOS
+      end
+
+      def failed?
+        @state == :failed
+      end
+
+      def pending?
+        @state == :pending
+      end
+
+      def skipped?
+        @state == :skipped
+      end
+
+      def success?
+        @state == :success
+      end
+    end
   end
 end

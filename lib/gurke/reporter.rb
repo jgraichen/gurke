@@ -25,10 +25,10 @@ module Gurke
       :end_scenario,
       :end_background,
       :end_step,
-      :finish_features,
-      :finish_feature,
-      :finish_scenario,
-      :finish_step
+      :after_features,
+      :after_feature,
+      :after_scenario,
+      :after_step
     ]
 
     # Called before the execution of any feature and before any
@@ -87,11 +87,10 @@ module Gurke
     # called before any hooks for the given scenario is executed.
     #
     # @param scenario [Scenario] Current scenario.
-    # @param feature [Feature] Current feature.
     #
     # @api public
     #
-    def before_scenario(scenario, feature)
+    def before_scenario(scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#before_scenario must be implemented in subclass."
     end
@@ -100,11 +99,10 @@ module Gurke
     # all before hooks for given scenario.
     #
     # @param scenario [Scenario] Current scenario.
-    # @param feature [Feature] Current feature.
     #
     # @api public
     #
-    def start_scenario(scenario, feature)
+    def start_scenario(scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#start_scenario must be implemented in subclass."
     end
@@ -113,11 +111,10 @@ module Gurke
     #
     # @param background [Background] Current background.
     # @param scenario [Scenario] Current scenario.
-    # @param feature [Feature] Current feature.
     #
     # @api public
     #
-    def start_background(background, scenario, feature)
+    def start_background(background, scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#start_background must be implemented in subclass."
     end
@@ -126,11 +123,10 @@ module Gurke
     #
     # @param background [Background] Current background.
     # @param scenario [Scenario] Current scenario.
-    # @param feature [Feature] Current feature.
     #
     # @api public
     #
-    def end_background(background, scenario, feature)
+    def end_background(background, scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#end_background must be implemented in subclass."
     end
@@ -138,12 +134,11 @@ module Gurke
     # Called before each step and before any before-step hook.
     #
     # @param step [Step] Current Step.
-    # @param context [Scenario|Background] Current scenario or background.
-    # @param feature [Feature] Current feature.
+    # @param scenario [Scenario] Current scenario.
     #
     # @api public
     #
-    def before_step(step, context, feature)
+    def before_step(step, scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#before_step must be implemented in subclass."
     end
@@ -151,12 +146,11 @@ module Gurke
     # Called before each step and after all before-step hooks.
     #
     # @param step [Step] Current Step.
-    # @param context [Scenario|Background] Current scenario or background.
-    # @param feature [Feature] Current feature.
+    # @param scenario [Scenario] Current scenario.
     #
     # @api public
     #
-    def start_step(step, context, feature)
+    def start_step(step, scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#start_step must be implemented in subclass."
     end
@@ -164,12 +158,12 @@ module Gurke
     # Called after each step but before any after-step hook.
     #
     # @param step_result [StepResult] Result of current Step.
-    # @param context [Scenario|Background] Current scenario or background.
+    # @param scenario [Scenario] Current scenario.
     # @param feature [Feature] Current feature.
     #
     # @api public
     #
-    def end_step(step_result, context, feature)
+    def end_step(step_result, scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#end_step must be implemented in subclass."
     end
@@ -177,14 +171,14 @@ module Gurke
     # Called after each step, after all step hook.
     #
     # @param step_result [StepResult] Result of current Step.
-    # @param context [Scenario|Background] Current scenario or background.
+    # @param scenario [Scenario] Current scenario.
     # @param feature [Feature] Current feature.
     #
     # @api public
     #
-    def finish_step(step_result, context, feature)
+    def after_step(step_result, scenario)
       raise NotImplementedError.new \
-        "#{self.class.name}#finish_step must be implemented in subclass."
+        "#{self.class.name}#after_step must be implemented in subclass."
     end
 
     # Called after each scenario but before any after hook.
@@ -194,7 +188,7 @@ module Gurke
     #
     # @api public
     #
-    def end_scenario(scenario, feature)
+    def end_scenario(scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#end_scenario must be implemented in subclass."
     end
@@ -206,9 +200,9 @@ module Gurke
     #
     # @api public
     #
-    def finish_scenario(scenario, feature)
+    def after_scenario(scenario)
       raise NotImplementedError.new \
-        "#{self.class.name}#finish_scenario must be implemented in subclass."
+        "#{self.class.name}#after_scenario must be implemented in subclass."
     end
 
     # Called after each feature but before any after hook.
@@ -228,9 +222,9 @@ module Gurke
     #
     # @api public
     #
-    def finish_feature(feature)
+    def after_feature(feature)
       raise NotImplementedError.new \
-        "#{self.class.name}#finish_feature must be implemented in subclass."
+        "#{self.class.name}#after_feature must be implemented in subclass."
     end
 
     # Called after all features but before any after-features hook.
@@ -250,32 +244,16 @@ module Gurke
     #
     # @api public
     #
-    def finish_features(features)
+    def after_features(features)
       raise NotImplementedError.new \
-        "#{self.class.name}#finish_features must be implemented in subclass."
+        "#{self.class.name}#after_features must be implemented in subclass."
     end
 
     # @visibility private
-    def invoke(name, scope, *args)
-      send "#{name}_#{scope}", *args
+    def invoke(mth, *args)
+      send mth, *args
     rescue => e
       warn "Rescued in reporter: #{e}\n" + e.backtrace.join("\n")
-    end
-
-    # @visibility private
-    def invoke_outside_hooks(scope, *args)
-      invoke :before, scope, *args
-      yield
-    ensure
-      invoke :finish, scope, *args
-    end
-
-    # @visibility private
-    def invoke_inside_hooks(scope, *args)
-      invoke :start, scope, *args
-      yield
-    ensure
-      invoke :end, scope, *args
     end
   end
 end

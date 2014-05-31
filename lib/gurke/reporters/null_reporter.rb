@@ -4,7 +4,7 @@ module Gurke::Reporters
   #
   class NullReporter < Gurke::Reporter
     Gurke::Reporter::CALLBACKS.each do |cb|
-      class_eval <<-EOF
+      class_eval <<-EOF, __FILE__, __LINE__
         def #{cb}(*) end
       EOF
     end

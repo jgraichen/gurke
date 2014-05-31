@@ -8,6 +8,9 @@ module Gurke
   require 'gurke/step'
   require 'gurke/tag'
 
+  require 'gurke/run_list'
+  require 'gurke/feature_list'
+
   require 'gurke/dsl'
   require 'gurke/builder'
   require 'gurke/configuration'

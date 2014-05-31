@@ -8,7 +8,7 @@ module Gurke
 
     def initialize(options)
       @options  = options
-      @features = []
+      @features = FeatureList.new
       @language = 'en'
       @parser   = Gherkin::Parser::Parser.new(
         self, true, 'root', false, @language)
@@ -30,49 +30,54 @@ module Gurke
     end
 
     def feature(raw)
-      tags = raw.tags.map{|t| Tag.new(@file, t.line, t) }
+      tags = raw.tags.map{|t| Tag.new @file, t.line, t }
 
-      @current_feature = Feature.new(@file, raw.line, tags, raw)
-      @features << @current_feature
+      @feature  = Feature.new(@file, raw.line, tags, raw)
+      @scenario = nil
+      @type     = nil
+
+      features << @feature
     end
 
     def background(raw)
-      @current_context = Background.new(@file, raw.line, raw)
-      @current_feature.backgrounds << @current_context
+      @context = Background.new @file, raw.line, raw
+      @type    = nil
+
+      @feature.backgrounds << @context
     end
 
     def scenario(raw)
-      tags = raw.tags.map{|t| Tag.new(@file, t.line, t) }
-      tags += @current_feature.tags
+      tags  = raw.tags.map{|t| Tag.new @file, t.line, t }
+      tags += features.last.tags
 
-      @current_context = Scenario.new(@file, raw.line, tags, raw)
+      @scenario = Scenario.new @feature, @file, raw.line, tags, raw
+      @context  = @scenario
+      @type     = nil
 
-      unless filtered?(@current_context)
-        @current_feature.scenarios << @current_context
-      end
+      @feature.scenarios << @scenario unless filtered?(@scenario)
     end
 
     def step(raw)
-      type = get_type(raw.keyword.strip)
+      @type = lookup_type raw.keyword.strip
 
-      @current_context.steps << Step.new(@file, raw.line, type, raw)
+      @context.steps << Step.new(@file, raw.line, @type, raw)
     end
 
     def eof(*)
       @features.reject!{|f| f.scenarios.empty? }
-      @current_context = nil
-      @current_feature = nil
-      @file            = nil
+      @feature  = nil
+      @scenario = nil
+      @context  = nil
+      @type     = nil
+      @file     = nil
     end
 
-    def get_type(keyword)
+    private
+
+    def lookup_type(keyword)
       case (kw = @keywords.fetch(keyword))
         when :and, :but
-          if (step = @current_context.steps.last)
-            step.type
-          else
-            nil
-          end
+          @type
         else
           kw
       end

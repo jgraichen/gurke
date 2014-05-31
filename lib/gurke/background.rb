@@ -14,20 +14,31 @@ module Gurke
     #
     attr_reader :line
 
+    # List of steps this background specifies.
+    #
+    # @return [Array<Step>] Steps.
+    #
+    attr_reader :steps
+
     # @api private
     attr_reader :raw
 
     # @api private
     def initialize(file, line, raw)
-      @file, @line, @raw = file, line, raw
+      @file  = file
+      @line  = line
+      @raw   = raw
+      @steps = RunList.new
     end
 
-    # Return list of steps this background specifies.
+    # @api private
     #
-    # @return [Array<Step>] Steps.
-    #
-    def steps
-      @steps ||= []
+    def run(runner, reporter, scenario, world)
+      reporter.invoke :start_background, self, scenario
+
+      steps.run runner, reporter, scenario, world
+    ensure
+      reporter.invoke :end_background, self, scenario
     end
   end
 end

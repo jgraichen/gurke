@@ -9,34 +9,33 @@ require 'colorize'
 module Gurke::Reporters
   #
   class DefaultReporter < NullReporter
-
-    def start_feature(feature)
+    def before_feature(feature)
       io.puts "#{yellow('Feature')}: #{feature.name}"
       io.puts '  ' + light_black(feature.description.split("\n").join("\n  "))
       io.puts
     end
 
-    def start_scenario(scenario, feature)
+    def before_scenario(scenario)
       io.puts "  #{yellow('Scenario')}: #{scenario.name}"
-      io.puts light_black('    Background:') if feature.backgrounds.any?
+      io.puts light_black('    Background:') if scenario.backgrounds.any?
     end
 
     def start_background(*)
       @background = true
     end
 
-    def finish_background(*)
+    def end_background(*)
       @background = false
     end
 
-    def start_step(step, *)
+    def before_step(step, *)
       io.print '  ' if @background
       io.print '    '
       io.print yellow(step.keyword)
       io.print step.name.gsub(/"(.*?)"/, cyan('\0'))
     end
 
-    def finish_step(step, *)
+    def after_step(step, *)
       case step.state
         when :pending
           print_braces yellow('pending')
@@ -58,15 +57,15 @@ module Gurke::Reporters
       io.flush
     end
 
-    def finish_scenario(*)
+    def after_scenario(*)
       io.puts
     end
 
-    def finish_feature(*)
+    def after_feature(*)
       io.puts
     end
 
-    def finish_features(features)
+    def after_features(features)
       scenarios = features.map(&:scenarios).flatten
 
       io.puts "  #{scenarios.size} scenarios: "\
