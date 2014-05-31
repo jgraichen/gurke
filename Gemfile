@@ -6,6 +6,7 @@ gemspec
 group :test do
   gem 'rspec'
   gem 'rspec-expectations'
+  gem 'coveralls'
 end
 
 group :development do

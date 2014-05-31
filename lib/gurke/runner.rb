@@ -12,15 +12,19 @@ module Gurke
     end
 
     def reporter
-      @reporter ||= Reporter.new
+      @reporter ||= Reporters::DefaultReporter.new
     end
 
     def run
       files.each{|f| builder.parse(f) }
 
+      reporter.invoke :before, :features, builder.features
+
       with_hooks(:features, nil, nil) do
         run_features builder.features
       end
+
+      reporter.invoke :finish, :features, builder.features
 
       !builder.features
         .map(&:scenarios)
@@ -29,50 +33,72 @@ module Gurke
     end
 
     def run_features(features)
-      reporter.start_features(features)
+      reporter.invoke :start, :features, features
 
       features.each do |feature|
         run_feature(feature)
       end
 
-      reporter.finish_features(features)
+      reporter.invoke :end, :features, features
     end
 
     def run_feature(feature)
-      reporter.start_feature(feature)
+      reporter.invoke :before, :feature, feature
 
-      feature.scenarios.each do |scenario|
-        run_scenario(scenario, feature)
+      with_hooks(:feature, nil, nil) do
+        reporter.invoke :start, :feature, feature
+
+        feature.scenarios.each do |scenario|
+          run_scenario(scenario, feature)
+        end
+
+        reporter.invoke :end, :feature, feature
       end
 
-      reporter.finish_feature(feature)
+      reporter.invoke :finish, :feature, feature
     end
 
     def run_scenario(scenario, feature)
-      reporter.start_scenario(scenario, feature)
+      reporter.invoke :before, :scenario, scenario, feature
 
       world = world_for(scenario, feature)
 
       with_hooks(:scenario, scenario, world) do
-        feature.backgrounds.each do |b|
-          run_background(b, scenario, feature, world)
+        reporter.invoke :start, :scenario, scenario, feature
+
+        feature.backgrounds.each do |background|
+          run_background background, scenario, feature, world
         end
-        scenario.steps.each{|s| run_step(s, scenario, feature, world) }
+        run_steps scenario.steps, scenario, feature, world
+
+        reporter.invoke :end, :scenario, scenario, feature
       end
 
-      reporter.finish_scenario(scenario, feature)
+      reporter.invoke :finish, :scenario, scenario, feature
     end
 
     def run_background(background, scenario, feature, world)
-      reporter.start_background(background)
+      reporter.invoke :start, :background, background, scenario, feature
 
-      background.steps.each{|s| run_step(s, scenario, feature, world) }
+      run_steps background.steps, scenario, feature, world
 
-      reporter.finish_background(background)
+      reporter.invoke :end, :background, background, scenario, feature
+    end
+
+    def run_steps(steps, scenario, feature, world)
+      steps.each do |step|
+        reporter.invoke :before, :step, step, scenario, feature
+
+        result = with_hooks(:step, nil, world) do
+          run_step(step, scenario, feature, world)
+        end
+
+        reporter.invoke :finish, :step, result, scenario, feature
+      end
     end
 
     def run_step(step, scenario, feature, world)
-      reporter.start_step(step, scenario, feature)
+      reporter.invoke :start, :step, step, scenario, feature
 
       result = nil
       with_filtered_backtrace do
@@ -80,7 +106,7 @@ module Gurke
 
         if scenario.pending? || scenario.failed?
           result = StepResult.new(step, :skipped)
-          return
+          return result
         end
 
         m = world.method(match.method_name)
@@ -95,19 +121,21 @@ module Gurke
       scenario.failed! e
       result = StepResult.new(step, :failed, e)
     ensure
-      reporter.finish_step(result, scenario, feature)
+      reporter.invoke :end, :step, result, scenario, feature
     end
 
     def with_hooks(scope, _context, world, &block)
       Configuration::BEFORE_HOOKS.for(scope).each do |hook|
         hook.run(world)
       end
-      Configuration::AROUND_HOOKS.for(scope).reduce(block) do |blk, hook|
+      rst = Configuration::AROUND_HOOKS.for(scope).reduce(block) do |blk, hook|
         proc { hook.run(world, blk) }
       end.call
       Configuration::AFTER_HOOKS.for(scope).each do |hook|
         hook.run(world)
       end
+
+      rst
     end
 
     def world_for(scenario, _feature)

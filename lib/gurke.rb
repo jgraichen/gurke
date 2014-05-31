@@ -16,6 +16,11 @@ module Gurke
   require 'gurke/step_definition'
   require 'gurke/reporter'
 
+  module Reporters
+    require 'gurke/reporters/null_reporter'
+    require 'gurke/reporters/default_reporter'
+  end
+
   class Error < StandardError; end
   class StepPending < Error; end
   class StepAmbiguous < Error; end

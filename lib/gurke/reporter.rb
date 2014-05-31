@@ -1,98 +1,281 @@
-require 'colorize'
-
-# Colorize colors:
-#   :black, :red, :green, :yellow, :blue,
-#   :magenta, :cyan, :white, :default, :light_black,
-#   :light_red, :light_green, :light_yellow, :light_blue,
-#   :light_magenta, :light_cyan, :light_white
-
 module Gurke
   #
+  # A {Reporter} provides callbacks that will be executed whenever
+  # a specific execution step starts or ends.
+  #
+  # @api public
+  #
   class Reporter
-    def start_features(*)
+    # rubocop:disable UnusedMethodArgument
+
+    # List of all callback methods as symbols.
+    #
+    CALLBACKS = [
+      :before_features,
+      :before_feature,
+      :before_scenario,
+      :before_step,
+      :start_features,
+      :start_feature,
+      :start_scenario,
+      :start_background,
+      :start_step,
+      :end_features,
+      :end_feature,
+      :end_scenario,
+      :end_background,
+      :end_step,
+      :finish_features,
+      :finish_feature,
+      :finish_scenario,
+      :finish_step
+    ]
+
+    # Called before the execution of any feature and before any
+    # before-features hook is invoked.
+    #
+    # @param features [Array<Feature>] List of all features that
+    #   are going to be executed.
+    #
+    # @api public
+    #
+    def before_features(features)
+      raise NotImplementedError.new \
+        "#{self.class.name}#before_features must be implemented in subclass."
     end
 
+    # Called before the execute of any feature, but after all
+    # before-features hooks.
+    #
+    # @param features [Array<Feature>] List of all features that
+    #   are going to be executed.
+    #
+    # @api public
+    #
+    def start_features(features)
+      raise NotImplementedError.new \
+        "#{self.class.name}#before_features must be implemented in subclass."
+    end
+
+    # Called for each feature before it starts, but before any
+    # before-feature hook is run.
+    #
+    # @param feature [Feature] The feature that is going to
+    #   be executed now.
+    #
+    # @api public
+    #
+    def before_feature(feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#start_feature must be implemented in subclass."
+    end
+
+    # Called for each feature before it starts, but after
+    # all before-feature hooks.
+    #
+    # @param feature [Feature] The feature that is going to
+    #   be executed now.
+    #
+    # @api public
+    #
     def start_feature(feature)
-      io.puts "#{yellow('Feature')}: #{feature.name}"
-      io.puts '  ' + light_black(feature.description.split("\n").join("\n  "))
-      io.puts
+      raise NotImplementedError.new \
+        "#{self.class.name}#start_feature must be implemented in subclass."
     end
 
+    # Called for each each scenario before it starts. Will be
+    # called before any hooks for the given scenario is executed.
+    #
+    # @param scenario [Scenario] Current scenario.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def before_scenario(scenario, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#before_scenario must be implemented in subclass."
+    end
+
+    # Called for each each scenario before it starts, but after
+    # all before hooks for given scenario.
+    #
+    # @param scenario [Scenario] Current scenario.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
     def start_scenario(scenario, feature)
-      io.puts "  #{yellow('Scenario')}: #{scenario.name}"
-      io.puts light_black('    Background:') if feature.backgrounds.any?
+      raise NotImplementedError.new \
+        "#{self.class.name}#start_scenario must be implemented in subclass."
     end
 
-    def start_background(*)
-      @background = true
+    # Called before each background.
+    #
+    # @param background [Background] Current background.
+    # @param scenario [Scenario] Current scenario.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def start_background(background, scenario, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#start_background must be implemented in subclass."
     end
 
-    def finish_background(*)
-      @background = false
+    # Called after each background.
+    #
+    # @param background [Background] Current background.
+    # @param scenario [Scenario] Current scenario.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def end_background(background, scenario, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#end_background must be implemented in subclass."
     end
 
-    def start_step(step, *)
-      io.print '  ' if @background
-      io.print '    '
-      io.print yellow(step.keyword)
-      io.print step.name.gsub(/"(.*?)"/, cyan('\0'))
+    # Called before each step and before any before-step hook.
+    #
+    # @param step [Step] Current Step.
+    # @param context [Scenario|Background] Current scenario or background.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def before_step(step, context, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#before_step must be implemented in subclass."
     end
 
-    def finish_step(step, *)
-      case step.state
-        when :pending
-          print_braces yellow('pending')
-        when :failed
-          print_braces red('failure')
-          io.puts
-          io.puts red("      #{step.exception.class}:")
-
-          msg = step.exception.message.split("\n").join("\n          ")
-          io.puts red("        #{msg}")
-
-          io.puts red("      #{step.exception.backtrace.join("\n      ")}")
-        when :success
-          print_braces green('success')
-        else
-          print_braces cyan('skipped')
-      end
-      io.puts
-      io.flush
+    # Called before each step and after all before-step hooks.
+    #
+    # @param step [Step] Current Step.
+    # @param context [Scenario|Background] Current scenario or background.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def start_step(step, context, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#start_step must be implemented in subclass."
     end
 
-    def finish_scenario(*)
-      io.puts
+    # Called after each step but before any after-step hook.
+    #
+    # @param step_result [StepResult] Result of current Step.
+    # @param context [Scenario|Background] Current scenario or background.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def end_step(step_result, context, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#end_step must be implemented in subclass."
     end
 
-    def finish_feature(*)
-      io.puts
+    # Called after each step, after all step hook.
+    #
+    # @param step_result [StepResult] Result of current Step.
+    # @param context [Scenario|Background] Current scenario or background.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def finish_step(step_result, context, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#finish_step must be implemented in subclass."
     end
 
+    # Called after each scenario but before any after hook.
+    #
+    # @param scenario [Scenario] Current scenario.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def end_scenario(scenario, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#end_scenario must be implemented in subclass."
+    end
+
+    # Called after each scenario and after all hooks.
+    #
+    # @param scenario [Scenario] Current scenario.
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def finish_scenario(scenario, feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#finish_scenario must be implemented in subclass."
+    end
+
+    # Called after each feature but before any after hook.
+    #
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def end_feature(feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#end_feature must be implemented in subclass."
+    end
+
+    # Called after each feature and after all hooks.
+    #
+    # @param feature [Feature] Current feature.
+    #
+    # @api public
+    #
+    def finish_feature(feature)
+      raise NotImplementedError.new \
+        "#{self.class.name}#finish_feature must be implemented in subclass."
+    end
+
+    # Called after all features but before any after-features hook.
+    #
+    # @param features [Array<Feature>] List of all features.
+    #
+    # @api public
+    #
+    def end_features(features)
+      raise NotImplementedError.new \
+        "#{self.class.name}#end_features must be implemented in subclass."
+    end
+
+    # Called after all features and after all hooks.
+    #
+    # @param features [Array<Feature>] List of all features.
+    #
+    # @api public
+    #
     def finish_features(features)
-      scenarios = features.map(&:scenarios).flatten
-
-      io.puts "  #{scenarios.size} scenarios: "\
-              "#{scenarios.select(&:failed?).size} failing, "\
-              "#{scenarios.select(&:pending?).size} pending"
-      io.puts
+      raise NotImplementedError.new \
+        "#{self.class.name}#finish_features must be implemented in subclass."
     end
 
-    private
-
-    def print_braces(str)
-      io.print " (#{str})"
+    # @visibility private
+    def invoke(name, scope, *args)
+      send "#{name}_#{scope}", *args
+    rescue => e
+      warn "Rescued in reporter: #{e}\n" + e.backtrace.join("\n")
     end
 
-    def io
-      $stdout
+    # @visibility private
+    def invoke_outside_hooks(scope, *args)
+      invoke :before, scope, *args
+      yield
+    ensure
+      invoke :finish, scope, *args
     end
 
-    [:black, :red, :green, :yellow, :blue,
-     :magenta, :cyan, :white, :default, :light_black,
-     :light_red, :light_green, :light_yellow, :light_blue,
-     :light_magenta, :light_cyan, :light_white].each do |color|
-
-      define_method(color){|str|  io.tty? ? str.send(color) : str }
+    # @visibility private
+    def invoke_inside_hooks(scope, *args)
+      invoke :start, scope, *args
+      yield
+    ensure
+      invoke :end, scope, *args
     end
   end
 end
