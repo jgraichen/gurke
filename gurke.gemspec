@@ -16,14 +16,10 @@ Gem::Specification.new do |spec|
   spec.summary = \
     %q(An alternative gherkin feature runner inspired by rspec and turnip.)
 
-  spec.files = \
-    Dir['**/*'].grep(%r{
-      ^((bin/|lib/|test/|spec/|features/)|
-        .*\.gemspec|
-        .*LICENSE.*|
-        .*README.*|
-        .*CHANGELOG.*
-      )/}x)
+  spec.files = Dir['**/*'].grep %r{^(
+    (bin/|lib/|test/|spec/|features/)|
+    (\w*\.gemspec|LICENSE.*|README.*|CHANGELOG.*)$
+  )}x
 
   spec.executables   = spec.files.grep(/^bin\//) {|f| File.basename(f) }
   spec.test_files    = spec.files.grep(/^(test|spec|features)\//)
