@@ -1,7 +1,5 @@
 module Gurke
-  #
   class StepDefinition
-    #
     attr_reader :pattern, :method_name, :opts
 
     def initialize(pattern, opts = {})

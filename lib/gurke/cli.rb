@@ -1,7 +1,6 @@
 require 'trollop'
 
 module Gurke
-  #
   class CLI
     #
     # Run CLI with given arguments.
@@ -45,6 +44,7 @@ module Gurke
       parser.educate($stdout)
     end
 
+    # rubocop:disable MethodLength
     def parser
       @parser ||= Trollop::Parser.new do
         opt :help, 'Print this help.'

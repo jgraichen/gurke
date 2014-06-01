@@ -1,12 +1,17 @@
 require 'colorize'
 
-# Colorize colors:
+# Colors
 #   :black, :red, :green, :yellow, :blue,
 #   :magenta, :cyan, :white, :default, :light_black,
 #   :light_red, :light_green, :light_yellow, :light_blue,
 #   :light_magenta, :light_cyan, :light_white
-
+#
 module Gurke::Reporters
+  #
+  # The {DefaultReporter} prints features, scenarios and
+  # steps while they are executed.
+  #
+  # That includes colorized step results reports etc.
   #
   class DefaultReporter < NullReporter
     def before_feature(feature)
@@ -37,21 +42,10 @@ module Gurke::Reporters
 
     def after_step(step, *)
       case step.state
-        when :pending
-          print_braces yellow('pending')
-        when :failed
-          print_braces red('failure')
-          io.puts
-          io.puts red("      #{step.exception.class}:")
-
-          msg = step.exception.message.split("\n").join("\n          ")
-          io.puts red("        #{msg}")
-
-          io.puts red("      #{step.exception.backtrace.join("\n      ")}")
-        when :success
-          print_braces green('success')
-        else
-          print_braces cyan('skipped')
+        when :pending then print_braces yellow('pending')
+        when :failed  then print_failed step
+        when :success then print_braces green('success')
+        else print_braces cyan('skipped')
       end
       io.puts
       io.flush
@@ -78,6 +72,16 @@ module Gurke::Reporters
 
     def print_braces(str)
       io.print " (#{str})"
+    end
+
+    def print_failed(step)
+      print_braces red('failure')
+      io.puts
+      msg = step.exception.message.split("\n").join("\n          ")
+
+      io.puts red("      #{step.exception.class}:")
+      io.puts red("        #{msg}")
+      io.puts red("      #{step.exception.backtrace.join("\n      ")}")
     end
 
     def io

@@ -1,8 +1,7 @@
+# rubocop:disable MethodName
+
 module Gurke
-  #
   module Steps
-    #
-    # rubocop:disable MethodName
     def Given(step)
       rst = self.class.find_step(step, self, :given)
       send rst.method_name

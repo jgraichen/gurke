@@ -1,5 +1,4 @@
 module Gurke
-  #
   module DSL
     def step(pattern, method_name = nil, opts = {}, &block)
       if method_name.is_a?(Hash) && opts.empty?

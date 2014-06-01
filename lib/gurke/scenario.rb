@@ -1,5 +1,4 @@
 module Gurke
-  #
   class Scenario
     #
     # Return path to file containing this scenario.

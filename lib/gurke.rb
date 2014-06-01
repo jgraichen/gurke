@@ -1,6 +1,5 @@
 require 'gurke/version'
 
-#
 module Gurke
   require 'gurke/feature'
   require 'gurke/background'
@@ -62,4 +61,4 @@ module Gurke
   end
 end
 
-::Module.send(:include, Gurke::DSL)
+::Module.send :include, Gurke::DSL

@@ -1,5 +1,4 @@
 module Gurke
-  #
   class Tag
     #
     # Return path to file containing this feature.

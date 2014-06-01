@@ -1,5 +1,4 @@
 module Gurke
-  #
   module VERSION
     MAJOR = 2
     MINOR = 0

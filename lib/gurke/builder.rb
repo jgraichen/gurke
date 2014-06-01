@@ -1,9 +1,7 @@
 require 'gherkin'
 
 module Gurke
-  #
   class Builder
-    #
     attr_reader :features, :options
 
     def initialize(options)

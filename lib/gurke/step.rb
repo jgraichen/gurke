@@ -1,5 +1,4 @@
 module Gurke
-  #
   class Step
     #
     # Return path to file containing this scenario.
@@ -55,20 +54,7 @@ module Gurke
     def run_step(runner, reporter, scenario, world)
       reporter.invoke :start_step, self, scenario
 
-      result = nil
-      runner.with_filtered_backtrace do
-        match = Steps.find_step self, world, type
-
-        if scenario.pending? || scenario.failed?
-          result = StepResult.new self, :skipped
-          return result
-        end
-
-        m = world.method match.method_name
-        world.send match.method_name, *(match.params + [self])[0...m.arity]
-      end
-
-      result = StepResult.new self, :success
+      result = find_and_run_step runner, scenario, world
     rescue StepPending => e
       scenario.pending! e
       result = StepResult.new self, :pending, e
@@ -77,6 +63,21 @@ module Gurke
       result = StepResult.new self, :failed, e
     ensure
       reporter.invoke :end_step, result, scenario
+    end
+
+    def find_and_run_step(runner, scenario, world)
+      runner.with_filtered_backtrace do
+        match = Steps.find_step self, world, type
+
+        if scenario.pending? || scenario.failed?
+          return StepResult.new self, :skipped
+        end
+
+        m = world.method match.method_name
+        world.send match.method_name, *(match.params + [self])[0...m.arity]
+
+        StepResult.new self, :success
+      end
     end
 
     #

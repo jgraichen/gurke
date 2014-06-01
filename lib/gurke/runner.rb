@@ -1,5 +1,4 @@
 module Gurke
-  #
   class Runner
     attr_reader :builder
     attr_reader :files

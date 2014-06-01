@@ -1,5 +1,4 @@
 module Gurke
-  #
   class Configuration
     #
     # Define a before filter running before given action.
@@ -106,7 +105,7 @@ module Gurke
 
       def run(world, &block)
         @before.each{|hook| hook.run world }
-        @around.reduce(block){|blk, hook| proc{ hook.run world, blk }}.call
+        @around.reduce(block){|a, e| proc{ e.run world, a }}.call
       ensure
         @after.each do |hook|
           begin

@@ -47,4 +47,4 @@ module CLISteps
   end
 end
 
-Gurke.configure{|c| c.include CLISteps }
+Gurke.config.include CLISteps

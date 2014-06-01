@@ -1,6 +1,6 @@
 module Gurke::Reporters
   #
-  # The {NullReporter} does not output anything.
+  # The {NullReporter} does not do anything.
   #
   class NullReporter < Gurke::Reporter
     Gurke::Reporter::CALLBACKS.each do |cb|
