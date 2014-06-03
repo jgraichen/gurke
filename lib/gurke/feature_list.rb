@@ -6,7 +6,7 @@ module Gurke
     #
     # Run all features from this list.
     #
-    # @return [Boolean] False if any scenario has failed or is pending.
+    # @return [Boolean] False if any scenario has failed.
     #
     # @api private
     #
@@ -19,7 +19,7 @@ module Gurke
 
       reporter.invoke :after_features, self
 
-      !any?{|s| s.failed? || s.pending? }
+      !any?{|s| s.failed? }
     end
 
     private

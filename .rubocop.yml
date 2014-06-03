@@ -132,8 +132,8 @@ ClassAndModuleChildren:
   Enabled: false
   EnforcedStyle: compact
   SupportedStyles:
-   - nested
-   - compact
+    - nested
+    - compact
 
 ClassLength:
   CountComments: false  # count full line comments?
@@ -347,8 +347,8 @@ SpaceBeforeBlockBraces:
   Enabled: false
   EnforcedStyle: space
   SupportedStyles:
-   - space
-   - no_space
+    - space
+    - no_space
 
 SpaceInsideBlockBraces:
   Enabled: false
