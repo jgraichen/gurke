@@ -14,6 +14,11 @@ module Gurke::Reporters
   # That includes colorized step results reports etc.
   #
   class DefaultReporter < NullReporter
+    attr_reader :io
+    def initialize(io = $stdout)
+      @io = io
+    end
+
     def before_feature(feature)
       io.puts "#{yellow('Feature')}: #{feature.name}"
       io.puts '  ' + light_black(feature.description.split("\n").join("\n  "))
@@ -22,10 +27,13 @@ module Gurke::Reporters
 
     def before_scenario(scenario)
       io.puts "  #{yellow('Scenario')}: #{scenario.name}"
-      io.puts light_black('    Background:') if scenario.backgrounds.any?
     end
 
     def start_background(*)
+      unless @background
+        io.puts light_black('    Background:')
+      end
+
       @background = true
     end
 
@@ -82,10 +90,6 @@ module Gurke::Reporters
       io.puts red("      #{step.exception.class}:")
       io.puts red("        #{msg}")
       io.puts red("      #{step.exception.backtrace.join("\n      ")}")
-    end
-
-    def io
-      $stdout
     end
 
     [:black, :red, :green, :yellow, :blue,

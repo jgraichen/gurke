@@ -29,9 +29,17 @@ module Gurke
       end if options[:require].any?
 
       files  = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
-      status = Runner.new(Gurke.config, files, options).run
+      files.map!{|f| File.expand_path(f) }
 
-      Kernel.exit(status)
+      runner = if options[:drb_server]
+        Runner::DRbServer
+      elsif options[:drb]
+        Runner::DRbClient
+      else
+        Runner::LocalRunner
+      end.new Gurke.config, options
+
+      Kernel.exit runner.run files
     end
 
     def print_version
@@ -61,6 +69,8 @@ module Gurke
                    'filtering expression. TODO: Description.',
             default: ['~wip'],
             multi: true
+        opt :drb_server
+        opt :drb
       end
     end
   end

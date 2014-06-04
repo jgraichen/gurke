@@ -68,10 +68,11 @@ module Gurke
           features: HookSet.new,
           feature: HookSet.new,
           scenario: HookSet.new,
-          step: HookSet.new
+          step: HookSet.new,
+          system: HookSet.new
         }
 
-        hooks.merge each: hooks[:scenario]
+        hooks.merge! each: hooks[:scenario]
         hooks
       end
     end
