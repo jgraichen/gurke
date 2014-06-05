@@ -69,8 +69,8 @@ module Gurke
                    'filtering expression. TODO: Description.',
             default: ['~wip'],
             multi: true
-        opt :drb_server
-        opt :drb
+        opt :drb_server, 'Run gurke DRb server.', short: :none
+        opt :drb, 'Run features on already started DRb server.', short: :none
       end
     end
   end
