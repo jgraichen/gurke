@@ -5,12 +5,9 @@ module CLISteps
   def _execute(exec)
     Dir.chdir(@__root) do
       Bundler.with_clean_env do
-        Open3.popen2e(exec) do |_, stdout_err, wait_thr|
-          exit_status = wait_thr.value
-          stdout_err  = stdout_err.read
+        out, err, status = Open3.capture3('bash', '-lc', exec)
 
-          @last_process = [exit_status.to_i, stdout_err]
-        end
+        @last_process = [Integer(status), out, err]
       end
     end
   end
