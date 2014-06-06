@@ -11,17 +11,18 @@ module Gurke
       @reporter ||= Reporters::DefaultReporter.new
     end
 
-    def load_feature_set(files)
-      builder = Builder.new options
-      files.each{|f| builder.parse(f) }
-
-      features = builder.features
-      features.freeze
+    def builder
+      @builder ||= Builder.new
     end
 
     def run(files, reporter = self.reporter)
-      features = load_feature_set files
-      features.run self, reporter
+      files.map! do |file|
+        split = file.split(':')
+        [split[0], split[1..-1].map{|i| Integer(i) }]
+      end
+
+      features = builder.load files.map{|file, _| file }
+      features.filter(options, files).run self, reporter
     end
 
     def hook(scope, world, &block)
@@ -39,11 +40,9 @@ module Gurke
     end
 
     class LocalRunner < Runner
-      def run(files, reporter = self.reporter)
-        features = load_feature_set files
-
+      def run(*)
         hook :system, nil do
-          features.run self, reporter
+          super
         end
       end
     end

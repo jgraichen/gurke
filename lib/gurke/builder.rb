@@ -2,25 +2,42 @@ require 'gherkin'
 
 module Gurke
   class Builder
-    attr_reader :features, :options
+    attr_reader :features, :keywords
 
-    def initialize(options)
-      @options  = options
-      @features = FeatureList.new
+    def initialize
+      # @options  = options
+      # @files    = files.map do |file|
+      #   split = file.split(':')
+      #   [split[0], split[1..-1].map{|l| Integer(l) }]
+      # end
       @language = 'en'
       @parser   = Gherkin::Parser::Parser.new(
         self, true, 'root', false, @language)
+    end
 
-      @keywords = {}
-      Gherkin::I18n::LANGUAGES[@language].each do |k, v|
-        v.split('|').map(&:strip).each do |str|
-          @keywords[str] = k.to_sym if str != '*'
+    def keywords
+      @keywords ||= begin
+        keywords = {}
+        Gherkin::I18n::LANGUAGES[@language].each do |k, v|
+          v.split('|').map(&:strip).each do |str|
+            keywords[str] = k.to_sym if str != '*'
+          end
         end
+
+        keywords
       end
     end
 
-    def parse(feature_file)
-      @parser.parse(File.read(feature_file), feature_file, 0)
+    def load(files)
+      FeatureList.new.tap do |fl|
+        @features = fl
+
+        files.each do |file|
+          @parser.parse File.read(file), file, 0
+        end
+
+        @features = nil
+      end
     end
 
     def uri(raw)
@@ -52,7 +69,7 @@ module Gurke
       @context  = @scenario
       @type     = nil
 
-      @feature.scenarios << @scenario unless filtered?(@scenario)
+      @feature.scenarios << @scenario #unless filtered?(@scenario)
     end
 
     def step(raw)
@@ -73,37 +90,11 @@ module Gurke
     private
 
     def lookup_type(keyword)
-      case (kw = @keywords.fetch(keyword))
+      case (kw = keywords.fetch(keyword))
         when :and, :but
           @type
         else
           kw
-      end
-    end
-
-    def filter_sets
-      @filter_sets ||= options[:tags].map do |list|
-        list.strip.split(/[,+\s]\s*/).map{|t| Filter.new(t) }
-      end
-    end
-
-    def filtered?(scenario)
-      !filter_sets.reduce(false) do |memo, set|
-        memo || set.all?{|rule| rule.match? scenario }
-      end
-    end
-
-    Filter = Struct.new(:tag) do
-      def name
-        @name ||= negated? ? tag[1..-1] : tag
-      end
-
-      def negated?
-        tag[0] == '~'
-      end
-
-      def match?(taggable)
-        negated? != taggable.tags.any?{|t| t.name == name }
       end
     end
   end

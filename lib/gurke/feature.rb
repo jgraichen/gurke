@@ -65,6 +65,16 @@ module Gurke
       scenarios.any?(&:pending?)
     end
 
+    def self.new(*args)
+      if args.size == 1 && (f = args.first).is_a?(self)
+        super f.file, f.line, f.tags, f.raw
+      else
+        super
+      end
+    end
+
+    # -----------------------------------------------------
+
     # @api private
     def run(runner, reporter)
       reporter.invoke :before_feature, self
