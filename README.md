@@ -103,6 +103,18 @@ Examples:
 * `-t a -t b` - only run scenarios with tags `@a` OR `@b`
 * `-t a,~b` - only run scenarios with `@a` but not `@b`
 
+You can also specify a list of files that will be run:
+
+```
+gurke features/my_feature.feature
+```
+
+If you append one or more line numbers - separated by dashes - only the scenarios defined around the given lines will be run:
+
+```
+gurke features/my_feature.feature:14:34
+```
+
 ## TODO
 
 * Random run order (rspec)
