@@ -6,15 +6,6 @@ rvm:
 - 1.9.3
 - jruby
 - rbx-2
-deploy:
-  provider: rubygems
-  api_key:
-    secure: CZRklWmwJbZA9neinCUQGzu4XjLLvPO7PAEoLaZUriNANBBSeAk5p2E/s7wOIwRPIQV9pzr0P8sghtWKYrTfipHBqau122MRoOuDf6TRN7MDyJRNMrGlsvBa2lOYOWr+ZbSbqu4yVOTQ5uxvvfeyEoYtfMDz3VoMC5YbqnyVsaw=
-  gem: gurke
-  on:
-    branch: develop
-    repo: jgraichen/gurke
-    rvm: '2.1'
 matrix:
   allow_failures:
   - rvm: jruby
