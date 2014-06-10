@@ -14,6 +14,8 @@ Or install it yourself as:
 
 Or add it to your `Gemfile` and install it using bundler.
 
+**Note:** Install version `2.0+`. Previous versions were something else.
+
 ## Usage
 
 1. Put features in `features/`.
