@@ -91,6 +91,31 @@ Scenario: Use the back button
 
 `And` and `But` steps will inherit the keyword type from the step before, e.g. the `And` step above will be of the `when` type.
 
+### Included Step Definitions & Hooks
+
+Each scenario runs in it's own world. All modules registered to be included will be included in this world. Before and after scenario or step hooks will also be executed within this world. All steps are run in this world.
+
+You can define hooks similar to RSpec:
+
+```ruby
+Gurke.configure do |config|
+  config.before(:scenario) do
+    visit '/' # Example: Start each scenario on index page
+  end
+
+  config.after(:features) do
+    # Do some cleanup code etc.
+  end
+end
+```
+
+The following hooks are available:
+
+* `:features`: Will be run before and after every feature. Use to to initially setup or teardown needed resources e.g. setup capybara.
+* `:feature`: Will be run before and after any feature.
+* `:scenario`: Same for any scenario.
+* `:step`: Can be used to e.g. screenshot browser for every step.
+
 ### Use the command line runner
 
 Run all scenarios by just calling `bundle exec gurke`. By default scenarios and features tagged with `@wip` will be ignored.
@@ -115,8 +140,27 @@ If you append one or more line numbers - separated by dashes - only the scenario
 gurke features/my_feature.feature:14:34
 ```
 
+### DRb background server (experimental)
+
+You can run a DRb server in the background that has a running test environment (whatever that means to you) by running `gurke --drb-server`. This will load your test environment and execute all before `:system` hooks.
+
+You can later run your features (or specific features) by running `gurke --drb`. That will run the features in the already loaded DRb server, including all other hooks.
+
+Remember to reload e.g. your step definitions before `:features` to pick up changes:
+
+```ruby
+  config.before(:features) do
+    Dir['features/steps/**/*.rb'].each{|f| load f }
+  end
+```
+
+Use the after `:system` hook to shutdown resources.
+
 ## TODO
 
+* Import (step definition) modules based on tags (rspec: `config.include MyCLISteps, cli: true`)
+* Add `context`/`ctx` object to world providing current feature/scenario/step
+* Allow to define scenario/feature specific after hook in steps e.g. to close opened resources
 * Random run order (rspec)
 * Using strings with placeholders as step pattern (turnip)
 * Custom placeholders (turnip)
