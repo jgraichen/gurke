@@ -45,7 +45,7 @@ module Gurke
       result = runner.hook(:step, world) do
         run_step runner, reporter, scenario, world
       end
-    ensure
+
       reporter.invoke :after_step, result, scenario
     end
 
@@ -58,7 +58,7 @@ module Gurke
     rescue StepPending => e
       scenario.pending! e
       result = StepResult.new self, :pending, e
-    rescue => e
+    rescue Exception => e
       scenario.failed! e
       result = StepResult.new self, :failed, e
     ensure
