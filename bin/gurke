@@ -2,4 +2,4 @@
 require 'gurke'
 require 'gurke/cli'
 
-Gurke::CLI.new.run(ARGV)
+Gurke::CLI.new.run(ARGV.dup)
