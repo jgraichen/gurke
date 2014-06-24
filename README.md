@@ -158,6 +158,8 @@ Remember to reload e.g. your step definitions before `:features` to pick up chan
 
 Use the after `:system` hook to shutdown resources.
 
+Remember to restart background server when changing hooks, configuration or removing/redefining steps as otherwise the changes won't be picked up or steps won't change or are ambiguous now.
+
 ## TODO
 
 * Import (step definition) modules based on tags (rspec: `config.include MyCLISteps, cli: true`)
