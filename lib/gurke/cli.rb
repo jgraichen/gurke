@@ -8,7 +8,7 @@ module Gurke
     # @param argv [Array<String>] Tokenized argument list.
     #
     def run(argv)
-      call parser.parse(argv), argv
+      call parser.parse(argv.dup), argv
     rescue Trollop::VersionNeeded
       print_version && exit
     rescue Trollop::HelpNeeded
