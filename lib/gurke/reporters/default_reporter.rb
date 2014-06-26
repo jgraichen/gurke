@@ -85,11 +85,32 @@ module Gurke::Reporters
     def print_failed(step)
       print_braces red('failure')
       io.puts
-      msg = step.exception.message.split("\n").join("\n          ")
 
-      io.puts red("      #{step.exception.class}:")
-      io.puts red("        #{msg}")
-      io.puts red("      #{step.exception.backtrace.join("\n      ")}")
+      exout = format_exception(step.exception)
+      io.puts exout.map{|s| red("        #{s}\n") }.join
+    end
+
+    def format_exception(ex)
+      s = [ex.message.strip]
+      if ex.backtrace.nil?
+        s << '  <no backtrace available>'
+      elsif ex.backtrace.empty?
+        s << '  <backtrace empty>'
+      else
+        ex.backtrace.each do |bt|
+          s << '  ' + bt.strip
+        end
+      end
+
+      if ex.respond_to?(:cause) && ex.cause &&
+        ex.cause.respond_to?(:message) && ex.cause.respond_to?(:backtrace)
+
+        cause = format_exception(ex.cause)
+        s << 'caused by: ' + cause.shift
+        s += cause
+      end
+
+      s
     end
 
     [:black, :red, :green, :yellow, :blue,
