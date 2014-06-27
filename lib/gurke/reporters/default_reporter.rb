@@ -90,29 +90,6 @@ module Gurke::Reporters
       io.puts exout.map{|s| red("        #{s}\n") }.join
     end
 
-    def format_exception(ex)
-      s = [ex.class.to_s + ': ' + ex.message.strip]
-      if ex.backtrace.nil?
-        s << '  <no backtrace available>'
-      elsif ex.backtrace.empty?
-        s << '  <backtrace empty>'
-      else
-        ex.backtrace.each do |bt|
-          s << '  ' + bt.strip
-        end
-      end
-
-      if ex.respond_to?(:cause) && ex.cause &&
-        ex.cause.respond_to?(:message) && ex.cause.respond_to?(:backtrace)
-
-        cause = format_exception(ex.cause)
-        s << 'caused by: ' + cause.shift
-        s += cause
-      end
-
-      s
-    end
-
     [:black, :red, :green, :yellow, :blue,
      :magenta, :cyan, :white, :default, :light_black,
      :light_red, :light_green, :light_yellow, :light_blue,

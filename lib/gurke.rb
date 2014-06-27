@@ -21,6 +21,7 @@ module Gurke
   module Reporters
     require 'gurke/reporters/null_reporter'
     require 'gurke/reporters/default_reporter'
+    require 'gurke/reporters/team_city_reporter'
   end
 
   class Error < StandardError; end

@@ -8,7 +8,10 @@ module Gurke
     end
 
     def reporter
-      @reporter ||= Reporters::DefaultReporter.new
+      @reporter ||= begin
+        r = (options[:formatter] + '_reporter').split('_').map(&:capitalize).join
+        Reporters.const_get(r).new
+      end
     end
 
     def builder
