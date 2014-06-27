@@ -29,7 +29,19 @@ module Gurke
       end if options[:require].any?
 
       files  = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
-      files.map!{|f| File.expand_path(f) }
+      files = files.inject([]) do |memo, input|
+        p memo, input
+        if File.directory? input
+          Dir[input + '/**/*'].each do |file_in_dir|
+            p file_in_dir
+            next if options[:pattern] && !File.fnmatch?(options[:pattern], file_in_dir)
+            memo << File.expand_path(file_in_dir)
+          end
+        else
+          memo << File.expand_path(input)
+        end
+        memo
+      end
 
       runner = if options[:drb_server]
         Runner::DRbServer
