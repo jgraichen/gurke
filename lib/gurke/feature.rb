@@ -83,7 +83,7 @@ module Gurke
         run_feature runner, reporter
       end
     ensure
-      reporter.invoke :after_feature
+      reporter.invoke :after_feature, self
     end
 
     private

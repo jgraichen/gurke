@@ -3,6 +3,7 @@
 ## 2.2.1
 
 * BugFix (missing argument in cli.rb)
+* BugFix in after_feature hook call (missing feature argument)
 
 ## 2.2.0
 
