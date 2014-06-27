@@ -28,7 +28,7 @@ module Gurke
         Dir[r].each{|f| require File.expand_path(f) }
       end if options[:require].any?
 
-      files = expand_files files
+      files = expand_files files, options
 
       runner = if options[:drb_server]
         Runner::DRbServer

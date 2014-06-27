@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1
+
+* BugFix (missing argument in cli.rb)
+
 ## 2.2.0
 
 + Support executing all features inside one directory
