@@ -91,7 +91,7 @@ module Gurke::Reporters
     end
 
     def format_exception(ex)
-      s = [ex.message.strip]
+      s = [ex.class.to_s + ': ' + ex.message.strip]
       if ex.backtrace.nil?
         s << '  <no backtrace available>'
       elsif ex.backtrace.empty?
