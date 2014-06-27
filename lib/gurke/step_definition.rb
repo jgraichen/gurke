@@ -16,10 +16,11 @@ module Gurke
     end
 
     def match(name, type = :any)
+      return if self.type != :any && self.type != type
+      return if pattern.is_a?(String) && name != pattern
       match = pattern.match(name)
 
       return unless match
-      return if self.type != :any && self.type != type
 
       Match.new(method_name, match.to_a[1..-1])
     end
