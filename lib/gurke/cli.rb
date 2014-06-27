@@ -28,20 +28,7 @@ module Gurke
         Dir[r].each{|f| require File.expand_path(f) }
       end if options[:require].any?
 
-      files  = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
-      files = files.inject([]) do |memo, input|
-        p memo, input
-        if File.directory? input
-          Dir[input + '/**/*'].each do |file_in_dir|
-            p file_in_dir
-            next if options[:pattern] && !File.fnmatch?(options[:pattern], file_in_dir)
-            memo << File.expand_path(file_in_dir)
-          end
-        else
-          memo << File.expand_path(input)
-        end
-        memo
-      end
+      files = expand_files files
 
       runner = if options[:drb_server]
         Runner::DRbServer
@@ -85,6 +72,22 @@ module Gurke
             multi: true
         opt :drb_server, 'Run gurke DRb server. (experimental)', short: :none
         opt :drb, 'Run features on already started DRb server. (experimental)', short: :none
+      end
+    end
+
+    private
+    def expand_files(files, options)
+      files = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
+      files.inject([]) do |memo, input|
+        if File.directory? input
+          Dir[input + '/**/*'].each do |file_in_dir|
+            next if options[:pattern] && !File.fnmatch?(options[:pattern], file_in_dir)
+            memo << File.expand_path(file_in_dir)
+          end
+        else
+          memo << File.expand_path(input)
+        end
+        memo
       end
     end
   end
