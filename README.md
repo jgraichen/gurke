@@ -1,5 +1,7 @@
 # Gurke
 
+[![Gem Version](https://badge.fury.io/rb/gurke.svg)](http://badge.fury.io/rb/gurke) [![Build Status](http://img.shields.io/travis/jgraichen/gurke/master.svg)](https://travis-ci.org/jgraichen/gurke) [![Code Climate](http://img.shields.io/codeclimate/github/jgraichen/gurke.svg)](https://codeclimate.com/github/jgraichen/gurke) [![Dependency Status](http://img.shields.io/gemnasium/jgraichen/gurke.svg)](https://gemnasium.com/jgraichen/gurke) [![RubyDoc Documentation](http://img.shields.io/badge/rubydoc-here-blue.svg)](http://rubydoc.info/github/jgraichen/gurke/master/frames)
+
 **Gurke** is an experimental, alternative cucumber runner. It ~~steals~~ borrows ideas and concepts from [turnip](https://github.com/jnicklas/turnip), [rspec](http://rspec.info) and tries to avoid [cucumber](https://github.com/cucumber/cucumber/).
 
 That includes * Step definitions in modules * Before, After and Around hooks * Formatters * Partial step inclusion (via modules) * etc. Also new ideas like keyword depended step definitions are planned.
