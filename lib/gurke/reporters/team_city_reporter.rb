@@ -79,7 +79,7 @@ module Gurke::Reporters
 
     def print_pending(step)
       return if @pending == @scenario # only once per scenario
-      publish :testPending,
+      publish :testIgnored,
                name: @scenario.name,
                message: 'Step definition missing'
       @pending = @scenario
@@ -90,6 +90,7 @@ module Gurke::Reporters
                  name: @scenario.name,
                  message: step.exception.inspect,
                  backtrace: step.exception.backtrace.join('\n')
+      @pending = @scenario
 
       print_braces 'failure'
       io.puts

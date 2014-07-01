@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.2
+
+* TeamCityReporter: Fixing mark test as pending
+
 ## 2.2.1
 
 * BugFix (missing argument in cli.rb)
