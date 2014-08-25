@@ -6,7 +6,7 @@
 
 That includes * Step definitions in modules * Before, After and Around hooks * Formatters * Partial step inclusion (via modules) * etc. Also new ideas like keyword depended step definitions are planned.
 
-But still **Gurke** is unfinished, not recommended and highly dangerous!
+But still **Gurke** is unfinished, not recommended and highly dangerous! It still runs our production integration tests for a 10+ Rails services beast several times a day.
 
 ## Installation
 
@@ -192,6 +192,7 @@ Remember to restart background server when changing hooks, configuration or remo
 * Define scenario specific after hook in a step (e.g. to close opened resource)
 * More reporters (NyanCat / JUnit / TeamCity / Adapter to run multiple reporters)
 * SimpleCov support (and use it in own tests)
+* Scope hooks by scenario tags
 
 ## History
 
