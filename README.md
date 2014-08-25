@@ -72,6 +72,26 @@ module MySteps
 end
 ```
 
+You can include some steps to only scenarios with specific tags:
+
+```ruby
+module MyStepsA
+  step(/I do something/) { ... }
+end
+
+Gurke.configure{|c| c.include FileSteps, tags: 'tagA' }
+
+module MyStepsB
+  step(/I do something/) { ... }
+end
+
+Gurke.configure do |c|
+  c.include FileSteps, tags: [:tagB, 'bType'] # At least one tag has to match
+end
+```
+
+Therefore you can use different step implementations for same named steps depending on the tags of the the feature and scenario.
+
 ### Keyword specific step definitions
 
 You can also define steps for only a specific keyword. This also allows you to use the same step pattern for different keywords, e.g.
@@ -164,7 +184,6 @@ Remember to restart background server when changing hooks, configuration or remo
 
 ## TODO
 
-* Import (step definition) modules based on tags (rspec: `config.include MyCLISteps, cli: true`)
 * Add `context`/`ctx` object to world providing current feature/scenario/step
 * Allow to define scenario/feature specific after hook in steps e.g. to close opened resources
 * Random run order (rspec)
