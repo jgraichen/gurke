@@ -85,6 +85,24 @@ module Gurke
         @mod  = mod
         @opts = opts
       end
+
+      def tags
+        @tags ||= begin
+          tags = opts.fetch(:tags, [])
+          tags = [tags] unless tags.is_a?(Array)
+          tags
+        end
+      end
+
+      def match?(tags)
+        return true if self.tags.empty?
+
+        self.tags.each do |tag|
+          return true if tags.include?(tag.to_s)
+        end
+
+        false
+      end
     end
 
     # @api private

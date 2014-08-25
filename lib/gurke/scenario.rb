@@ -62,6 +62,14 @@ module Gurke
       feature.backgrounds
     end
 
+    # Return a list of tag names as strings.
+    #
+    # @return [Array<String>] Tag names.
+    #
+    def tag_names
+      @tag_names ||= tags.map(&:name)
+    end
+
     # Check if scenario is pending.
     #
     # @return [Boolean] True if pending, false otherwise.
@@ -134,7 +142,7 @@ module Gurke
         cls.send :include, Gurke.world
 
         Gurke.config.inclusions.each do |incl|
-          cls.send :include, incl.mod
+          cls.send :include, incl.mod if incl.match?(tag_names)
         end
         cls.send :include, Gurke::Steps
         cls.new
