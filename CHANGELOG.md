@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.0
+
+* Step inclusion can be scoped to specific tags (45cea9ab)
+
 ## 2.2.2
 
 * TeamCityReporter: Fixing mark test as pending
