@@ -4,9 +4,7 @@
 
 **Gurke** is an experimental, alternative cucumber runner. It ~~steals~~ borrows ideas and concepts from [turnip](https://github.com/jnicklas/turnip), [rspec](http://rspec.info) and tries to avoid [cucumber](https://github.com/cucumber/cucumber/).
 
-That includes * Step definitions in modules * Before, After and Around hooks * Formatters * Partial step inclusion (via modules) * etc. Also new ideas like keyword depended step definitions are planned.
-
-But still **Gurke** is unfinished, not recommended and highly dangerous! It still runs our production integration tests for a 10+ Rails services beast several times a day.
+That includes * Step definitions in modules * Before, After and Around hooks * Formatters * Partial step inclusion (via modules) * Keyword-dependent steps * Scenario-local world * Running DRb background test server.
 
 ## Installation
 
@@ -185,14 +183,15 @@ Remember to restart background server when changing hooks, configuration or remo
 ## TODO
 
 * Add `context`/`ctx` object to world providing current feature/scenario/step
-* Allow to define scenario/feature specific after hook in steps e.g. to close opened resources
+* Define scenario specific after hook in a step (e.g. to close opened resource)
 * Random run order (rspec)
 * Using strings with placeholders as step pattern (turnip)
 * Custom placeholders (turnip)
-* Define scenario specific after hook in a step (e.g. to close opened resource)
 * More reporters (NyanCat / JUnit / TeamCity / Adapter to run multiple reporters)
 * SimpleCov support (and use it in own tests)
 * Scope hooks by scenario tags
+* Fast-fail
+* Additional feature-scope and global worlds
 
 ## History
 
