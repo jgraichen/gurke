@@ -21,7 +21,7 @@ Feature: Step keyword specific definitions
       require 'test/unit/assertions'
 
       module Steps
-        include MiniTest::Assertions
+        include Test::Unit::Assertions
 
         Given(/^I am "(.+)"$/) do |name|
           @me = name

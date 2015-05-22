@@ -17,6 +17,7 @@ module FileSteps
     _write_file 'Gemfile', <<-EOS
       source 'https://rubygems.org'
       gem 'gurke', path: '#{File.dirname(Gurke.root)}'
+      gem 'test-unit'
     EOS
   end
 

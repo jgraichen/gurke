@@ -49,7 +49,7 @@ Feature: Run specific features or scenarios
       require 'test/unit/assertions'
 
       module Steps
-        include MiniTest::Assertions
+        include Test::Unit::Assertions
 
         Given(/^I am "(.+)"$/) do |name|
           @me = name

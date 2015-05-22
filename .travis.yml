@@ -3,6 +3,7 @@ language: ruby
 cache: bundler
 bundler_args: "--without development"
 rvm:
+- '2.2'
 - '2.1'
 - '2.0'
 - 1.9.3
