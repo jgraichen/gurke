@@ -122,13 +122,13 @@ module Gurke
         end
       end
 
-      def run(world, &block)
-        @before.each{|hook| hook.run world }
-        @around.reduce(block){|a, e| proc{ e.run world, a }}.call
+      def run(context, &block)
+        @before.each{|hook| hook.run context }
+        @around.reduce(block){|a, e| proc{ e.run context, a }}.call
       ensure
         @after.each do |hook|
           begin
-            hook.run world
+            hook.run context
           rescue => e
             warn "Rescued error in after hook: #{e}\n#{e.backtrace.join("\n")}"
           end

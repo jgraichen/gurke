@@ -22,9 +22,9 @@ module Gurke
 
       return unless match
 
-      Match.new(method_name, match.to_a[1..-1])
+      Match.new method_name, match.to_a[1..-1]
     end
 
-    class Match < Struct.new(:method_name, :params); end
+    Match = Struct.new :method_name, :params
   end
 end
