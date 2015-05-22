@@ -27,13 +27,13 @@ module CLISteps
   end
 
   def _cli_include_content(content)
-    expect(@last_process[1]).to include content
+    expect(@last_process[1] + @last_process[2]).to include content
   end
 
   step(/the program output should include "(.*?)"/, :_cli_include_content)
 
   def _cli_not_include_content(content)
-    expect(@last_process[1]).to_not include content
+    expect(@last_process[1] + @last_process[2]).to_not include content
   end
 
   step(/the program output should not include "(.*?)"/,
