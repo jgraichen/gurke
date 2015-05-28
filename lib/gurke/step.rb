@@ -42,7 +42,7 @@ module Gurke
     def run(runner, reporter, scenario, world)
       reporter.invoke :before_step, self, scenario
 
-      result = runner.hook(:step, world) do
+      result = runner.hook(:step, self, world) do
         run_step runner, reporter, scenario, world
       end
 

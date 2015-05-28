@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Gurke
   class Configuration
     #
@@ -122,16 +124,39 @@ module Gurke
         end
       end
 
-      def run(context, &block)
-        @before.each{|hook| hook.run context }
-        @around.reduce(block){|a, e| proc{ e.run context, a }}.call
+      def run(context, world, &block)
+        ctx = Context.new context, block
+        @before.each{|hook| hook.run world, ctx }
+        @around.reduce Context.new(context, block) do |c, e|
+          Context.new(context, ->{ e.run world, c })
+        end.call
       ensure
         @after.each do |hook|
           begin
-            hook.run context
+            hook.run world, ctx
           rescue => e
             warn "Rescued error in after hook: #{e}\n#{e.backtrace.join("\n")}"
           end
+        end
+      end
+
+      class Context
+        extend Forwardable
+
+        def initialize(context, block)
+          @context, @block = context, block
+        end
+
+        def tags
+          @context.tags.map(&:name)
+        end
+
+        def to_proc
+          @block
+        end
+
+        def call
+          @block.call
         end
       end
     end
@@ -149,10 +174,10 @@ module Gurke
         !opts.any?{|k, v| context.metadata[k] != v }
       end
 
-      def run(context, *args)
+      def run(world, *args)
         block = @block
-        if context
-          context.instance_exec(*args, &block)
+        if world
+          world.instance_exec(*args, &block)
         else
           block.call(*args)
         end

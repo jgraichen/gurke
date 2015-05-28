@@ -118,7 +118,7 @@ module Gurke
     def run(runner, reporter)
       reporter.invoke :before_scenario, self
 
-      runner.hook :scenario, world do
+      runner.hook :scenario, self, world do
         run_scenario runner, reporter
       end
     ensure

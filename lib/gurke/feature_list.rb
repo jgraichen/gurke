@@ -13,7 +13,7 @@ module Gurke
     def run(runner, reporter)
       reporter.invoke :before_features, self
 
-      runner.hook(:features, nil) do
+      runner.hook(:features, nil, nil) do
         run_features runner, reporter
       end
 

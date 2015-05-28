@@ -28,8 +28,8 @@ module Gurke
       features.filter(options, files).run self, reporter
     end
 
-    def hook(scope, world, &block)
-      config.hooks[scope].run world, &block
+    def hook(scope, world, context, &block)
+      config.hooks[scope].run world, context, &block
     end
 
     def with_filtered_backtrace
@@ -44,7 +44,7 @@ module Gurke
 
     class LocalRunner < Runner
       def run(*)
-        hook :system, nil do
+        hook :system, nil, nil do
           super
         end
       end
@@ -56,7 +56,7 @@ module Gurke
       def run(files)
         require 'drb'
 
-        hook :system, nil do
+        hook :system, nil, nil do
           DRb.start_service URI, self
           $stdout.puts 'DRb Server running...'
 
