@@ -27,8 +27,9 @@ describe Gurke::Scenario do
     end
 
     it 'runs hook in scenario world' do
-      expect(runner).to receive(:hook) do |scope, world|
+      expect(runner).to receive(:hook) do |scope, context, world|
         expect(scope).to eq :scenario
+        expect(context).to eq scenario
         expect(world).to eq scenario.send(:world)
       end
 
