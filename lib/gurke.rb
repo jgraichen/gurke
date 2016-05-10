@@ -1,4 +1,5 @@
 require 'gurke/version'
+require 'pathname'
 
 module Gurke
   require 'gurke/feature'
