@@ -20,13 +20,13 @@ module Gurke::Reporters
     end
 
     def before_feature(feature)
-      io.puts "#{yellow('Feature')}: #{feature.name}"
+      io.puts "#{yellow('Feature')}: #{feature.name}   #{format_location(feature)}"
       io.puts '  ' + light_black(feature.description.split("\n").join("\n  "))
       io.puts
     end
 
     def before_scenario(scenario)
-      io.puts "  #{yellow('Scenario')}: #{scenario.name}"
+      io.puts "  #{yellow('Scenario')}: #{scenario.name}   #{format_location(scenario)}"
     end
 
     def start_background(*)
@@ -45,6 +45,7 @@ module Gurke::Reporters
       io.print '  ' if @background
       io.print '    '
       io.print yellow(step.keyword)
+      io.print ' '
       io.print step.name.gsub(/"(.*?)"/, cyan('\0'))
     end
 
@@ -77,6 +78,16 @@ module Gurke::Reporters
     end
 
     private
+
+    def format_location(obj)
+      file = obj.file.to_s
+      line = obj.line.to_s
+      cwd  = Pathname.new(Dir.getwd)
+      path = Pathname.new(file).relative_path_from(cwd).to_s
+      path = file if path.length > file.length
+
+      light_black("# #{path}:#{line}")
+    end
 
     def print_braces(str)
       io.print " (#{str})"

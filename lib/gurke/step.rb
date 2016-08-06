@@ -30,7 +30,7 @@ module Gurke
     alias_method :to_s, :name
 
     def keyword
-      raw.keyword
+      raw.keyword.strip
     end
 
     def doc_string

@@ -12,6 +12,14 @@ require 'gurke'
 
 Dir[File.expand_path('spec/support/**/*.rb')].each{|f| require f }
 
+module Helper
+  def unindent(str)
+    indent = str.scan(/^\s*/).min_by(&:size).size || 0
+    str.rstrip.gsub(/^\s{#{indent}}/, '').gsub(/^\./, '')
+  end
+end
+
 RSpec.configure do |config|
   config.order = 'random'
+  config.include Helper
 end
