@@ -7,7 +7,7 @@ describe Gurke::Scenario do
   let(:backgrounds) { double('backgrounds') }
 
   before do
-    allow(feature).to receive(:backgrounds).ordered.and_return(backgrounds)
+    allow(feature).to receive(:backgrounds).and_return(backgrounds)
     allow(backgrounds).to receive(:run)
     allow(runner).to receive(:hook) {|_, _, &block| block.call }
   end
