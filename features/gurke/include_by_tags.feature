@@ -4,7 +4,6 @@ Feature: Include by tags
   I want to include some steps only to scenarios with a specific tags
 
   Background:
-    Given I am in a project using gurke
     And a file "features/test_a.feature" with the following content exists
       """
       @step1a
@@ -59,7 +58,7 @@ Feature: Include by tags
       """
 
   Scenario: It should include the matching step definitions
-    When I execute "bundle exec gurke"
+    When I run the tests
     Then the program output should include "DO STEP 1A"
     Then the program output should include "DO STEP 2A"
     Then the program output should include "DO STEP 1B"

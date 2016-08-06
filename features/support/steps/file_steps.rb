@@ -13,14 +13,6 @@ module FileSteps
     File.read(file)
   end
 
-  step(/I am in a project using gurke/) do
-    _write_file 'Gemfile', <<-EOS
-      source 'https://rubygems.org'
-      gem 'gurke', path: '#{File.dirname(Gurke.root)}'
-      gem 'test-unit'
-    EOS
-  end
-
   step(/a file "(.*?)" with the following content exists/) do |path, step|
     _write_file(path, step.doc_string)
   end

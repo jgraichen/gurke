@@ -4,7 +4,6 @@ Feature: Backtrace filtering
   I want to filter features and scenarios by tags to only run a subset
 
   Background:
-    Given I am in a project using gurke
     And a file "features/support/steps/test_steps.rb" with the following content exists
       """
       module TestSteps
@@ -35,35 +34,35 @@ Feature: Backtrace filtering
       """
 
   Scenario: Do not run @wip by default
-    When I execute "bundle exec gurke"
+    When I run the tests
     Then the program output should include "Feature Flagged little-A"
     And the program output should include "Feature Flagged little-B"
     And the program output should not include "Feature Flagged little-WIP"
     And the program output should include "2 scenarios"
 
   Scenario: Filter with positive tag match
-    When I execute "bundle exec gurke --tags a"
+    When I run the tests with "--tags a"
     Then the program output should include "Feature Flagged little-A"
     And the program output should not include "Feature Flagged little-B"
     And the program output should not include "Feature Flagged little-WIP"
     And the program output should include "1 scenarios"
 
   Scenario: Filter with negative tag match
-    When I execute "bundle exec gurke -t ~b"
+    When I run the tests with "-t ~b"
     Then the program output should include "Feature Flagged little-A"
     And the program output should not include "Feature Flagged little-B"
     And the program output should include "Feature Flagged little-WIP"
     And the program output should include "2 scenarios"
 
   Scenario: Filter with multiple tag match and'ed
-    When I execute "bundle exec gurke --tags c,d"
+    When I run the tests with "--tags c,d"
     Then the program output should include "Feature Flagged little-A"
     And the program output should include "Feature Flagged little-B"
     And the program output should not include "Feature Flagged little-WIP"
     And the program output should include "2 scenarios"
 
   Scenario: Filter with multiple tag match or'ed
-    When I execute "bundle exec gurke --tags b --tags wip"
+    When I run the tests with "--tags b --tags wip"
     Then the program output should not include "Feature Flagged little-A"
     And the program output should include "Feature Flagged little-B"
     And the program output should include "Feature Flagged little-WIP"

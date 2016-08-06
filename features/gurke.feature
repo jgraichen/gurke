@@ -3,9 +3,6 @@ Feature: Use gurke
   In order to run my feature definitions
   I want to use the gurke command line program
 
-  Background:
-    Given I am in a project using gurke
-
   Scenario: Run a passing feature file
     Given a file "features/test.feature" with the following content exists
       """
@@ -20,7 +17,7 @@ Feature: Use gurke
       end
       Gurke.configure{|c| c.include TestSteps }
       """
-    When I execute "bundle exec gurke"
+    When I run the tests
     Then the program exit code should be null
     And the program output should include "Feature: F"
     And the program output should include "Scenario: Scenario A"
@@ -42,6 +39,6 @@ Feature: Use gurke
       end
       Gurke.configure{|c| c.include TestSteps }
       """
-    When I execute "bundle exec gurke"
+    When I run the tests
     And the program output should include "1 scenarios: 1 failing, 0 pending"
     Then the program exit code should be non-null

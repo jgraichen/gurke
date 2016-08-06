@@ -4,7 +4,6 @@ Feature: Access context in hooks
   I want to access meta data of the context in hooks
 
   Background:
-    Given I am in a project using gurke
     And a file "features/test.feature" with the following content exists
       """
       Feature: A
@@ -35,5 +34,5 @@ Feature: Access context in hooks
       """
 
   Scenario: Assertions should pass
-    When I execute all scenarios
+    When I run the tests
     Then all scenarios have passed

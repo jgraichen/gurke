@@ -4,7 +4,6 @@ Feature: Run specific features or scenarios
   I want run only a specific set of files or lines
 
   Background:
-    Given I am in a project using gurke
     Given a file "features/a.feature" with the following content exists
       """
       Feature: F
@@ -67,26 +66,26 @@ Feature: Run specific features or scenarios
       """
 
   Scenario: Run specific file (I)
-    When I execute "bundle exec gurke features/a.feature"
+    When I run the tests with "features/a.feature"
     And the program output should include "2 scenarios: 0 failing, 0 pending"
 
   Scenario: Run specific file (II)
-    When I execute "bundle exec gurke features/b.feature"
+    When I run the tests with "features/b.feature"
     And the program output should include "3 scenarios: 0 failing, 0 pending"
 
   Scenario: Run specific line of a scenario (I)
-    When I execute "bundle exec gurke features/b.feature:7"
+    When I I run the tests with "features/b.feature:7"
     And the program output should include "Scenario: Scenario B1"
     And the program output should include "1 scenarios: 0 failing, 0 pending"
 
   Scenario: Run specific line of a scenario (II)
-    When I execute "bundle exec gurke features/b.feature:7:19"
+    When I run the tests with "features/b.feature:7:19"
     And the program output should include "Scenario: Scenario B1"
     And the program output should include "Scenario: Scenario B3"
     And the program output should include "2 scenarios: 0 failing, 0 pending"
 
   Scenario: Run specific line of a scenario (III)
-    When I execute "bundle exec gurke features/a.feature:11 features/b.feature:7:19"
+    When I run the tests with "features/a.feature:11 features/b.feature:7:19"
     And the program output should include "Scenario: Scenario A2"
     And the program output should include "Scenario: Scenario B1"
     And the program output should include "Scenario: Scenario B3"

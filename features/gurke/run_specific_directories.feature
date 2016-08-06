@@ -4,7 +4,6 @@ Feature: Run specific features or scenarios
   I want run only feature files from one directory
 
   Background:
-    Given I am in a project using gurke
     Given a file "features/odd/a.feature" with the following content exists
       """
       Feature: F
@@ -46,17 +45,17 @@ Feature: Run specific features or scenarios
       """
 
   Scenario: Run all features from on directory
-    When I execute "bundle exec gurke features/odd"
+    When I run the tests with "features/odd"
     And the program output should include "2 scenarios: 0 failing, 0 pending"
 
   Scenario: Run all features from on directory (II)
-    When I execute "bundle exec gurke features/even"
+    When I run the tests with "features/even"
     And the program output should include "1 scenarios: 0 failing, 0 pending"
 
   Scenario: Run all features from on directory (with subdirectories)
-    When I execute "bundle exec gurke features"
+    When I run the tests with "features"
     And the program output should include "3 scenarios: 0 failing, 0 pending"
 
   Scenario: Run all features from on directory (based on feature pattern)
-    When I execute "bundle exec gurke trash"
+    When I run the tests with "trash"
     And the program output should include "0 scenarios: 0 failing, 0 pending"

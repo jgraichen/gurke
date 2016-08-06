@@ -4,7 +4,6 @@ Feature: Other Reporter
   I want to pass a command line argument to change the reporter
 
   Background:
-    Given I am in a project using gurke
     And a file "features/test.feature" with the following content exists
       """
       Feature: F
@@ -21,15 +20,15 @@ Feature: Other Reporter
       """
 
   Scenario: Use the default reporter without addition arguments
-    When I execute "bundle exec gurke"
+    When I run the tests
     Then the program output should not include "##teamcity"
 
   Scenario: Use specified reporter when run with --formatter
-    When I execute "bundle exec gurke --formatter team_city"
+    When I run the tests with "--formatter team_city"
     Then the program output should include "##teamcity[testStarted name='Scenario A']"
     Then the program output should include "##teamcity[testFinished name='Scenario A']"
 
   Scenario: Use specified reporter when run with -f
-    When I execute "bundle exec gurke -f team_city"
+    When I run the tests with "-f team_city"
     Then the program output should include "##teamcity[testStarted name='Scenario A']"
     Then the program output should include "##teamcity[testFinished name='Scenario A']"

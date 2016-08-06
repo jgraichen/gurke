@@ -3,9 +3,6 @@ Feature: Step keyword specific definitions
   As a user
   I want to define same steps with different step keywords
 
-  Background:
-    Given I am in a project using gurke
-
   Scenario: Use same step definition with different keyword
     Given a file "features/test.feature" with the following content exists
       """
@@ -37,5 +34,5 @@ Feature: Step keyword specific definitions
       end
       Gurke.world.send :include, Steps
       """
-    When I execute all scenarios
+    When I run the tests
     Then all scenarios have passed

@@ -4,7 +4,6 @@ Feature: Backtrace filtering
   I want to see modified backtraces with only non-library calls
 
   Background:
-    Given I am in a project using gurke
     And a file "features/test.feature" with the following content exists
       """
       Feature: F
@@ -21,16 +20,16 @@ Feature: Backtrace filtering
       """
 
   Scenario: See backtrace without line from libraries
-    When I execute "bundle exec gurke"
+    When I run the tests
     Then the program output should include "features/support/steps/test_steps.rb:2"
     Then the program output should not include "gurke/lib/gurke/runner.rb"
 
   Scenario: See backtrace when run with --backtrace
-    When I execute "bundle exec gurke --backtrace"
+    When I run the tests with "--backtrace"
     Then the program output should include "features/support/steps/test_steps.rb:2"
     Then the program output should include "gurke/lib/gurke/runner.rb"
 
   Scenario: See backtrace when run with -b
-    When I execute "bundle exec gurke -b"
+    When I run the tests with "-b"
     Then the program output should include "features/support/steps/test_steps.rb:2"
     Then the program output should include "gurke/lib/gurke/runner.rb"

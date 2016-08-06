@@ -2,21 +2,24 @@ require 'open3'
 
 #
 module CLISteps
-  def _execute(exec)
+  def _execute(args = nil)
     Dir.chdir(@__root) do
       Bundler.with_clean_env do
-        out, err, status = Open3.capture3('bash', '-lc', exec)
+        cmd = ['ruby']
+        cmd << '-I' << Gurke.root.join('..', 'lib').realpath
+        cmd << '-S' << Gurke.root.join('..', 'bin', 'gurke').realpath
+        cmd << args.to_s
+
+        out, err, status = Open3.capture3 cmd.join ' '
 
         @last_process = [Integer(status), out, err]
       end
     end
   end
 
-  step(/I execute "(.*?)"/, :_execute)
+  step(/I run the tests with "(.*?)"/, :_execute)
 
-  step('I execute all scenarios') do
-    _execute 'bundle exec gurke'
-  end
+  step('I run the tests', :_execute)
 
   step(/the program exit code should be null/) do
     expect(@last_process[0]).to eq 0
