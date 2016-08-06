@@ -90,7 +90,7 @@ module Gurke
 
       Step.public_instance_methods(false).each do |mth|
         class_eval <<-EOS, __FILE__, __LINE__
-          def #{mth}(*args) @step.send #{mth}, *args; end
+          def #{mth}(*args) @step.send(:#{mth}, *args); end
         EOS
       end
 

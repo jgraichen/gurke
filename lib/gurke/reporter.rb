@@ -260,22 +260,25 @@ module Gurke
     # @api private
     #
     protected
-    def format_exception(ex)
+    def format_exception(ex, backtrace: true)
       s = [ex.class.to_s + ': ' + ex.message.strip]
-      if ex.backtrace.nil?
-        s << '  <no backtrace available>'
-      elsif ex.backtrace.empty?
-        s << '  <backtrace empty>'
-      else
-        ex.backtrace.each do |bt|
-          s << '  ' + bt.strip
+
+      if backtrace
+        if ex.backtrace.nil?
+          s << '  <no backtrace available>'
+        elsif ex.backtrace.empty?
+          s << '  <backtrace empty>'
+        else
+          ex.backtrace.each do |bt|
+            s << '  ' + bt.strip
+          end
         end
       end
 
       if ex.respond_to?(:cause) && ex.cause &&
         ex.cause.respond_to?(:message) && ex.cause.respond_to?(:backtrace)
 
-        cause = format_exception(ex.cause)
+        cause = format_exception(ex.cause, backtrace: backtrace)
         s << 'caused by: ' + cause.shift
         s += cause
       end
