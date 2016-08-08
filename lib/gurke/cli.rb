@@ -58,7 +58,7 @@ module Gurke
         opt :version, 'Show program version information.'
         opt :backtrace, 'Show full error backtraces.'
         opt :formatter, 'Select a special formatter as reporter', \
-            default: 'default'
+            default: 'compact'
         opt :pattern, 'File pattern matching feature files to be run.',
             default: 'features/**/*.feature'
         opt :require, 'Files matching this pattern will be required after'\

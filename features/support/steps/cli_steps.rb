@@ -8,6 +8,7 @@ module CLISteps
         cmd = ['ruby']
         cmd << '-I' << Gurke.root.join('..', 'lib').realpath
         cmd << '-S' << Gurke.root.join('..', 'bin', 'gurke').realpath
+        cmd << '-f' << 'default' unless args.to_s.include?('-f ') || args.to_s.include?('--formatter ')
         cmd << args.to_s
 
         out, err, status = Open3.capture3 cmd.join ' '
