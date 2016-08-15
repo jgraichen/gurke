@@ -42,6 +42,7 @@ module Gurke
       @line    = line
       @tags    = tags
       @raw     = raw
+      @state   = nil
     end
 
     # Return name of the scenario.
@@ -86,6 +87,14 @@ module Gurke
       @state == :failed
     end
 
+    # Check if scenario was aborted.
+    #
+    # @return [Boolean] True if aborted, false otherwise.
+    #
+    def aborted?
+      @state == :aborted
+    end
+
     # Exception that led to either pending or failed state.
     #
     # @return [Exception] Exception or nil of none given.
@@ -111,6 +120,13 @@ module Gurke
 
       @exception = error
       @state     = :pending
+    end
+
+    # @api private
+    #
+    def abort!
+      @exception = nil
+      @state     = :aborted
     end
 
     # @api private

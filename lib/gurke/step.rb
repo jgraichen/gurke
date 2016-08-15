@@ -55,6 +55,10 @@ module Gurke
       reporter.invoke :start_step, self, scenario
 
       result = find_and_run_step runner, scenario, world
+    rescue Interrupt
+      scenario.abort!
+      result = StepResult.new self, :aborted
+      raise
     rescue StepPending => e
       scenario.pending! e
       result = StepResult.new self, :pending, e
