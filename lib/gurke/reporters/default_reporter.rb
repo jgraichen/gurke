@@ -53,7 +53,7 @@ module Gurke::Reporters
       case step.state
         when :pending then print_braces yellow 'pending'
         when :failed  then print_failed step
-        when :success then print_braces green 'success'
+        when :passed then print_braces green 'passed'
         else print_braces cyan 'skipped'
       end
       io.puts
@@ -71,9 +71,25 @@ module Gurke::Reporters
     def after_features(features)
       scenarios = features.map(&:scenarios).flatten
 
-      io.puts "  #{scenarios.size} scenarios: " \
-              "#{scenarios.select(&:failed?).size} failing, " \
-              "#{scenarios.select(&:pending?).size} pending"
+      size    = scenarios.size
+      passed  = scenarios.select(&:passed?).size
+      failed  = scenarios.select(&:failed?).size
+      pending = scenarios.select(&:pending?).size
+      not_run = size - scenarios.select(&:run?).size
+
+      message = "#{scenarios.size} scenarios: "
+      message += "#{passed} passed, " unless passed == size || passed = 0
+      message += "#{failed} failing, #{pending} pending"
+      message += ", #{not_run} not run" if not_run > 0
+
+      if failed > 0
+        io.puts red message
+      elsif pending > 0 || not_run > 0
+        io.puts yellow message
+      else
+        io.puts green message
+      end
+
       io.puts
     end
 

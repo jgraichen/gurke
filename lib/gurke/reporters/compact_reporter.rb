@@ -54,8 +54,10 @@ module Gurke::Reporters
         # printed in after_step
       elsif scenario.pending?
         io.print yellow '?'
-      else
+      elsif scenario.passed?
         io.print green '.'
+      elsif scenario.aborted?
+        io.puts
       end
     end
 
@@ -65,13 +67,20 @@ module Gurke::Reporters
 
       scenarios = features.map(&:scenarios).flatten
 
+      size    = scenarios.size
+      passed  = scenarios.select(&:passed?).size
       failed  = scenarios.select(&:failed?).size
       pending = scenarios.select(&:pending?).size
-      message = "#{scenarios.size} scenarios: #{failed} failing, #{pending} pending"
+      not_run = size - scenarios.select(&:run?).size
+
+      message = "#{scenarios.size} scenarios: "
+      message += "#{passed} passed, "
+      message += "#{failed} failing, #{pending} pending"
+      message += ", #{not_run} not run" if not_run > 0
 
       if failed > 0
         io.puts red message
-      elsif pending > 0
+      elsif pending > 0 || not_run > 0
         io.puts yellow message
       else
         io.puts green message

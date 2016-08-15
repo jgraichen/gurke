@@ -87,12 +87,26 @@ module Gurke
       @state == :failed
     end
 
+    # Check if scenario has passed.
+    #
+    # @return [Boolean] True if scenario passed, false otherwise.
+    #
+    def passed?
+      @state == :passed
+    end
+
     # Check if scenario was aborted.
     #
     # @return [Boolean] True if aborted, false otherwise.
     #
     def aborted?
       @state == :aborted
+    end
+
+    # Check if scenario was run and the state has changed.
+    #
+    def run?
+      !@state.nil?
     end
 
     # Exception that led to either pending or failed state.
@@ -116,10 +130,15 @@ module Gurke
     # @param error [Exception] Given an exception as reason.
     #
     def pending!(error)
-      return if failed?
-
       @exception = error
       @state     = :pending
+    end
+
+    # @api private
+    #
+    def passed!
+      @exception = nil
+      @state     = :passed
     end
 
     # @api private
@@ -148,6 +167,8 @@ module Gurke
 
       feature.backgrounds.run runner, reporter, self, world
       steps.run runner, reporter, self, world
+
+      passed! unless @state
     ensure
       reporter.invoke :end_scenario, self
     end

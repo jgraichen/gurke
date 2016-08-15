@@ -91,11 +91,11 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     subject { reporter.after_step(step); super() }
 
     context 'with step passing' do
-      let(:state) { :success }
+      let(:state) { :passed }
 
       it do
         is_expected.to eq unindent <<-END
-          . (success)
+          . (passed)
           .
         END
       end
@@ -187,7 +187,7 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
 
     it do
       is_expected.to eq unindent <<-END
-        .  0 scenarios: 0 failing, 0 pending
+        .0 scenarios: 0 failing, 0 pending
         .
         .
       END

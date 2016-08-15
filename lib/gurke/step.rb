@@ -73,14 +73,14 @@ module Gurke
       runner.with_filtered_backtrace do
         match = Steps.find_step self, world, type
 
-        if scenario.pending? || scenario.failed?
+        if scenario.pending? || scenario.failed? || scenario.aborted?
           return StepResult.new self, :skipped
         end
 
         m = world.method match.method_name
         world.send match.method_name, *(match.params + [self])[0...m.arity]
 
-        StepResult.new self, :success
+        StepResult.new self, :passed
       end
     end
 
@@ -110,8 +110,8 @@ module Gurke
         @state == :skipped
       end
 
-      def success?
-        @state == :success
+      def passed?
+        @state == :passed
       end
     end
   end
