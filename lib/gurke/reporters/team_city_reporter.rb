@@ -13,7 +13,10 @@ module Gurke::Reporters
 
     def before_feature(feature)
       publish :testSuiteStarted, name: feature.name
-      io.puts "  #{feature.description.split("\n").join("\n  ")}"
+
+      io.print '  '
+      io.print feature.description.gsub(/^/, '  ')
+      io.puts
       io.puts
     end
 
@@ -36,6 +39,7 @@ module Gurke::Reporters
       io.print '  ' if @background
       io.print '    '
       io.print step.keyword
+      io.print ' '
       io.print step.name
     end
 
