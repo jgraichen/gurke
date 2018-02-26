@@ -5,102 +5,64 @@ module Gurke::Reporters
   # The {TeamCityReporter} prints features, scenarios and
   # steps in a format parseable by TeamCity CI.
   #
-  class TeamCityReporter < NullReporter
-    attr_reader :io
-    def initialize(io = $stdout)
-      @io = io
-    end
-
+  class TeamCityReporter < DefaultReporter
     def before_feature(feature)
       publish :testSuiteStarted, name: feature.name
 
-      io.print '  '
-      io.print feature.description.gsub(/^/, '  ')
-      io.puts
-      io.puts
+      super
     end
 
     def before_scenario(scenario)
-      @scenario = scenario
+      @status_reported = false
+
       publish :testStarted, name: scenario.name
-    end
 
-    def start_background(*)
-      io.puts '    Background:' unless @background
-
-      @background = true
-    end
-
-    def end_background(*)
-      @background = false
-    end
-
-    def before_step(step, *)
-      io.print '  ' if @background
-      io.print '    '
-      io.print step.keyword
-      io.print ' '
-      io.print step.name
-    end
-
-    def after_step(step, *)
-      case step.state
-        when :pending then print_pending step
-        when :failed  then print_failed step
-        when :success then print_braces 'success'
-        else print_braces 'skipped'
-      end
-      io.puts
-      io.flush
+      super
     end
 
     def after_scenario(scenario)
       publish :testFinished, name: scenario.name
+
+      super
     end
 
     def after_feature(feature)
       publish :testSuiteFinished, name: feature.name
+
+      super
     end
 
-    def after_features(features)
-      scenarios = features.map(&:scenarios).flatten
+    protected
 
-      example_count = scenarios.size
-      failure_count = scenarios.select(&:failed?).size
-      pending_count = scenarios.select(&:pending?).size
+    def step_pending(step, *)
+      super
 
-      io.puts "  #{example_count} scenarios: " \
-              "#{failure_count} failing, " \
-              "#{pending_count} pending"
-      io.puts
+      report :testIgnored,
+        name: step.scenario.name,
+        message: 'Step definition missing'
+    end
+
+    def step_failed(step, *args)
+      super(step, *args, exception: false)
+
+      report :testFailed,
+        name: step.scenario.name,
+        message: step.exception.inspect,
+        backtrace: step.exception.backtrace.join('\n')
+
+      print_exception(step.exception)
     end
 
     private
 
-    def print_braces(str)
-      io.print " (#{str})"
+    def status_reported?
+      @status_reported
     end
 
-    def print_pending(_step)
-      return if @pending == @scenario # only once per scenario
-      publish :testIgnored,
-        name: @scenario.name,
-        message: 'Step definition missing'
-      @pending = @scenario
-    end
+    def report(*args)
+      return if status_reported?
 
-    def print_failed(step)
-      publish :testFailed,
-        name: @scenario.name,
-        message: step.exception.inspect,
-        backtrace: step.exception.backtrace.join('\n')
-      @pending = @scenario
-
-      print_braces 'failure'
-      io.puts
-
-      exout = format_exception(step.exception)
-      io.puts exout.map {|s| "        #{s}\n" }.join
+      publish(*args)
     end
 
     def publish(message_name, args)
@@ -122,10 +84,6 @@ module Gurke::Reporters
       else
         "'#{escape args}'"
       end
-    end
-
-    def step_name(step)
-      step.keyword + step.name.gsub(/"(.*?)"/, '\0')
     end
   end
 end

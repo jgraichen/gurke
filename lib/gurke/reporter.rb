@@ -7,8 +7,6 @@ module Gurke
   #
   # @api public
   #
-  # rubocop:disable MissingCopEnableDirective
-  # rubocop:disable UnusedMethodArgument
   #
   class Reporter
     # List of all callback methods as symbols.
@@ -42,7 +40,7 @@ module Gurke
     #
     # @api public
     #
-    def before_features(features)
+    def before_features(_features)
       raise NotImplementedError.new \
         "#{self.class.name}#before_features must be implemented in subclass."
     end
@@ -55,7 +53,7 @@ module Gurke
     #
     # @api public
     #
-    def start_features(features)
+    def start_features(_features)
       raise NotImplementedError.new \
         "#{self.class.name}#before_features must be implemented in subclass."
     end
@@ -68,7 +66,7 @@ module Gurke
     #
     # @api public
     #
-    def before_feature(feature)
+    def before_feature(_feature)
       raise NotImplementedError.new \
         "#{self.class.name}#start_feature must be implemented in subclass."
     end
@@ -81,7 +79,7 @@ module Gurke
     #
     # @api public
     #
-    def start_feature(feature)
+    def start_feature(_feature)
       raise NotImplementedError.new \
         "#{self.class.name}#start_feature must be implemented in subclass."
     end
@@ -93,7 +91,7 @@ module Gurke
     #
     # @api public
     #
-    def before_scenario(scenario)
+    def before_scenario(_scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#before_scenario must be implemented in subclass."
     end
@@ -105,7 +103,7 @@ module Gurke
     #
     # @api public
     #
-    def start_scenario(scenario)
+    def start_scenario(_scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#start_scenario must be implemented in subclass."
     end
@@ -117,7 +115,7 @@ module Gurke
     #
     # @api public
     #
-    def start_background(background, scenario)
+    def start_background(_background, _scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#start_background must be implemented in subclass."
     end
@@ -129,7 +127,7 @@ module Gurke
     #
     # @api public
     #
-    def end_background(background, scenario)
+    def end_background(_background, _scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#end_background must be implemented in subclass."
     end
@@ -141,7 +139,7 @@ module Gurke
     #
     # @api public
     #
-    def before_step(step, scenario)
+    def before_step(_step, _scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#before_step must be implemented in subclass."
     end
@@ -153,7 +151,7 @@ module Gurke
     #
     # @api public
     #
-    def start_step(step, scenario)
+    def start_step(_step, _scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#start_step must be implemented in subclass."
     end
@@ -166,7 +164,7 @@ module Gurke
     #
     # @api public
     #
-    def end_step(step_result, scenario)
+    def end_step(_step_result, _scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#end_step must be implemented in subclass."
     end
@@ -179,7 +177,7 @@ module Gurke
     #
     # @api public
     #
-    def after_step(step_result, scenario)
+    def after_step(_step_result, _scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#after_step must be implemented in subclass."
     end
@@ -191,7 +189,7 @@ module Gurke
     #
     # @api public
     #
-    def end_scenario(scenario)
+    def end_scenario(_scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#end_scenario must be implemented in subclass."
     end
@@ -203,7 +201,7 @@ module Gurke
     #
     # @api public
     #
-    def after_scenario(scenario)
+    def after_scenario(_scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#after_scenario must be implemented in subclass."
     end
@@ -214,7 +212,7 @@ module Gurke
     #
     # @api public
     #
-    def end_feature(feature)
+    def end_feature(_feature)
       raise NotImplementedError.new \
         "#{self.class.name}#end_feature must be implemented in subclass."
     end
@@ -225,7 +223,7 @@ module Gurke
     #
     # @api public
     #
-    def after_feature(feature)
+    def after_feature(_feature)
       raise NotImplementedError.new \
         "#{self.class.name}#after_feature must be implemented in subclass."
     end
@@ -236,7 +234,7 @@ module Gurke
     #
     # @api public
     #
-    def end_features(features)
+    def end_features(_features)
       raise NotImplementedError.new \
         "#{self.class.name}#end_features must be implemented in subclass."
     end
@@ -247,7 +245,7 @@ module Gurke
     #
     # @api public
     #
-    def after_features(features)
+    def after_features(_features)
       raise NotImplementedError.new \
         "#{self.class.name}#after_features must be implemented in subclass."
     end
@@ -265,7 +263,7 @@ module Gurke
     protected
 
     def format_exception(ex, backtrace: true)
-      s = [ex.class.to_s + ': ' + ex.message.strip]
+      s = ex.class.to_s << ': ' << ex.message.strip << "\n"
 
       if backtrace
         if ex.backtrace.nil?
@@ -274,7 +272,7 @@ module Gurke
           s << '  <backtrace empty>'
         else
           ex.backtrace.each do |bt|
-            s << '  ' + bt.strip
+            s << '  ' << bt.strip << "\n"
           end
         end
       end
@@ -282,9 +280,7 @@ module Gurke
       if ex.respond_to?(:cause) && ex.cause &&
          ex.cause.respond_to?(:message) && ex.cause.respond_to?(:backtrace)
 
-        cause = format_exception(ex.cause, backtrace: backtrace)
-        s << 'caused by: ' + cause.shift
-        s += cause
+        s << 'caused by: ' << format_exception(ex.cause, backtrace: backtrace)
       end
 
       s

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'colorize'
-
 # Colors
 #   :black, :red, :green, :yellow, :blue,
 #   :magenta, :cyan, :white, :default, :light_black,
@@ -63,13 +61,14 @@ module Gurke::Reporters
       io.print step.name.gsub(/"(.*?)"/, cyan('\0'))
     end
 
-    def after_step(step, *)
+    def after_step(step, *args)
       case step.state
-        when :pending then print_braces yellow 'pending'
-        when :failed  then print_failed step
-        when :passed then print_braces green 'passed'
-        else print_braces cyan 'skipped'
+        when :pending then step_pending(step, *args)
+        when :failed  then step_failed(step, *args)
+        when :passed then step_passed(step, *args)
+        else step_skipped(step, *args)
       end
+
       io.puts
       io.flush
     end
@@ -107,7 +106,36 @@ module Gurke::Reporters
       io.puts
     end
 
-    private
+    protected
+
+    def status(str)
+      " (#{str})"
+    end
+
+    def step_pending(*)
+      io.print status yellow 'pending'
+    end
+
+    def step_failed(step, *_args, exception: true)
+      io.print status red 'failure'
+      io.puts
+
+      return unless exception
+
+      print_exception(step.exception)
+    end
+
+    def step_passed(*)
+      io.print status green 'passed'
+    end
+
+    def step_skipped(*)
+      io.print cyan 'skipped'
+    end
+
+    def print_exception(exception)
+      io.puts red format_exception(exception).gsub(/^/, '        ')
+    end
 
     def format_location(obj)
       file = obj.file.to_s
@@ -117,18 +145,6 @@ module Gurke::Reporters
       path = file if path.length > file.length
 
       light_black("# #{path}:#{line}")
-    end
-
-    def print_braces(str)
-      io.print " (#{str})"
-    end
-
-    def print_failed(step)
-      print_braces red('failure')
-      io.puts
-
-      exout = format_exception(step.exception)
-      io.puts exout.map {|s| red("        #{s}\n") }.join
     end
 
     %i[black red green yellow blue

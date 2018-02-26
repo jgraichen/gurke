@@ -61,14 +61,14 @@ module Gurke
       result = find_and_run_step runner, scenario, world
     rescue Interrupt
       scenario.abort!
-      result = StepResult.new self, :aborted
+      result = StepResult.new self, scenario, :aborted
       raise
     rescue StepPending => e
       scenario.pending! e
-      result = StepResult.new self, :pending, e
+      result = StepResult.new self, scenario, :pending, e
     rescue Exception => e # rubocop:disable RescueException
       scenario.failed! e
-      result = StepResult.new self, :failed, e
+      result = StepResult.new self, scenario, :failed, e
     ensure
       reporter.invoke :end_step, result, scenario
     end
@@ -78,23 +78,24 @@ module Gurke
         match = Steps.find_step self, world, type
 
         if scenario.pending? || scenario.failed? || scenario.aborted?
-          return StepResult.new self, :skipped
+          return StepResult.new self, scenario, :skipped
         end
 
         m = world.method match.method_name
         world.send match.method_name, *(match.params + [self])[0...m.arity]
 
-        StepResult.new self, :passed
+        StepResult.new self, scenario, :passed
       end
     end
 
     #
     class StepResult
-      attr_reader :step, :exception, :state
+      attr_reader :step, :exception, :state, :scenario
 
-      def initialize(step, state, err = nil)
+      def initialize(step, scenario, state, err = nil)
         @step = step
         @state = state
+        @scenario = scenario
         @exception = err
       end
 
