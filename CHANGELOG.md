@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+* Update TeamCity formatter to extend default formatter
+
 ## 3.0.0
 
 * Drop support for MRI < 2.3
