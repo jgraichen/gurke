@@ -9,8 +9,8 @@ group :test do
   gem 'coveralls'
   gem 'rspec'
   gem 'rspec-expectations'
-  gem 'test-unit'
   gem 'rubocop'
+  gem 'test-unit'
 end
 
 group :development do
