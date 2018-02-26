@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+
+* Drop support for MRI < 2.3
+
 ## 2.3.0
 
 * Step inclusion can be scoped to specific tags (45cea9ab)
