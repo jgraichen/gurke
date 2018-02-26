@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gurke
   class Feature
     #
@@ -41,20 +43,16 @@ module Gurke
       @raw  = raw
     end
 
-    def name
-      raw.name
-    end
-
-    def description
-      raw.description
-    end
-
     # Return name of this feature.
     #
     # @return [String] Feature name.
     #
     def name
       raw.name
+    end
+
+    def description
+      raw.description
     end
 
     def failed?

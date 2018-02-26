@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gurke
   class Runner
     attr_reader :config, :options
@@ -9,7 +11,11 @@ module Gurke
 
     def reporter
       @reporter ||= begin
-        r = (options[:formatter] + '_reporter').split('_').map(&:capitalize).join
+        r = (options[:formatter] + '_reporter')
+            .split('_')
+            .map(&:capitalize)
+            .join
+
         Reporters.const_get(r).new
       end
     end
@@ -21,10 +27,10 @@ module Gurke
     def run(files, reporter = self.reporter)
       files.map! do |file|
         split = file.split(':')
-        [split[0], split[1..-1].map{|i| Integer(i) }]
+        [split[0], split[1..-1].map {|i| Integer(i) }]
       end
 
-      features = builder.load files.map{|file, _| file }
+      features = builder.load(files.map {|file, _| file })
       features.filter(options, files).run self, reporter
     end
 
@@ -34,10 +40,10 @@ module Gurke
 
     def with_filtered_backtrace
       yield
-    rescue => e
+    rescue StandardError => e
       unless options[:backtrace]
         base = File.expand_path(Gurke.root.dirname)
-        e.backtrace.select!{|l| File.expand_path(l)[0...base.size] == base }
+        e.backtrace.select! {|l| File.expand_path(l)[0...base.size] == base }
       end
       raise
     end
@@ -53,7 +59,7 @@ module Gurke
     class DRbServer < Runner
       URI = 'druby://localhost:8789'
 
-      def run(files)
+      def run(_files)
         require 'drb'
 
         hook :system, nil, nil do

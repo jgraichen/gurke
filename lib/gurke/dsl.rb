@@ -1,14 +1,17 @@
+# frozen_string_literal: true
+
 module Gurke
   module DSL
     def step(pattern, method_name = nil, opts = {}, &block)
       if method_name.is_a?(Hash) && opts.empty?
-        method_name, opts = nil, method_name
+        opts = method_name
+        method_name = nil
       end
 
       if method_name && block_given?
-        raise ArgumentError.new <<-EOF.strip
+        raise ArgumentError.new <<~ERR.strip
           You can either specify a method name or given a block, not both.
-        EOF
+        ERR
       end
 
       _define_step(pattern, method_name, opts, &block)
@@ -22,9 +25,9 @@ module Gurke
       end
 
       if block_given?
-        define_method("#{step.method_name}", &block)
+        define_method(step.method_name.to_s, &block)
       elsif method_name
-        alias_method "#{step.method_name}", method_name
+        alias_method step.method_name.to_s, method_name
       end
     end
 
@@ -40,5 +43,6 @@ module Gurke
     def Then(pattern, method_name = nil, opts = {}, &block)
       step pattern, method_name, opts.merge(type: :then), &block
     end
+    # rubocop:enable MethodName
   end
 end

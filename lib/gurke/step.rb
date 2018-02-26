@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gurke
   class Step
     #
@@ -20,21 +22,23 @@ module Gurke
 
     # @api private
     def initialize(file, line, type, raw)
-      @file, @line = file, line
-      @type, @raw  = type, raw
+      @file = file
+      @line = line
+      @type = type
+      @raw = raw
     end
 
     def name
       raw.name
     end
-    alias_method :to_s, :name
+    alias to_s name
 
     def keyword
       raw.keyword.strip
     end
 
     def doc_string
-      raw.doc_string.value if raw.doc_string
+      raw.doc_string&.value
     end
 
     # @api private
@@ -62,7 +66,7 @@ module Gurke
     rescue StepPending => e
       scenario.pending! e
       result = StepResult.new self, :pending, e
-    rescue Exception => e
+    rescue Exception => e # rubocop:disable RescueException
       scenario.failed! e
       result = StepResult.new self, :failed, e
     ensure
@@ -89,13 +93,15 @@ module Gurke
       attr_reader :step, :exception, :state
 
       def initialize(step, state, err = nil)
-        @step, @state, @exception = step, state, err
+        @step = step
+        @state = state
+        @exception = err
       end
 
       Step.public_instance_methods(false).each do |mth|
-        class_eval <<-EOS, __FILE__, __LINE__
+        class_eval <<-RUBY, __FILE__, __LINE__ + 1
           def #{mth}(*args) @step.send(:#{mth}, *args); end
-        EOS
+        RUBY
       end
 
       def failed?

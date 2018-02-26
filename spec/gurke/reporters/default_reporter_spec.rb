@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+# rubocop:disable MissingCopEnableDirective
+# rubocop:disable Style/Semicolon
+
 require 'spec_helper'
 
 RSpec.describe Gurke::Reporters::DefaultReporter do
@@ -20,14 +25,14 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     subject { reporter.before_feature(feature); super() }
 
     it do
-      is_expected.to eq unindent <<-END
+      is_expected.to eq unindent <<~TEXT
         Feature: Demo feature   # features/file.feature:1
           As a developer
           I would like have this spec passed
           In order to work on
         .
         .
-      END
+      TEXT
     end
   end
 
@@ -37,10 +42,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     subject { reporter.start_background(feature); super() }
 
     it do
-      is_expected.to eq unindent <<-END
+      is_expected.to eq unindent <<~TEXT
         .    Background:
         .
-      END
+      TEXT
     end
   end
 
@@ -57,10 +62,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     subject { reporter.before_scenario(scenario); super() }
 
     it do
-      is_expected.to eq unindent <<-END
+      is_expected.to eq unindent <<~TEXT
         .  Scenario: Running the scenario   # features/file.feature:5
         .
-      END
+      TEXT
     end
   end
 
@@ -75,9 +80,9 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     subject { reporter.before_step(step); super() }
 
     it do
-      is_expected.to eq unindent <<-END
+      is_expected.to eq unindent <<~TEXT
         .    Given the scenario is passing
-      END
+      TEXT
     end
   end
 
@@ -94,10 +99,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       let(:state) { :passed }
 
       it do
-        is_expected.to eq unindent <<-END
+        is_expected.to eq unindent <<~TEXT
           . (passed)
           .
-        END
+        TEXT
       end
     end
 
@@ -105,10 +110,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       let(:state) { :pending }
 
       it do
-        is_expected.to eq unindent <<-END
+        is_expected.to eq unindent <<~TEXT
           . (pending)
           .
-        END
+        TEXT
       end
     end
 
@@ -122,24 +127,24 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
         allow(e).to receive(:class).and_return(RuntimeError)
         allow(e).to receive(:message).and_return('An error occurred')
         allow(e).to receive(:backtrace).and_return([
-          '/path/to/file.rb:5:in `block (4 levels) in <top (required)>\'',
-          '/path/to/file.rb:24:in in `fail_with\''
-        ])
+                                                     '/path/to/file.rb:5:in `block (4 levels) in <top (required)>\'',
+                                                     '/path/to/file.rb:24:in in `fail_with\''
+                                                   ])
 
         allow(e).to receive(:cause).and_return(c)
 
         allow(c).to receive(:class).and_return(IOError)
         allow(c).to receive(:message).and_return('Socket closed')
         allow(c).to receive(:backtrace).and_return([
-          'script.rb:5:in `a\'',
-          'script.rb:10:in `b\''
-        ])
+                                                     'script.rb:5:in `a\'',
+                                                     'script.rb:10:in `b\''
+                                                   ])
 
         expect(step).to receive(:exception).and_return e
       end
 
       it do
-        is_expected.to eq unindent <<-END
+        is_expected.to eq unindent <<~TEXT
           . (failure)
           .        RuntimeError: An error occurred
           .          /path/to/file.rb:5:in `block (4 levels) in <top (required)>'
@@ -149,7 +154,7 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
           .          script.rb:10:in `b'
           .
           .
-        END
+        TEXT
       end
     end
   end
@@ -160,10 +165,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     subject { reporter.after_scenario(scenario); super() }
 
     it do
-      is_expected.to eq unindent <<-END
+      is_expected.to eq unindent <<~TEXT
         .
         .
-      END
+      TEXT
     end
   end
 
@@ -173,10 +178,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     subject { reporter.after_feature(feature); super() }
 
     it do
-      is_expected.to eq unindent <<-END
+      is_expected.to eq unindent <<~TEXT
         .
         .
-      END
+      TEXT
     end
   end
 
@@ -186,11 +191,11 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     subject { reporter.after_features(features); super() }
 
     it do
-      is_expected.to eq unindent <<-END
+      is_expected.to eq unindent <<~TEXT
         .0 scenarios: 0 failing, 0 pending
         .
         .
-      END
+      TEXT
     end
   end
 end

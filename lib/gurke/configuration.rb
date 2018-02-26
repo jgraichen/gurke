@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 module Gurke
@@ -74,7 +76,7 @@ module Gurke
           system: HookSet.new
         }
 
-        hooks.merge! each: hooks[:scenario]
+        hooks[:each] = hooks[:scenario]
         hooks
       end
     end
@@ -126,15 +128,15 @@ module Gurke
 
       def run(context, world, &block)
         ctx = Context.new context, block
-        @before.each{|hook| hook.run world, ctx }
+        @before.each {|hook| hook.run world, ctx }
         @around.reduce Context.new(context, block) do |c, e|
-          Context.new(context, ->{ e.run world, c })
+          Context.new(context, -> { e.run world, c })
         end.call
       ensure
         @after.each do |hook|
           begin
             hook.run world, ctx
-          rescue => e
+          rescue StandardError => e
             warn "Rescued error in after hook: #{e}\n#{e.backtrace.join("\n")}"
           end
         end
@@ -144,7 +146,8 @@ module Gurke
         extend Forwardable
 
         def initialize(context, block)
-          @context, @block = context, block
+          @context = context
+          @block = block
         end
 
         def tags
@@ -171,7 +174,7 @@ module Gurke
       end
 
       def match?(context)
-        !opts.any?{|k, v| context.metadata[k] != v }
+        opts.none? {|k, v| context.metadata[k] != v }
       end
 
       def run(world, *args)

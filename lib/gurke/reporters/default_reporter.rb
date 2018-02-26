@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'colorize'
 
 # Colors
@@ -15,24 +17,36 @@ module Gurke::Reporters
   #
   class DefaultReporter < NullReporter
     attr_reader :io
+
     def initialize(io = $stdout)
       @io = io
     end
 
     def before_feature(feature)
-      io.puts "#{yellow('Feature')}: #{feature.name}   #{format_location(feature)}"
-      io.puts '  ' + light_black(feature.description.split("\n").join("\n  "))
+      io.print yellow('Feature')
+      io.print ': '
+      io.print feature.name
+      io.print '   '
+      io.print format_location(feature)
+      io.puts
+
+      io.print light_black(feature.description.gsub(/^/, '  '))
+      io.puts
       io.puts
     end
 
     def before_scenario(scenario)
-      io.puts "  #{yellow('Scenario')}: #{scenario.name}   #{format_location(scenario)}"
+      io.print '  '
+      io.print yellow('Scenario')
+      io.print ': '
+      io.print scenario.name
+      io.print '   '
+      io.print format_location(scenario)
+      io.puts
     end
 
     def start_background(*)
-      unless @background
-        io.puts light_black('    Background:')
-      end
+      io.puts light_black('    Background:') unless @background
 
       @background = true
     end
@@ -78,13 +92,13 @@ module Gurke::Reporters
       not_run = size - scenarios.select(&:run?).size
 
       message = "#{scenarios.size} scenarios: "
-      message += "#{passed} passed, " unless passed == size || passed = 0
+      message += "#{passed} passed, " unless passed == size || passed.zero?
       message += "#{failed} failing, #{pending} pending"
-      message += ", #{not_run} not run" if not_run > 0
+      message += ", #{not_run} not run" if not_run.positive?
 
-      if failed > 0
+      if failed.positive?
         io.puts red message
-      elsif pending > 0 || not_run > 0
+      elsif pending.positive? || not_run.positive?
         io.puts yellow message
       else
         io.puts green message
@@ -114,15 +128,15 @@ module Gurke::Reporters
       io.puts
 
       exout = format_exception(step.exception)
-      io.puts exout.map{|s| red("        #{s}\n") }.join
+      io.puts exout.map {|s| red("        #{s}\n") }.join
     end
 
-    [:black, :red, :green, :yellow, :blue,
-     :magenta, :cyan, :white, :default, :light_black,
-     :light_red, :light_green, :light_yellow, :light_blue,
-     :light_magenta, :light_cyan, :light_white].each do |color|
+    %i[black red green yellow blue
+       magenta cyan white default light_black
+       light_red light_green light_yellow light_blue
+       light_magenta light_cyan light_white].each do |color|
 
-      define_method(color){|str|  io.tty? ? str.send(color) : str }
+      define_method(color) {|str| io.tty? ? str.send(color) : str }
     end
   end
 end

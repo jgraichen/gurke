@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Gurke
   class StepDefinition
-    attr_reader :pattern, :method_name, :opts
+    attr_reader :pattern, :opts
 
     def initialize(pattern, opts = {})
       @pattern      = pattern

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'colorize'
 
 # Colors
@@ -16,37 +18,62 @@ module Gurke::Reporters
     end
 
     def after_step(result, scenario, *)
-      if result.state == :failed
-        io.print red 'E'
+      return unless result.state == :failed
 
-        feature = scenario.feature
+      io.print red 'E'
 
-        io.puts
-        io.puts "#{yellow('Feature')}: #{scenario.feature.name}   #{format_location(scenario.feature)}"
-        io.puts "  #{yellow('Scenario')}: #{scenario.name}   #{format_location(scenario)}"
+      feature = scenario.feature
 
-        background = feature.backgrounds.map(&:steps).flatten
+      io.puts
+      io.print yellow('Feature')
+      io.print ': '
+      io.print scenario.feature.name
+      io.print '   '
+      io.print format_location(scenario.feature)
+      io.puts
 
+      io.print '  '
+      io.print yellow('Scenario')
+      io.print ': '
+      io.print scenario.name
+      io.print '   '
+      io.print format_location(scenario)
+      io.puts
+
+      background = feature.backgrounds.map(&:steps).flatten
+
+      catch(:break) do
         if background.any?
-          io.puts light_black('    Background:')
+          io.print '    '
+          io.print light_black('Background')
+          io.print ':'
+          io.puts
 
-          for step in background
-            io.puts "      #{yellow(step.keyword)} #{step.name.gsub(/"(.*?)"/, cyan('\0'))}"
-            break if step == result.step
+          background.each do |step|
+            io.print '      '
+            io.print yellow(step.keyword)
+            io.print ' '
+            io.print step.name.gsub(/"(.*?)"/, cyan('\0'))
+            io.puts
+
+            throw :break if step == result.step
           end
         end
 
-        unless step == result.step
-          for step in scenario.steps
-            io.puts "    #{yellow(step.keyword)} #{step.name.gsub(/"(.*?)"/, cyan('\0'))}"
-            break if step == result.step
-          end
-        end
+        scenario.steps.each do |step|
+          io.print '    '
+          io.print yellow(step.keyword)
+          io.print ' '
+          io.print step.name.gsub(/"(.*?)"/, cyan('\0'))
+          io.puts
 
-        exout = format_exception(result.exception, backtrace: true)
-        io.puts red exout.join("\n").gsub(/^/, '      ')
-        io.puts
+          throw :break if step == result.step
+        end
       end
+
+      exout = format_exception(result.exception, backtrace: true)
+      io.puts red exout.join("\n").gsub(/^/, '      ')
+      io.puts
     end
 
     def after_scenario(scenario)
@@ -76,11 +103,11 @@ module Gurke::Reporters
       message = "#{scenarios.size} scenarios: "
       message += "#{passed} passed, "
       message += "#{failed} failing, #{pending} pending"
-      message += ", #{not_run} not run" if not_run > 0
+      message += ", #{not_run} not run" if not_run.positive?
 
-      if failed > 0
+      if failed.positive?
         io.puts red message
-      elsif pending > 0 || not_run > 0
+      elsif pending.positive? || not_run.positive?
         io.puts yellow message
       else
         io.puts green message
@@ -99,12 +126,12 @@ module Gurke::Reporters
       light_black("# #{path}:#{line}")
     end
 
-    [:black, :red, :green, :yellow, :blue,
-     :magenta, :cyan, :white, :default, :light_black,
-     :light_red, :light_green, :light_yellow, :light_blue,
-     :light_magenta, :light_cyan, :light_white].each do |color|
+    %i[black red green yellow blue
+       magenta cyan white default light_black
+       light_red light_green light_yellow light_blue
+       light_magenta light_cyan light_white].each do |color|
 
-      define_method(color){|str|  io.tty? ? str.send(color) : str }
+      define_method(color) {|str| io.tty? ? str.send(color) : str }
     end
   end
 end

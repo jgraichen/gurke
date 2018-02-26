@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gurke
   #
   # A {RunList} is a list of {Background}, {Scenario}

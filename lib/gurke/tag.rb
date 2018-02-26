@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gurke
   class Tag
     #
@@ -18,7 +20,9 @@ module Gurke
 
     # @api private
     def initialize(file, line, raw)
-      @file, @line, @raw = file, line, raw
+      @file = file
+      @line = line
+      @raw = raw
     end
 
     def name

@@ -1,4 +1,5 @@
-#
+# frozen_string_literal: true
+
 module FileSteps
   def _write_file(path, content)
     file = @__root.join(path)

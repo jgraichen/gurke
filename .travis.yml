@@ -7,5 +7,6 @@ rvm:
 - 2.3.6
 - 2.2.9
 script:
+- bundle exec rubocop
 - bundle exec rspec
 - bundle exec gurke -f compact

@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 require 'open3'
 
-#
 module CLISteps
   def _execute(args = nil)
     Dir.chdir(@__root) do
@@ -8,7 +9,11 @@ module CLISteps
         cmd = ['ruby']
         cmd << '-I' << Gurke.root.join('..', 'lib').realpath
         cmd << '-S' << Gurke.root.join('..', 'bin', 'gurke').realpath
-        cmd << '-f' << 'default' unless args.to_s.include?('-f ') || args.to_s.include?('--formatter ')
+
+        unless args.to_s.include?('-f ') || args.to_s.include?('--formatter ')
+          cmd << '-f' << 'default'
+        end
+
         cmd << args.to_s
 
         out, err, status = Open3.capture3 cmd.join ' '
@@ -41,7 +46,7 @@ module CLISteps
   end
 
   step(/the program output should not include "(.*?)"/,
-       :_cli_not_include_content)
+    :_cli_not_include_content)
 
   step(/all scenarios have passed/) do
     _cli_include_content 'scenarios: 0 failing, 0 pending'

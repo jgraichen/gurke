@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gurke::Reporters
   #
   # The {TeamCityReporter} prints features, scenarios and
@@ -21,9 +23,7 @@ module Gurke::Reporters
     end
 
     def start_background(*)
-      unless @background
-        io.puts '    Background:'
-      end
+      io.puts '    Background:' unless @background
 
       @background = true
     end
@@ -77,30 +77,28 @@ module Gurke::Reporters
       io.print " (#{str})"
     end
 
-    def print_pending(step)
+    def print_pending(_step)
       return if @pending == @scenario # only once per scenario
       publish :testIgnored,
-               name: @scenario.name,
-               message: 'Step definition missing'
+        name: @scenario.name,
+        message: 'Step definition missing'
       @pending = @scenario
     end
 
     def print_failed(step)
       publish :testFailed,
-                 name: @scenario.name,
-                 message: step.exception.inspect,
-                 backtrace: step.exception.backtrace.join('\n')
+        name: @scenario.name,
+        message: step.exception.inspect,
+        backtrace: step.exception.backtrace.join('\n')
       @pending = @scenario
 
       print_braces 'failure'
       io.puts
 
       exout = format_exception(step.exception)
-      io.puts exout.map{|s| "        #{s}\n" }.join
+      io.puts exout.map {|s| "        #{s}\n" }.join
     end
 
-
-    private
     def publish(message_name, args)
       args = [] << message_name.to_s << escaped_array_of(args)
       args = args.flatten.reject(&:nil?)
@@ -116,7 +114,7 @@ module Gurke::Reporters
       return [] if args.nil?
 
       if args.is_a? Hash
-        args.map { |key, value| "#{key.to_s}='#{escape value.to_s}'" }
+        args.map {|key, value| "#{key}='#{escape value.to_s}'" }
       else
         "'#{escape args}'"
       end

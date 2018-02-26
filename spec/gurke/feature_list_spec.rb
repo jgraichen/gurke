@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gurke::FeatureList do
@@ -42,8 +44,8 @@ describe Gurke::FeatureList do
 
       subject
 
-      expect(@scopes).to eq [:before_features, :start_features,
-                             :end_features, :after_features]
+      expect(@scopes).to eq %i[before_features start_features
+                               end_features after_features]
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gurke::Scenario do
@@ -44,8 +46,8 @@ describe Gurke::Scenario do
 
       subject
 
-      expect(@scopes).to eq [:before_scenario, :start_scenario,
-                             :end_scenario, :after_scenario]
+      expect(@scopes).to eq %i[before_scenario start_scenario
+                               end_scenario after_scenario]
     end
   end
 end

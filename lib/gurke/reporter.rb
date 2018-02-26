@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gurke
   #
   # A {Reporter} provides callbacks that will be executed whenever
@@ -5,31 +7,32 @@ module Gurke
   #
   # @api public
   #
+  # rubocop:disable MissingCopEnableDirective
+  # rubocop:disable UnusedMethodArgument
+  #
   class Reporter
-    # rubocop:disable UnusedMethodArgument
-
     # List of all callback methods as symbols.
     #
-    CALLBACKS = [
-      :before_features,
-      :before_feature,
-      :before_scenario,
-      :before_step,
-      :start_features,
-      :start_feature,
-      :start_scenario,
-      :start_background,
-      :start_step,
-      :end_features,
-      :end_feature,
-      :end_scenario,
-      :end_background,
-      :end_step,
-      :after_features,
-      :after_feature,
-      :after_scenario,
-      :after_step
-    ]
+    CALLBACKS = %i[
+      before_features
+      before_feature
+      before_scenario
+      before_step
+      start_features
+      start_feature
+      start_scenario
+      start_background
+      start_step
+      end_features
+      end_feature
+      end_scenario
+      end_background
+      end_step
+      after_features
+      after_feature
+      after_scenario
+      after_step
+    ].freeze
 
     # Called before the execution of any feature and before any
     # before-features hook is invoked.
@@ -252,14 +255,15 @@ module Gurke
     # @visibility private
     def invoke(mth, *args)
       send mth, *args
-    rescue => e
+    rescue StandardError => e
       warn "Rescued in reporter: #{e}\n" + e.backtrace.join("\n")
     end
 
-
     # @api private
     #
+
     protected
+
     def format_exception(ex, backtrace: true)
       s = [ex.class.to_s + ': ' + ex.message.strip]
 
@@ -276,7 +280,7 @@ module Gurke
       end
 
       if ex.respond_to?(:cause) && ex.cause &&
-        ex.cause.respond_to?(:message) && ex.cause.respond_to?(:backtrace)
+         ex.cause.respond_to?(:message) && ex.cause.respond_to?(:backtrace)
 
         cause = format_exception(ex.cause, backtrace: backtrace)
         s << 'caused by: ' + cause.shift

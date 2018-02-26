@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 require 'spec_helper'
 
 describe Gurke::StepDefinition do
-  let(:pattern)  { nil }
+  let(:pattern) { nil }
   let(:step_definition) { described_class.new pattern }
   subject { step_definition }
 

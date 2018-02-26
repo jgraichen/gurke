@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gurke
   #
   # A {FeatureList} is a list of {Feature} objects.
@@ -19,7 +21,7 @@ module Gurke
 
       reporter.invoke :after_features, self
 
-      !any?{|s| s.failed? }
+      !any?(&:failed?)
     end
 
     # @api private
@@ -28,7 +30,7 @@ module Gurke
       filter = Filter.new options, files
 
       each do |feature|
-        file, lines = files.select{|f, _| f == feature.file }.first
+        file, _lines = files.select {|f, _| f == feature.file }.first
         next unless file
 
         f = Feature.new(feature)
@@ -51,7 +53,7 @@ module Gurke
       each do |feature|
         feature.run runner, reporter
       end
-    rescue Interrupt
+    rescue Interrupt # rubocop:disable HandleExceptions
       # nothing
     ensure
       reporter.invoke :end_features, self
@@ -67,7 +69,7 @@ module Gurke
 
       def tag_filters
         @tag_filters ||= options[:tags].map do |list|
-          list.strip.split(/[,+\s]\s*/).map{|t| TagFilter.new(t) }
+          list.strip.split(/[,+\s]\s*/).map {|t| TagFilter.new(t) }
         end
       end
 
@@ -77,16 +79,16 @@ module Gurke
 
       def filtered_by_tags?(scenario)
         !tag_filters.reduce(false) do |memo, set|
-          memo || set.all?{|rule| rule.match? scenario }
+          memo || set.all? {|rule| rule.match? scenario }
         end
       end
 
       def filtered_by_line?(scenario)
-        _, lines = files.select{|f, _| f == scenario.file }.first
+        _, lines = files.select {|f, _| f == scenario.file }.first
 
         return false if lines.empty?
 
-        !lines.any?{|l| scenario.line <= l && scenario.steps.last.line >= l }
+        lines.none? {|l| scenario.line <= l && scenario.steps.last.line >= l }
       end
 
       TagFilter = Struct.new(:tag) do
@@ -99,7 +101,7 @@ module Gurke
         end
 
         def match?(taggable)
-          negated? != taggable.tags.any?{|t| t.name == name }
+          negated? != taggable.tags.any? {|t| t.name == name }
         end
       end
     end

@@ -1,7 +1,8 @@
-# rubocop:disable MethodName
+# frozen_string_literal: true
 
 module Gurke
   module Steps
+    # rubocop:disable MethodName
     def Given(step)
       rst = self.class.find_step(step, self, :given)
       send rst.method_name
@@ -16,6 +17,7 @@ module Gurke
       rst = self.class.find_step(step, self, :then)
       send rst.method_name
     end
+    # rubocop:enable MethodName
 
     class << self
       def find_step(step, world, type)

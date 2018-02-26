@@ -1,18 +1,17 @@
+# frozen_string_literal: true
+
 require 'gherkin'
 
 module Gurke
   class Builder
-    attr_reader :features, :keywords
+    attr_reader :features
+    attr_writer :keywords
 
     def initialize
-      # @options  = options
-      # @files    = files.map do |file|
-      #   split = file.split(':')
-      #   [split[0], split[1..-1].map{|l| Integer(l) }]
-      # end
       @language = 'en'
       @parser   = Gherkin::Parser::Parser.new(
-        self, true, 'root', false, @language)
+        self, true, 'root', false, @language
+      )
     end
 
     def keywords
@@ -45,7 +44,7 @@ module Gurke
     end
 
     def feature(raw)
-      tags = raw.tags.map{|t| Tag.new @file, t.line, t }
+      tags = raw.tags.map {|t| Tag.new @file, t.line, t }
 
       @feature  = Feature.new(@file, raw.line, tags, raw)
       @scenario = nil
@@ -62,14 +61,14 @@ module Gurke
     end
 
     def scenario(raw)
-      tags  = raw.tags.map{|t| Tag.new @file, t.line, t }
+      tags  = raw.tags.map {|t| Tag.new @file, t.line, t }
       tags += features.last.tags
 
       @scenario = Scenario.new @feature, @file, raw.line, tags, raw
       @context  = @scenario
       @type     = nil
 
-      @feature.scenarios << @scenario #unless filtered?(@scenario)
+      @feature.scenarios << @scenario
     end
 
     def step(raw)
@@ -79,7 +78,7 @@ module Gurke
     end
 
     def eof(*)
-      @features.reject!{|f| f.scenarios.empty? }
+      @features.reject! {|f| f.scenarios.empty? }
       @feature  = nil
       @scenario = nil
       @context  = nil
