@@ -14,8 +14,15 @@ module Gurke::Reporters
 
     def before_scenario(scenario)
       @status_reported = false
+      @retry = false
 
       publish :testStarted, name: scenario.name
+
+      super
+    end
+
+    def retry_scenario(scenario)
+      @retry = true
 
       super
     end
@@ -45,10 +52,13 @@ module Gurke::Reporters
     def step_failed(step, *args)
       super(step, *args, exception: false)
 
-      report :testFailed,
-        name: step.scenario.name,
-        message: step.exception.inspect,
-        backtrace: step.exception.backtrace.join('\n')
+      unless step.scenario.retryable? && !retry?
+        # do not report test as failed if it will be retries
+        report :testFailed,
+          name: step.scenario.name,
+          message: step.exception.inspect,
+          backtrace: step.exception.backtrace.join('\n')
+      end
 
       print_exception(step.exception)
     end
@@ -57,6 +67,10 @@ module Gurke::Reporters
 
     def status_reported?
       @status_reported
+    end
+
+    def retry?
+      @retry
     end
 
     def report(*args)
