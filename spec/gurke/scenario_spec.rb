@@ -7,6 +7,7 @@ describe Gurke::Scenario do
   let(:runner)   { double 'runner' }
   let(:feature)  { double 'feature' }
   let(:backgrounds) { double('backgrounds') }
+  let(:tags) { [] }
 
   before do
     allow(feature).to receive(:backgrounds).and_return(backgrounds)
@@ -15,7 +16,7 @@ describe Gurke::Scenario do
   end
 
   let(:scenario) do
-    Gurke::Scenario.new(feature, nil, nil, nil, nil)
+    Gurke::Scenario.new(feature, nil, nil, tags, nil)
   end
 
   describe '#run' do
@@ -48,6 +49,36 @@ describe Gurke::Scenario do
 
       expect(@scopes).to eq %i[before_scenario start_scenario
                                end_scenario after_scenario]
+    end
+
+    context 'with retry' do
+      let(:step) { double('step') }
+      let(:tags) { [tag] }
+      let(:tag)  { double('tag') }
+      let(:worlds) { Set.new }
+
+      before { scenario.steps << step }
+
+      before do
+        allow(tag).to receive(:name).and_return('flaky')
+      end
+
+      it 'resets the world' do
+        expect(step).to receive(:run) do |_, _, scenario, world|
+          worlds << world
+          scenario.failed!
+        end
+
+        expect(step).to receive(:run) do |_, _, scenario, world|
+          worlds << world
+          scenario.passed!
+        end
+
+        subject
+
+        # Expect to have two *different* worlds collected
+        expect(worlds.size).to eq 2
+      end
     end
   end
 end

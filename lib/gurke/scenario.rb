@@ -179,6 +179,7 @@ module Gurke
 
     def reset!
       @state = nil
+      @world = nil
       @exception = nil
     end
 
