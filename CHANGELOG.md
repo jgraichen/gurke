@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.1
+
+* Reset world between retried scenario runs
+
 ## 3.2.0
 
 * Add @flaky tag support for retrying flaky scenarios once
