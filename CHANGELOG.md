@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.2
+
+* Fix some default reporter formatting issues
+
 ## 3.2.1
 
 * Reset world between retried scenario runs
