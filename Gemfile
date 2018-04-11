@@ -9,7 +9,7 @@ group :test do
   gem 'coveralls'
   gem 'rspec'
   gem 'rspec-expectations'
-  gem 'rubocop'
+  gem 'rubocop', '~> 0.52.1'
   gem 'test-unit'
 end
 
