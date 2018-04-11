@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.0
+
+* Add @flaky tag support for retrying flaky scenarios once
+
 ## 3.1.0
 
 * Update TeamCity formatter to extend default formatter
