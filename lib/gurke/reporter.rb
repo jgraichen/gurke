@@ -30,6 +30,8 @@ module Gurke
       after_feature
       after_scenario
       after_step
+
+      retry_scenario
     ].freeze
 
     # Called before the execution of any feature and before any
@@ -192,6 +194,17 @@ module Gurke
     def end_scenario(_scenario)
       raise NotImplementedError.new \
         "#{self.class.name}#end_scenario must be implemented in subclass."
+    end
+
+    # Called when a flaky scenario is retried.
+    #
+    # @param scenario [Scenario] Current scenario.
+    #
+    # @api public
+    #
+    def retry_scenario(_scenario)
+      raise NotImplementedError.new \
+        "#{self.class.name}#retry_scenario must be implemented in subclass."
     end
 
     # Called after each scenario and after all hooks.

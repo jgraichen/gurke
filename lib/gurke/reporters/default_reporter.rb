@@ -73,6 +73,10 @@ module Gurke::Reporters
       io.flush
     end
 
+    def retry_scenario(*)
+      io.print "  Retry flaky scenario due to previous failure:\n"
+    end
+
     def after_scenario(*)
       io.puts
     end

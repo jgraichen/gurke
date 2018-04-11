@@ -159,6 +159,19 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     end
   end
 
+  describe '#retry_scenario' do
+    let(:scenario) { double('scenario') }
+
+    subject { reporter.retry_scenario(scenario); super() }
+
+    it do
+      is_expected.to eq unindent <<~TEXT
+        .  Retry flaky scenario due to previous failure:
+        .
+      TEXT
+    end
+  end
+
   describe '#after_scenario' do
     let(:scenario) { double('scenario') }
 

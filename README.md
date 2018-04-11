@@ -162,6 +162,20 @@ If you append one or more line numbers - separated by colons - only the scenario
 gurke features/my_feature.feature:14:34
 ```
 
+### Flaky scenarios
+
+If you have scenarios that might fail sometime, you can mark them as `@flaky`:
+
+```
+Feature: F
+  @flaky
+  Scenario: I am flaky
+    Given I fail the first time
+    Then I will be retried a second time
+```
+
+Gurke will retry a marked scenario only once if a step failed.
+
 ### DRb background server (experimental)
 
 You can run a DRb server in the background that has a running test environment (whatever that means to you) by running `gurke --drb-server`. This will load your test environment and execute all before `:system` hooks.
