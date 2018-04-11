@@ -176,6 +176,16 @@ Feature: F
 
 Gurke will retry a marked scenario only once if a step failed.
 
+### Formatter
+
+You can choose another formatter using a command line switch:
+
+```
+gurke -f team_city
+```
+
+Available formatters include: `default`, `compact`, `null` and `team_city`.
+
 ### DRb background server (experimental)
 
 You can run a DRb server in the background that has a running test environment (whatever that means to you) by running `gurke --drb-server`. This will load your test environment and execute all before `:system` hooks.
