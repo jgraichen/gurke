@@ -74,7 +74,7 @@ module Gurke::Reporters
     end
 
     def retry_scenario(*)
-      io.print "  Retry flaky scenario due to previous failure:\n"
+      io.print "\n  Retry flaky scenario due to previous failure:\n\n"
     end
 
     def after_scenario(*)
@@ -134,7 +134,7 @@ module Gurke::Reporters
     end
 
     def step_skipped(*)
-      io.print cyan 'skipped'
+      io.print status cyan 'skipped'
     end
 
     def print_exception(exception)

@@ -117,6 +117,17 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       end
     end
 
+    context 'with step pending' do
+      let(:state) { nil }
+
+      it do
+        is_expected.to eq unindent <<~TEXT
+          . (skipped)
+          .
+        TEXT
+      end
+    end
+
     context 'with step failing' do
       let(:state) { :failed }
 
@@ -166,7 +177,9 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
 
     it do
       is_expected.to eq unindent <<~TEXT
+        .
         .  Retry flaky scenario due to previous failure:
+        .
         .
       TEXT
     end
