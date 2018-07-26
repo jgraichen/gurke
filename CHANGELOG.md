@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.3.0
+## 3.3.1
 
 * Add option for default retry of failed scenarios
 * Make number of default and flaky retries configurable
