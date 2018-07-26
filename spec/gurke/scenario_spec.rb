@@ -51,16 +51,14 @@ describe Gurke::Scenario do
                                end_scenario after_scenario]
     end
 
-    context 'with retry' do
+    context 'with retries' do
       let(:step) { double('step') }
-      let(:tags) { [tag] }
-      let(:tag)  { double('tag') }
       let(:worlds) { Set.new }
 
       before { scenario.steps << step }
 
       before do
-        allow(tag).to receive(:name).and_return('flaky')
+        allow(runner).to receive(:retries).with(scenario).and_return(1)
       end
 
       it 'resets the world' do

@@ -175,13 +175,34 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
 
     subject { reporter.retry_scenario(scenario); super() }
 
-    it do
-      is_expected.to eq unindent <<~TEXT
-        .
-        .  Retry flaky scenario due to previous failure:
-        .
-        .
-      TEXT
+    context 'with normal scenario' do
+      before do
+        allow(scenario).to receive(:flaky?).and_return(false)
+      end
+
+      it do
+        is_expected.to eq unindent <<~TEXT
+          .
+          .  Retry scenario due to previous failure:
+          .
+          .
+        TEXT
+      end
+    end
+
+    context 'with flaky scenario' do
+      before do
+        allow(scenario).to receive(:flaky?).and_return(true)
+      end
+
+      it do
+        is_expected.to eq unindent <<~TEXT
+          .
+          .  Retry flaky scenario due to previous failure:
+          .
+          .
+        TEXT
+      end
     end
   end
 
