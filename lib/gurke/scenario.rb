@@ -163,7 +163,7 @@ module Gurke
 
       return unless failed?
 
-      (1..runner.retries(self)).each do |index|
+      (1..runner.retries(self)).each do
         reporter.invoke :retry_scenario, self
         reset!
 
