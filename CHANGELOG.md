@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.0
+
+* Add option for default retry of failed scenarios
+* Make number of default and flaky retries configurable
+
 ## 3.2.2
 
 * Fix some default reporter formatting issues
