@@ -4,7 +4,25 @@ require 'forwardable'
 
 module Gurke
   class Configuration
+    # @api private
+    def initialize
+      @default_retries = 0
+      @flaky_retries = 1
+    end
+
     #
+    # How often a scenario is retries on failure by default.
+    #
+    # Defaults to none (0).
+    #
+    attr_accessor :default_retries
+
+    # How often a scenario marked as flaky is retries.
+    #
+    # Defaults to one (1).
+    #
+    attr_accessor :flaky_retries
+
     # Define a before filter running before given action.
     #
     # @example

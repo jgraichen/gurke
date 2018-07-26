@@ -34,6 +34,10 @@ module Gurke
       features.filter(options, files).run self, reporter
     end
 
+    def retries(scenario)
+      scenario.flaky? ? config.flaky_retries : config.default_retries
+    end
+
     def hook(scope, world, context, &block)
       config.hooks[scope].run world, context, &block
     end

@@ -1,7 +1,7 @@
-Feature: Retry scenarios
+Feature: Flagged flaky scenarios
   In order to fail less often with flaky scenarios
   As a CI administrator and tester
-  I want to have all scenarios retried
+  I want to have marked scenarios retried
 
   Background:
     Given a file "features/support/steps/test_steps.rb" with the following content exists
@@ -22,16 +22,14 @@ Feature: Retry scenarios
         end
       end
 
-      Gurke.configure do |c|
-        c.include TestSteps
-        c.default_retries = 1
-      end
+      Gurke.configure{|c| c.include TestSteps }
       """
 
-  Scenario: Retry a failed scenario
+  Scenario: Run a flaky scenario
     Given a file "features/test.feature" with the following content exists
       """
       Feature: F
+        @flaky
         Scenario: Scenario Failure
           Given I fail the first time
       """
@@ -39,32 +37,34 @@ Feature: Retry scenarios
     Then the program exit code should be null
     And the program output should include "Given I fail the first time (failure)"
     And the program output should include "Given I fail the first time (passed)"
-    And the program output should include "Retry scenario due to previous failure:"
+    And the program output should include "Retry flaky scenario due to previous failure:"
     And the program output should include "1 scenarios: 0 failing, 0 pending"
 
-  Scenario: Run an always failing scenario
+  Scenario: Run a marked but always failing scenario
     Given a file "features/test.feature" with the following content exists
       """
       Feature: F
+        @flaky
         Scenario: Scenario Failure
           Given I fail always
       """
     When I run the tests
     Then the program exit code should be non-null
     And the program output should include "Given I fail always (failure)"
-    And the program output should include "Retry scenario due to previous failure:"
+    And the program output should include "Retry flaky scenario due to previous failure:"
     And the program output should not include "Given I fail always (passed)"
     And the program output should include "1 scenarios: 1 failing, 0 pending"
 
-  Scenario: Run a passing scenario
+  Scenario: Run a marked but passing scenario
     Given a file "features/test.feature" with the following content exists
       """
       Feature: F
+        @flaky
         Scenario: Scenario Failure
           Given I do not fail
       """
     When I run the tests
     Then the program exit code should be null
     And the program output should include "Given I do not fail (passed)"
-    And the program output should not include "Retry scenario due to previous failure:"
+    And the program output should not include "Retry flaky scenario due to previous failure:"
     And the program output should include "1 scenarios: 0 failing, 0 pending"

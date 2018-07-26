@@ -73,8 +73,12 @@ module Gurke::Reporters
       io.flush
     end
 
-    def retry_scenario(*)
-      io.print "\n  Retry flaky scenario due to previous failure:\n\n"
+    def retry_scenario(scenario)
+      if scenario.flaky?
+        io.print "\n  Retry flaky scenario due to previous failure:\n\n"
+      else
+        io.print "\n  Retry scenario due to previous failure:\n\n"
+      end
     end
 
     def after_scenario(*)

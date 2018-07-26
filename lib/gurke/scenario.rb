@@ -136,7 +136,7 @@ module Gurke
       @state     = :pending
     end
 
-    def retryable?
+    def flaky?
       @tags.any? {|t| t.name == 'flaky' }
     end
 
@@ -159,17 +159,17 @@ module Gurke
     def run(runner, reporter)
       reporter.invoke :before_scenario, self
 
-      runner.hook :scenario, self, world do
-        run_scenario runner, reporter
-      end
+      _run(runner, reporter)
 
-      if failed? && retryable?
+      return unless failed?
+
+      (1..runner.retries(self)).each do |index|
         reporter.invoke :retry_scenario, self
         reset!
 
-        runner.hook :scenario, self, world do
-          run_scenario runner, reporter
-        end
+        _run(runner, reporter)
+
+        break unless failed?
       end
     ensure
       reporter.invoke :after_scenario, self
@@ -181,6 +181,12 @@ module Gurke
       @state = nil
       @world = nil
       @exception = nil
+    end
+
+    def _run(runner, reporter)
+      runner.hook :scenario, self, world do
+        run_scenario runner, reporter
+      end
     end
 
     def run_scenario(runner, reporter)
