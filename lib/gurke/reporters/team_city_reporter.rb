@@ -13,22 +13,28 @@ module Gurke::Reporters
     end
 
     def before_scenario(scenario)
-      @status_reported = false
-      @retry = false
-
       publish :testStarted, name: scenario.name
 
       super
     end
 
-    def retry_scenario(scenario)
-      @retry = true
-
-      super
-    end
-
     def after_scenario(scenario)
-      publish :testFinished, name: scenario.name
+      if scenario.passed?
+        publish :testFinished, name: scenario.name
+      elsif scenario.failed?
+        publish :testFailed,
+          name: scenario.name,
+          message: scenario.exception.inspect,
+          backtrace: scenario.exception.backtrace.join('\n')
+      elsif scenario.pending?
+        publish :testIgnored,
+          name: scenario.name,
+          message: 'Step definition missing'
+      else
+        publish :testIgnored,
+          name: scenario.name,
+          message: 'Aborted.'
+      end
 
       super
     end
@@ -39,45 +45,7 @@ module Gurke::Reporters
       super
     end
 
-    protected
-
-    def step_pending(step, *)
-      super
-
-      report :testIgnored,
-        name: step.scenario.name,
-        message: 'Step definition missing'
-    end
-
-    def step_failed(step, *args)
-      super(step, *args, exception: false)
-
-      unless step.scenario.retryable? && !retry?
-        # do not report test as failed if it will be retries
-        report :testFailed,
-          name: step.scenario.name,
-          message: step.exception.inspect,
-          backtrace: step.exception.backtrace.join('\n')
-      end
-
-      print_exception(step.exception)
-    end
-
     private
-
-    def status_reported?
-      @status_reported
-    end
-
-    def retry?
-      @retry
-    end
-
-    def report(*args)
-      return if status_reported?
-
-      publish(*args)
-    end
 
     def publish(message_name, args)
       args = [] << message_name.to_s << escaped_array_of(args)
