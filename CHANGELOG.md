@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.3
+
+* Fix a TC reporter issues reporting all scenarios as aborted
+
 ## 3.3.2
 
 * Fix teamcity and compact reporter
