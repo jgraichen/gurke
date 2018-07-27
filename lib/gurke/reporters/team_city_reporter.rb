@@ -28,7 +28,7 @@ module Gurke::Reporters
         publish :testIgnored,
           name: scenario.name,
           message: 'Step definition missing'
-      else
+      elsif scenario.aborted?
         publish :testIgnored,
           name: scenario.name,
           message: 'Aborted.'

@@ -8,7 +8,8 @@ require 'spec_helper'
 RSpec.describe Gurke::Reporters::TeamCityReporter do
   let(:output) { StringIO.new }
   let(:reporter) { described_class.new(output) }
-  subject { output.string }
+
+  subject { output.string.scan(/##teamcity\[.*\]/) }
 
   describe '#before_feature' do
     let(:feature) { double('feature') }
@@ -25,9 +26,9 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
     subject { reporter.before_feature(feature); super() }
 
     it 'include a testSuiteStarted command' do
-      is_expected.to include <<~TXT
-        ##teamcity[testSuiteStarted name='Demo feature']
-      TXT
+      is_expected.to eq [
+        "##teamcity[testSuiteStarted name='Demo feature']"
+      ]
     end
   end
 
@@ -44,9 +45,9 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
     subject { reporter.before_scenario(scenario); super() }
 
     it do
-      is_expected.to include <<~TXT
-        ##teamcity[testStarted name='Running the scenario']
-      TXT
+      is_expected.to eq [
+        "##teamcity[testStarted name='Running the scenario']"
+      ]
     end
   end
 
@@ -64,9 +65,31 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
     subject { reporter.after_scenario(scenario); super() }
 
     it do
-      is_expected.to include <<~TXT
-        ##teamcity[testFinished name='Running the scenario']
-      TXT
+      is_expected.to eq [
+        "##teamcity[testFinished name='Running the scenario']"
+      ]
+    end
+
+    context '<failed>' do
+      let(:exception) do
+        begin
+          raise RuntimeError.new
+        rescue RuntimeError => e
+          e
+        end
+      end
+
+      before do
+        allow(scenario).to receive(:failed?).and_return(true)
+        allow(scenario).to receive(:exception).and_return(exception)
+      end
+
+      it do
+        is_expected.to match [
+          match(/##teamcity\[testFailed name='.*' message='.*' backtrace='.*'\]/),
+          "##teamcity[testFinished name='Running the scenario']"
+        ]
+      end
     end
   end
 
@@ -80,9 +103,9 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
     subject { reporter.after_feature(feature); super() }
 
     it do
-      is_expected.to include <<~TXT
-        ##teamcity[testSuiteFinished name='Demo feature']
-      TXT
+      is_expected.to eq [
+        "##teamcity[testSuiteFinished name='Demo feature']"
+      ]
     end
   end
 end
