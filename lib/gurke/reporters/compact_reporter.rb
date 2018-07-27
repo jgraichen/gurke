@@ -71,8 +71,8 @@ module Gurke::Reporters
         end
       end
 
-      exout = format_exception(result.exception, backtrace: true)
-      io.puts red exout.join("\n").gsub(/^/, '      ')
+      exout = format_exception(result.exception, backtrace: true, indent: 6)
+      io.puts red exout
       io.puts
     end
 

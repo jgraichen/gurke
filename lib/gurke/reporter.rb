@@ -275,28 +275,30 @@ module Gurke
 
     protected
 
-    def format_exception(ex, backtrace: true)
-      s = ex.class.to_s << ': ' << ex.message.strip << "\n"
+    def format_exception(ex, backtrace: true, indent: 0)
+      s = StringIO.new
+      s << (' ' * indent) << ex.class.to_s << ': ' << ex.message.strip << "\n"
 
-      if backtrace
+      if backtrace && ex.respond_to?(:backtrace)
         if ex.backtrace.nil?
-          s << '  <no backtrace available>'
+          s << (' ' * indent) << '  <no backtrace available>'
         elsif ex.backtrace.empty?
-          s << '  <backtrace empty>'
+          s << (' ' * indent) << '  <backtrace empty>'
         else
           ex.backtrace.each do |bt|
-            s << '  ' << bt.strip << "\n"
+            s << (' ' * indent) << '  ' << bt.strip << "\n"
           end
         end
       end
 
-      if ex.respond_to?(:cause) && ex.cause &&
-         ex.cause.respond_to?(:message) && ex.cause.respond_to?(:backtrace)
-
-        s << 'caused by: ' << format_exception(ex.cause, backtrace: backtrace)
+      if ex.respond_to?(:cause) && ex.cause && ex.cause.respond_to?(:message)
+        s << (' ' * indent) << 'caused by: '
+        s << format_exception(
+          ex.cause, backtrace: backtrace, indent: indent
+        ).strip
       end
 
-      s
+      s.string
     end
   end
 end

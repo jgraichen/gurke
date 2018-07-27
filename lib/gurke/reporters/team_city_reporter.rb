@@ -19,9 +19,7 @@ module Gurke::Reporters
     end
 
     def after_scenario(scenario)
-      if scenario.passed?
-        publish :testFinished, name: scenario.name
-      elsif scenario.failed?
+      if scenario.failed?
         publish :testFailed,
           name: scenario.name,
           message: scenario.exception.inspect,
@@ -35,6 +33,8 @@ module Gurke::Reporters
           name: scenario.name,
           message: 'Aborted.'
       end
+
+      publish :testFinished, name: scenario.name
 
       super
     end
