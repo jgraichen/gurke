@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.2
+
+* Fix teamcity and compact reporter
+
 ## 3.3.1
 
 * Add option for default retry of failed scenarios
