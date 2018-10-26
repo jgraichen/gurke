@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'trollop'
+require 'optimist'
 
 module Gurke
   class CLI
@@ -11,11 +11,11 @@ module Gurke
     #
     def run(argv)
       call parser.parse(argv), argv
-    rescue Trollop::VersionNeeded
+    rescue Optimist::VersionNeeded
       print_version && exit
-    rescue Trollop::HelpNeeded
+    rescue Optimist::HelpNeeded
       print_help && exit
-    rescue Trollop::CommandlineError => e
+    rescue Optimist::CommandlineError => e
       warn "Error: #{e}"
       warn "Run with `-h' for more information on available arguments."
       exit 255
@@ -56,7 +56,7 @@ module Gurke
     end
 
     def parser
-      @parser ||= Trollop::Parser.new do
+      @parser ||= Optimist::Parser.new do
         opt :help, 'Print this help.'
         opt :version, 'Show program version information.'
         opt :backtrace, 'Show full error backtraces.'
