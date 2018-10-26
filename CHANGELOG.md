@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.4
+
+* Replace renamed trollop dependency with optimist
+
 ## 3.3.3
 
 * Fix a TC reporter issues reporting all scenarios as aborted
