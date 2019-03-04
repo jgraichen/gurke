@@ -88,7 +88,6 @@ module Gurke
       end
     end
 
-    #
     class StepResult
       attr_reader :step, :exception, :state, :scenario
 

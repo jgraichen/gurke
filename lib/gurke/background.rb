@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Gurke
-  #
   class Background
     #
     # Return path to file containing this background.

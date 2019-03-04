@@ -29,7 +29,6 @@ module Gurke
     #
     attr_reader :steps
 
-    #
     attr_reader :tags
 
     # @api private

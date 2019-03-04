@@ -9,7 +9,6 @@ require 'colorize'
 #   :light_magenta, :light_cyan, :light_white
 #
 module Gurke::Reporters
-  #
   class CompactReporter < NullReporter
     attr_reader :io
 
