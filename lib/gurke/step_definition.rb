@@ -20,6 +20,7 @@ module Gurke
     def match(name, type = :any)
       return if self.type != :any && self.type != type
       return if pattern.is_a?(String) && name != pattern
+
       match = pattern.match(name)
 
       return unless match

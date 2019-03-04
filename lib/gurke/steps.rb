@@ -23,6 +23,7 @@ module Gurke
       def find_step(step, world, type)
         matches = world.methods.map do |method|
           next unless method.to_s.start_with?('match: ')
+
           world.send(method.to_s, step.to_s, type)
         end.compact
 
