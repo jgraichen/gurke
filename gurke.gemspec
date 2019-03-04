@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'gherkin', '~> 2.0'
   spec.add_dependency 'optimist', '~> 3.0'
 
-  spec.add_development_dependency 'bundler', '~> 1.3'
+  spec.add_development_dependency 'bundler'
 
   if ENV['TRAVIS_BUILD_NUMBER'] && !ENV['TRAVIS_TAG']
     # Append travis build number for auto-releases
