@@ -2,6 +2,7 @@ sudo: false
 language: ruby
 bundler_args: "--without development"
 rvm:
+- 2.6.1
 - 2.5.3
 - 2.4.5
 - 2.3.8
@@ -9,11 +10,10 @@ script:
 - bundle exec rubocop
 - bundle exec rspec
 - bundle exec gurke -f compact
-
 jobs:
   include:
   - stage: Release
-    rvm: 2.5.1
+    rvm: 2.6.1
     script: skip
     install: skip
     deploy:
