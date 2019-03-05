@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = %w[lib]
 
   spec.add_dependency 'colorize'
-  spec.add_dependency 'gherkin', '~> 2.0'
+  spec.add_dependency 'gherkin', '>= 2', '< 7'
   spec.add_dependency 'optimist', '~> 3.0'
 
   spec.add_development_dependency 'bundler'
