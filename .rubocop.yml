@@ -32,7 +32,7 @@ Metrics/PerceivedComplexity:
   Enabled: false
 
 
-Layout/AlignParameters:
+Layout/AlignArguments:
   EnforcedStyle: with_fixed_indentation
 
 Layout/SpaceInsideHashLiteralBraces:
