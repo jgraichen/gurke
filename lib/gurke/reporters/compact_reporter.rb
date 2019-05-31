@@ -129,7 +129,6 @@ module Gurke::Reporters
        magenta cyan white default light_black
        light_red light_green light_yellow light_blue
        light_magenta light_cyan light_white].each do |color|
-
       define_method(color) {|str| io.tty? ? str.send(color) : str }
     end
   end
