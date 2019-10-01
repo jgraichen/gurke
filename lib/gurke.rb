@@ -66,4 +66,4 @@ module Gurke
   end
 end
 
-::Module.send :include, Gurke::DSL
+::Module.include Gurke::DSL

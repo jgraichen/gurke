@@ -53,7 +53,7 @@ module Gurke
       each do |feature|
         feature.run runner, reporter
       end
-    rescue Interrupt # rubocop:disable HandleExceptions
+    rescue Interrupt # rubocop:disable Lint/HandleExceptions
       # nothing
     ensure
       reporter.invoke :end_features, self
