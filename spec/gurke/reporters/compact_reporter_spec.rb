@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable MissingCopEnableDirective
+# rubocop:disable Lint/MissingCopEnableDirective
 # rubocop:disable Style/Semicolon
 
 require 'spec_helper'

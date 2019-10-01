@@ -31,7 +31,7 @@ module Gurke
       end
     end
 
-    # rubocop:disable MethodName
+    # rubocop:disable Naming/MethodName
     def Given(pattern, method_name = nil, opts = {}, &block)
       step pattern, method_name, opts.merge(type: :given), &block
     end
@@ -43,6 +43,6 @@ module Gurke
     def Then(pattern, method_name = nil, opts = {}, &block)
       step pattern, method_name, opts.merge(type: :then), &block
     end
-    # rubocop:enable MethodName
+    # rubocop:enable Naming/MethodName
   end
 end

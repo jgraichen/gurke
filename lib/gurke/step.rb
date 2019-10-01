@@ -66,7 +66,7 @@ module Gurke
     rescue StepPending => e
       scenario.pending! e
       result = StepResult.new self, scenario, :pending, e
-    rescue Exception => e # rubocop:disable RescueException
+    rescue Exception => e # rubocop:disable Lint/RescueException
       scenario.failed! e
       result = StepResult.new self, scenario, :failed, e
     ensure
