@@ -12,7 +12,7 @@ Bundler.require
 
 require 'gurke'
 
-Dir[File.expand_path('spec/support/**/*.rb')].each {|f| require f }
+Dir[File.expand_path('spec/support/**/*.rb').sort].each {|f| require f }
 
 module Helper
   def unindent(str)
