@@ -21,10 +21,6 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Enabled: false
 
-Metrics/LineLength:
-  Exclude:
-    - 'spec/**/*_spec.rb'
-
 Metrics/MethodLength:
   Enabled: false
 
@@ -34,6 +30,10 @@ Metrics/PerceivedComplexity:
 
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
+
+Layout/LineLength:
+  Exclude:
+    - 'spec/**/*_spec.rb'
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
