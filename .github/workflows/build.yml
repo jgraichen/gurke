@@ -1,0 +1,39 @@
+name: Build
+on: [push]
+jobs:
+  test:
+    name: Ruby ${{ matrix.ruby }}
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        ruby:
+          - "2.7"
+          - "2.6"
+          - "2.5"
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - uses: actions/cache@v1
+        with:
+          path: vendor
+          key: v1-ruby-${{ matrix.ruby }}
+
+      - name: Install bundler
+        run: |
+          gem install bundler -v '~> 2.0'
+          bundle config path "$(pwd)/vendor/bundle"
+          bundle config without development
+
+      - name: Run bundle install
+        run: bundle install --jobs=4 --retry=3
+
+      - name: Run rspec
+        run: bundle exec rspec --color
+
+      - name: Run gurke
+        run: bundle exec gurke --formatter compact
