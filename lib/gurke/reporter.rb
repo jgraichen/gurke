@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'stringio'
+
 module Gurke
   #
   # A {Reporter} provides callbacks that will be executed whenever
@@ -276,7 +278,7 @@ module Gurke
     protected
 
     def format_exception(err, backtrace: true, indent: 0)
-      s = StringIO.new
+      s = ::StringIO.new
       s << (' ' * indent) << err.class.to_s << ': ' << err.message.strip << "\n"
 
       if backtrace && err.respond_to?(:backtrace)
