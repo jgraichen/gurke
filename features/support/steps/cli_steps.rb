@@ -5,21 +5,17 @@ require 'open3'
 module CLISteps
   def _execute(args = nil)
     Dir.chdir(@__root) do
-      Bundler.with_clean_env do
-        cmd = ['ruby']
-        cmd << '-I' << Gurke.root.join('..', 'lib').realpath
-        cmd << '-S' << Gurke.root.join('..', 'bin', 'gurke').realpath
+      cmd = %w[bundle exec gurke]
 
-        unless args.to_s.include?('-f ') || args.to_s.include?('--formatter ')
-          cmd << '-f' << 'default'
-        end
-
-        cmd << args.to_s
-
-        out, err, status = Open3.capture3 cmd.join ' '
-
-        @last_process = [Integer(status), out, err]
+      unless args.to_s.include?('-f ') || args.to_s.include?('--formatter ')
+        cmd << '-f' << 'default'
       end
+
+      cmd << args.to_s
+
+      out, err, status = Open3.capture3 cmd.join ' '
+
+      @last_process = [Integer(status), out, err]
     end
   end
 

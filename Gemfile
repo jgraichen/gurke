@@ -10,6 +10,7 @@ gem 'rspec', '~> 3.9'
 
 group :test do
   gem 'codecov', require: false
+  gem 'test-unit'
 end
 
 group :development do
