@@ -30,7 +30,7 @@ module Gurke
       filter = Filter.new options, files
 
       each do |feature|
-        file, _lines = files.select {|f, _| f == feature.file }.first
+        file, _lines = files.find {|f, _| f == feature.file }
         next unless file
 
         f = Feature.new(feature)
@@ -53,7 +53,7 @@ module Gurke
       each do |feature|
         feature.run runner, reporter
       end
-    rescue Interrupt # rubocop:disable Lint/SuppressedException
+    rescue Interrupt
       # nothing
     ensure
       reporter.invoke :end_features, self
@@ -84,7 +84,7 @@ module Gurke
       end
 
       def filtered_by_line?(scenario)
-        _, lines = files.select {|f, _| f == scenario.file }.first
+        _, lines = files.find {|f, _| f == scenario.file }
 
         return false if lines.empty?
 

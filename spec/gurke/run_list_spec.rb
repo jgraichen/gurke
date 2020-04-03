@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe Gurke::RunList do
-  let(:reporter) { Gurke::Reporters::NullReporter.new }
-  let(:runner)   { double 'runner' }
-  let(:object)   { double 'object' }
-  let(:list)     { Gurke::RunList.new }
+  let(:reporter) { instance_double 'Gurke::Reporters::NullReporter' }
+  let(:runner)   { instance_double 'Gurke::Runner' }
+  let(:object)   { double 'runnable' } # rubocop:disable RSpec/VerifiedDoubles
+  let(:list)     { described_class.new }
 
   before do
     list << object
@@ -14,19 +14,17 @@ describe Gurke::RunList do
   end
 
   describe '#run' do
-    subject { list.run runner, reporter }
+    before { list.run runner, reporter }
 
-    it 'should run all objects' do
-      expect(object).to receive(:run).with(runner, reporter)
-      subject
+    it 'runs all objects' do
+      expect(object).to have_received(:run).with(runner, reporter)
     end
 
     context 'with additional args' do
-      subject { list.run runner, reporter, 0, :sym }
+      before { list.run runner, reporter, 0, :sym }
 
-      it 'should pass additional args' do
-        expect(object).to receive(:run).with(runner, reporter, 0, :sym)
-        subject
+      it 'passes additional args' do
+        expect(object).to have_received(:run).with(runner, reporter, 0, :sym)
       end
     end
   end

@@ -22,4 +22,8 @@ end
 RSpec.configure do |config|
   config.order = 'random'
   config.include Helper
+
+  config.mock_with :rspec do |mocks|
+    mocks.verify_doubled_constant_names = true
+  end
 end

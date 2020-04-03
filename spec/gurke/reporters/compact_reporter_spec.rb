@@ -1,52 +1,48 @@
 # frozen_string_literal: true
 
 # rubocop:disable Lint/MissingCopEnableDirective
-# rubocop:disable Style/Semicolon
 
 require 'spec_helper'
 
 RSpec.describe Gurke::Reporters::CompactReporter do
-  let(:output) { StringIO.new }
-  let(:reporter) { described_class.new(output) }
-  subject { output.string }
+  subject(:out) do
+    reporter = described_class.new(StringIO.new)
+    reporter.send(*action)
+    reporter.io.string
+  end
+
+  let(:feature) { instance_double('Gurke::Feature') }
+  let(:scenario) { instance_double('Gurke::Scenario') }
+  let(:step) { instance_double('Gurke::Step') }
 
   describe '#before_feature' do
-    let(:feature) { double('feature') }
-
-    subject { reporter.before_feature(feature); super() }
+    let(:action) { [:before_feature, feature] }
 
     it { is_expected.to eq '' }
   end
 
   describe '#start_background' do
-    let(:feature) { double('feature') }
-
-    subject { reporter.start_background(feature); super() }
+    let(:action) { [:start_background, feature] }
 
     it { is_expected.to eq '' }
   end
 
   describe '#before_scenario' do
-    let(:scenario) { double('scenario') }
-
-    subject { reporter.before_scenario(scenario); super() }
+    let(:action) { [:before_scenario, scenario] }
 
     it { is_expected.to eq '' }
   end
 
   describe '#before_step' do
-    let(:step) { double('step') }
-
-    subject { reporter.before_step(step); super() }
+    let(:action) { [:before_step, step] }
 
     it { is_expected.to eq '' }
   end
 
   describe '#after_step' do
-    let(:feature) { double('feature') }
-    let(:scenario) { double('scenario') }
-    let(:step) { double('step') }
-    let(:result) { double('result') }
+    let(:action) { [:after_step, result, scenario] }
+
+    let(:result) { instance_double('Gurke::Step::StepResult') }
     let(:backgrounds) { [] }
     let(:exception) { nil }
 
@@ -84,10 +80,10 @@ RSpec.describe Gurke::Reporters::CompactReporter do
         File.join(Dir.getwd, 'features', 'file.feature')
       allow(feature).to receive(:line).and_return 1
       allow(feature).to receive(:description).and_return \
-        "As a developer\nI would like have this spec passed\nIn order to work on"
+        "As a developer\n" \
+        "I would like have this spec passed\n" \
+        'In order to work on'
     end
-
-    subject { reporter.after_step(result, scenario); super() }
 
     context 'with step passing' do
       let(:state) { :passed }
@@ -101,7 +97,7 @@ RSpec.describe Gurke::Reporters::CompactReporter do
       it { is_expected.to eq '' }
     end
 
-    context 'with step pending' do
+    context 'with step nil' do
       let(:state) { nil }
 
       it { is_expected.to eq '' }
@@ -111,30 +107,30 @@ RSpec.describe Gurke::Reporters::CompactReporter do
       let(:state) { :failed }
 
       before do
-        e = double 'exception'
-        c = double 'exception'
+        error = instance_double 'RuntimeError'
+        cause = instance_double 'IOError'
 
-        allow(e).to receive(:class).and_return(RuntimeError)
-        allow(e).to receive(:message).and_return('An error occurred')
-        allow(e).to receive(:backtrace).and_return([
-                                                     '/path/to/file.rb:5:in `block (4 levels) in <top (required)>\'',
-                                                     '/path/to/file.rb:24:in in `fail_with\''
-                                                   ])
+        allow(error).to receive(:class).and_return(RuntimeError)
+        allow(error).to receive(:message).and_return('An error occurred')
+        allow(error).to receive(:backtrace).and_return([
+          '/path/to/file.rb:5:in `block (4 levels) in <top (required)>\'',
+          '/path/to/file.rb:24:in in `fail_with\''
+        ])
 
-        allow(e).to receive(:cause).and_return(c)
+        allow(error).to receive(:cause).and_return(cause)
 
-        allow(c).to receive(:class).and_return(IOError)
-        allow(c).to receive(:message).and_return('Socket closed')
-        allow(c).to receive(:backtrace).and_return([
-                                                     'script.rb:5:in `a\'',
-                                                     'script.rb:10:in `b\''
-                                                   ])
+        allow(cause).to receive(:class).and_return(IOError)
+        allow(cause).to receive(:message).and_return('Socket closed')
+        allow(cause).to receive(:backtrace).and_return([
+          'script.rb:5:in `a\'',
+          'script.rb:10:in `b\''
+        ])
 
-        expect(result).to receive(:exception).and_return e
+        allow(result).to receive(:exception).and_return error
       end
 
       it do
-        is_expected.to eq unindent <<~TEXT
+        expect(out).to eq unindent <<~TEXT
           .E
           .Feature: Demo feature   # features/file.feature:1
           .  Scenario: Running the scenario   # features/file.feature:5
@@ -153,17 +149,13 @@ RSpec.describe Gurke::Reporters::CompactReporter do
   end
 
   describe '#retry_scenario' do
-    let(:scenario) { double('scenario') }
-
-    subject { reporter.retry_scenario(scenario); super() }
+    let(:action) { [:retry_scenario, scenario] }
 
     it { is_expected.to eq '' }
   end
 
   describe '#after_scenario' do
-    let(:scenario) { double('scenario') }
-
-    subject { reporter.after_scenario(scenario); super() }
+    let(:action) { [:after_scenario, scenario] }
 
     before do
       allow(scenario).to receive(:failed?).and_return(false)
@@ -191,20 +183,16 @@ RSpec.describe Gurke::Reporters::CompactReporter do
   end
 
   describe '#after_feature' do
-    let(:feature) { double('feature') }
-
-    subject { reporter.after_feature(feature); super() }
+    let(:action) { [:after_feature, feature] }
 
     it { is_expected.to eq '' }
   end
 
   describe '#after_features' do
-    let(:features) { [] }
-
-    subject { reporter.after_features(features); super() }
+    let(:action) { [:after_features, []] }
 
     it do
-      is_expected.to eq unindent <<~TEXT
+      expect(out).to eq unindent <<~TEXT
         .
         .
         .0 scenarios: 0 passed, 0 failing, 0 pending

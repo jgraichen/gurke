@@ -152,11 +152,9 @@ module Gurke
         end.call
       ensure
         @after.each do |hook|
-          begin
-            hook.run world, ctx
-          rescue StandardError => e
-            warn "Rescued error in after hook: #{e}\n#{e.backtrace.join("\n")}"
-          end
+          hook.run world, ctx
+        rescue StandardError => e
+          warn "Rescued error in after hook: #{e}\n#{e.backtrace.join("\n")}"
         end
       end
 

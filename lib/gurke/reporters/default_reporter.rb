@@ -93,10 +93,10 @@ module Gurke::Reporters
       scenarios = features.map(&:scenarios).flatten
 
       size    = scenarios.size
-      passed  = scenarios.select(&:passed?).size
-      failed  = scenarios.select(&:failed?).size
-      pending = scenarios.select(&:pending?).size
-      not_run = size - scenarios.select(&:run?).size
+      passed  = scenarios.count(&:passed?)
+      failed  = scenarios.count(&:failed?)
+      pending = scenarios.count(&:pending?)
+      not_run = size - scenarios.count(&:run?)
 
       message = "#{scenarios.size} scenarios: "
       message += "#{passed} passed, " unless passed == size || passed.zero?
