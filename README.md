@@ -1,6 +1,6 @@
 # Gurke
 
-[![Build Status](http://img.shields.io/travis/jgraichen/gurke/master.svg)](https://travis-ci.org/jgraichen/gurke)
+[![Build Status](https://travis-ci.org/jgraichen/gurke.svg?branch=master)](https://travis-ci.org/jgraichen/gurke)
 [![Build Status](https://github.com/jgraichen/gurke/workflows/Build/badge.svg?event=push)](https://github.com/jgraichen/gurke/actions?query=workflow%3ABuild)
 
 **Gurke** is an experimental, alternative cucumber runner. It ~~steals~~ borrows ideas and concepts from [turnip](https://github.com/jnicklas/turnip), [rspec](http://rspec.info) and tries to avoid [cucumber](https://github.com/cucumber/cucumber/).
