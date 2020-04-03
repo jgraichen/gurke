@@ -5,12 +5,10 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in gurke-formatters-headless.gemspec
 gemspec
 
+gem 'rspec', '~> 3.9'
+
 group :test do
-  gem 'coveralls'
-  gem 'rspec'
-  gem 'rspec-expectations'
-  gem 'rubocop', '~> 0.78.0'
-  gem 'test-unit'
+  gem 'codecov', require: false
 end
 
 group :development do

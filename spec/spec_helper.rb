@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
-if ENV['CI'] || (defined?(:RUBY_ENGINE) && RUBY_ENGINE != 'rbx')
-  require 'coveralls'
-  Coveralls.wear! do
-    add_filter 'spec'
-  end
-end
+require 'rspec'
+require 'simplecov'
+SimpleCov.start
 
-require 'bundler'
-Bundler.require
+if ENV['CI']
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
 
 require 'gurke'
 
