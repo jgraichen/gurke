@@ -32,7 +32,7 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
 
     it 'include a testSuiteStarted command' do
       expect(statements).to eq [
-        "##teamcity[testSuiteStarted name='Demo feature']"
+        "##teamcity[testSuiteStarted name='Demo feature']",
       ]
     end
   end
@@ -49,7 +49,7 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
 
     it do
       expect(statements).to eq [
-        "##teamcity[testStarted name='Running the scenario']"
+        "##teamcity[testStarted name='Running the scenario']",
       ]
     end
   end
@@ -67,7 +67,7 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
 
     it do
       expect(statements).to eq [
-        "##teamcity[testFinished name='Running the scenario']"
+        "##teamcity[testFinished name='Running the scenario']",
       ]
     end
 
@@ -76,7 +76,7 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
         error = RuntimeError.new 'An error occurred'
         allow(error).to receive(:backtrace).and_return([
           '/path/to/file.rb:5:in `block (4 levels) in <top (required)>\'',
-          '/path/to/file.rb:24:in in `fail_with\''
+          '/path/to/file.rb:24:in in `fail_with\'',
         ])
 
         allow(scenario).to receive(:failed?).and_return(true)
@@ -87,7 +87,7 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
         # rubocop:disable Layout/LineLength
         expect(statements).to eq [
           "##teamcity[testFailed name='Running the scenario' message='#<RuntimeError: An error occurred>' backtrace='/path/to/file.rb:5:in `block (4 levels) in <top (required)>|$1\\n/path/to/file.rb:24:in in `fail_with|$1']",
-          "##teamcity[testFinished name='Running the scenario']"
+          "##teamcity[testFinished name='Running the scenario']",
         ]
         # rubocop:enable Layout/LineLength
       end
@@ -103,7 +103,7 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
 
     it do
       expect(statements).to eq [
-        "##teamcity[testSuiteFinished name='Demo feature']"
+        "##teamcity[testSuiteFinished name='Demo feature']",
       ]
     end
   end

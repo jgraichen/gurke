@@ -91,7 +91,7 @@ module Gurke
           feature: HookSet.new,
           scenario: HookSet.new,
           step: HookSet.new,
-          system: HookSet.new
+          system: HookSet.new,
         }
 
         hooks[:each] = hooks[:scenario]

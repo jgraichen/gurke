@@ -296,7 +296,7 @@ module Gurke
       if err.respond_to?(:cause) && err.cause && err.cause.respond_to?(:message)
         s << (' ' * indent) << 'caused by: '
         s << format_exception(
-          err.cause, backtrace: backtrace, indent: indent
+          err.cause, backtrace: backtrace, indent: indent,
         ).strip
       end
 

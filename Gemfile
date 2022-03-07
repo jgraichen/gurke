@@ -5,8 +5,8 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in gurke-formatters-headless.gemspec
 gemspec
 
-gem 'my-rubocop', github: 'jgraichen/my-rubocop'
 gem 'rspec', '~> 3.9'
+gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v7'
 
 group :test do
   gem 'codecov', require: false

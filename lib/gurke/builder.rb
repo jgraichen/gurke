@@ -10,7 +10,7 @@ module Gurke
     def initialize
       @language = 'en'
       @parser   = Gherkin::Parser::Parser.new(
-        self, true, 'root', false, @language
+        self, true, 'root', false, @language,
       )
     end
 

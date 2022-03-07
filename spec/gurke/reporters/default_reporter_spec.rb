@@ -138,7 +138,7 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
         allow(error).to receive(:message).and_return('An error occurred')
         allow(error).to receive(:backtrace).and_return([
           '/path/to/file.rb:5:in `block (4 levels) in <top (required)>\'',
-          '/path/to/file.rb:24:in in `fail_with\''
+          '/path/to/file.rb:24:in in `fail_with\'',
         ])
 
         allow(error).to receive(:cause).and_return(cause)
@@ -147,7 +147,7 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
         allow(cause).to receive(:message).and_return('Socket closed')
         allow(cause).to receive(:backtrace).and_return([
           'script.rb:5:in `a\'',
-          'script.rb:10:in `b\''
+          'script.rb:10:in `b\'',
         ])
 
         allow(result).to receive(:exception).and_return error

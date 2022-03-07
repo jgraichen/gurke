@@ -61,7 +61,7 @@ module Gurke
 
     # @api private
     def world
-      @world ||= const_set('World', Module.new)
+      @world ||= const_set(:World, Module.new)
     end
   end
 end

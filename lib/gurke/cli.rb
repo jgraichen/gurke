@@ -67,7 +67,7 @@ module Gurke
         opt :require, 'Files matching this pattern will be required after' \
                       'loading environment but before running features.',
           default: ['features/steps/**/*.rb',
-                    'features/support/steps/**/*.rb'],
+                    'features/support/steps/**/*.rb',],
           multi: true
         opt :tags, 'Only run features and scenarios matching given tag ' \
                    'filtering expression. TODO: Description.',
@@ -85,7 +85,7 @@ module Gurke
       files = Dir[options[:pattern].to_s] if files.empty? && options[:pattern]
       files.each_with_object([]) do |input, memo|
         if File.directory? input
-          Dir[input + '/**/*'].each do |file_in_dir|
+          Dir["#{input}/**/*"].each do |file_in_dir|
             if options[:pattern] &&
                !File.fnmatch?(options[:pattern], file_in_dir)
               next

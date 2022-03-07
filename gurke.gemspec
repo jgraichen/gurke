@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'gurke'
   spec.version       = Gurke::VERSION
   spec.authors       = ['Jan Graichen']
-  spec.email         = %w[jg@altimos.de]
+  spec.email         = %w[jgraichen@altimos.de]
   spec.homepage      = 'https://github.com/jgraichen/gurke'
   spec.license       = 'MIT'
 
@@ -16,6 +16,8 @@ Gem::Specification.new do |spec|
     'An alternative gherkin feature runner inspired by rspec and turnip.'
   spec.summary = \
     'An alternative gherkin feature runner inspired by rspec and turnip.'
+
+  spec.metadata['rubygems_mfa_required'] = 'true'
 
   spec.files = Dir['**/*'].grep %r{^(
     (bin/|lib/|test/|spec/|features/)|

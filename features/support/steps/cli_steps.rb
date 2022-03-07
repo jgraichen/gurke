@@ -42,7 +42,7 @@ module CLISteps
   end
 
   step(/the program output should not include "(.*?)"/,
-    :_cli_not_include_content)
+    :_cli_not_include_content,)
 
   step(/all scenarios have passed/) do
     _cli_include_content 'scenarios: 0 failing, 0 pending'

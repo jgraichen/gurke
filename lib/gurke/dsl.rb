@@ -8,7 +8,7 @@ module Gurke
         method_name = nil
       end
 
-      if method_name && block_given?
+      if method_name && block
         raise ArgumentError.new <<~ERR.strip
           You can either specify a method name or given a block, not both.
         ERR
@@ -24,7 +24,7 @@ module Gurke
         step.match(name, s)
       end
 
-      if block_given?
+      if block
         define_method(step.method_name.to_s, &block)
       elsif method_name
         alias_method step.method_name.to_s, method_name

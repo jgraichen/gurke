@@ -49,7 +49,7 @@ module Gurke::Reporters
 
     def publish(message_name, args)
       args = [] << message_name.to_s << escaped_array_of(args)
-      args = args.flatten.reject(&:nil?)
+      args = args.flatten.compact
 
       io.puts "##teamcity[#{args.join(' ')}]"
     end

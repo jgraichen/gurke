@@ -11,7 +11,7 @@ module Gurke
 
     def reporter
       @reporter ||= begin
-        r = (options[:formatter] + '_reporter')
+        r = ("#{options[:formatter]}_reporter")
           .split('_')
           .map(&:capitalize)
           .join
