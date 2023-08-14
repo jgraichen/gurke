@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rspec', '~> 3.9'
-gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v7'
+gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v11'
 
 group :test do
   gem 'codecov', require: false

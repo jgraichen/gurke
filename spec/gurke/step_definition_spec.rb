@@ -2,8 +2,6 @@
 
 require 'spec_helper'
 
-require 'spec_helper'
-
 describe Gurke::StepDefinition do
   subject(:sd) { step_definition }
 

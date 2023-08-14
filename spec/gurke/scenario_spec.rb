@@ -7,10 +7,10 @@ describe Gurke::Scenario do
     described_class.new(feature, nil, nil, tags, nil)
   end
 
-  let(:reporter) { instance_double 'Gurke::Reporters::NullReporter' }
-  let(:runner)   { instance_double 'Gurke::Runner' }
-  let(:feature)  { instance_double 'Gurke::Feature' }
-  let(:backgrounds) { instance_double 'Gurke::RunList' }
+  let(:reporter) { instance_double Gurke::Reporters::NullReporter }
+  let(:runner)   { instance_double Gurke::Runner }
+  let(:feature)  { instance_double Gurke::Feature }
+  let(:backgrounds) { instance_double Gurke::RunList }
   let(:tags) { [] }
 
   before do
@@ -55,7 +55,7 @@ describe Gurke::Scenario do
     end
 
     context 'with retries' do
-      let(:step) { instance_double('Gurke::Step') }
+      let(:step) { instance_double(Gurke::Step) }
       let(:worlds) { Set.new }
 
       before do

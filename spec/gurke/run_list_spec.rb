@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Gurke::RunList do
-  let(:reporter) { instance_double 'Gurke::Reporters::NullReporter' }
-  let(:runner)   { instance_double 'Gurke::Runner' }
+  let(:reporter) { instance_double Gurke::Reporters::NullReporter }
+  let(:runner)   { instance_double Gurke::Runner }
   let(:object)   { double 'runnable' } # rubocop:disable RSpec/VerifiedDoubles
   let(:list)     { described_class.new }
 

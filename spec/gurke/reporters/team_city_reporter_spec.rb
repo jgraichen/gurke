@@ -11,23 +11,20 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
     reporter.io.string.scan(/##teamcity\[.*\]/)
   end
 
-  let(:feature) { instance_double('Gurke::Feature') }
-  let(:scenario) { instance_double('Gurke::Scenario') }
-  let(:step) { instance_double('Gurke::Step') }
+  let(:feature) { instance_double(Gurke::Feature) }
+  let(:scenario) { instance_double(Gurke::Scenario) }
+  let(:step) { instance_double(Gurke::Step) }
 
   describe '#before_feature' do
     let(:action) { [:before_feature, feature] }
 
     before do
-      allow(feature).to receive(:name).and_return 'Demo feature'
-      allow(feature).to receive(:file).and_return \
-        File.join(Dir.getwd, 'features', 'file.feature')
-      allow(feature).to receive(:line).and_return 1
-      allow(feature).to receive(:description).and_return <<~DESC.strip
-        As a developer
-        I would like have this spec passed
-        In order to work on
-      DESC
+      allow(feature).to receive_messages(name: 'Demo feature', file: File.join(Dir.getwd, 'features', 'file.feature'),
+        line: 1, description: <<~DESC.strip,)
+          As a developer
+          I would like have this spec passed
+          In order to work on
+        DESC
     end
 
     it 'include a testSuiteStarted command' do
@@ -41,10 +38,8 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
     let(:action) { [:before_scenario, scenario] }
 
     before do
-      allow(scenario).to receive(:name).and_return 'Running the scenario'
-      allow(scenario).to receive(:file).and_return \
-        File.join(Dir.getwd, 'features', 'file.feature')
-      allow(scenario).to receive(:line).and_return 5
+      allow(scenario).to receive_messages(name: 'Running the scenario',
+        file: File.join(Dir.getwd, 'features', 'file.feature'), line: 5,)
     end
 
     it do
@@ -58,11 +53,8 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
     let(:action) { [:after_scenario, scenario] }
 
     before do
-      allow(scenario).to receive(:name).and_return 'Running the scenario'
-      allow(scenario).to receive(:passed?).and_return(true)
-      allow(scenario).to receive(:failed?).and_return(false)
-      allow(scenario).to receive(:pending?).and_return(false)
-      allow(scenario).to receive(:aborted?).and_return(false)
+      allow(scenario).to receive_messages(name: 'Running the scenario', passed?: true, failed?: false, pending?: false,
+        aborted?: false,)
     end
 
     it do
@@ -79,8 +71,7 @@ RSpec.describe Gurke::Reporters::TeamCityReporter do
           '/path/to/file.rb:24:in in `fail_with\'',
         ])
 
-        allow(scenario).to receive(:failed?).and_return(true)
-        allow(scenario).to receive(:exception).and_return(error)
+        allow(scenario).to receive_messages(failed?: true, exception: error)
       end
 
       it do

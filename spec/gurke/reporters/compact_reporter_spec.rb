@@ -11,9 +11,9 @@ RSpec.describe Gurke::Reporters::CompactReporter do
     reporter.io.string
   end
 
-  let(:feature) { instance_double('Gurke::Feature') }
-  let(:scenario) { instance_double('Gurke::Scenario') }
-  let(:step) { instance_double('Gurke::Step') }
+  let(:feature) { instance_double(Gurke::Feature) }
+  let(:scenario) { instance_double(Gurke::Scenario) }
+  let(:step) { instance_double(Gurke::Step) }
 
   describe '#before_feature' do
     let(:action) { [:before_feature, feature] }
@@ -42,7 +42,7 @@ RSpec.describe Gurke::Reporters::CompactReporter do
   describe '#after_step' do
     let(:action) { [:after_step, result, scenario] }
 
-    let(:result) { instance_double('Gurke::Step::StepResult') }
+    let(:result) { instance_double(Gurke::Step::StepResult) }
     let(:backgrounds) { [] }
     let(:exception) { nil }
 
@@ -51,38 +51,22 @@ RSpec.describe Gurke::Reporters::CompactReporter do
     end
 
     before do
-      allow(result).to receive(:step).and_return(step)
-      allow(result).to receive(:scenario).and_return(scenario)
-      allow(result).to receive(:state).and_return(state)
-      allow(result).to receive(:exception).and_return(exception)
+      allow(result).to receive_messages(step: step, scenario: scenario, state: state, exception: exception)
     end
 
     before do
-      allow(step).to receive(:name).and_return 'the scenario is passing'
-      allow(step).to receive(:keyword).and_return 'Given'
+      allow(step).to receive_messages(name: 'the scenario is passing', keyword: 'Given')
     end
 
     before do
-      allow(scenario).to receive(:feature).and_return(feature)
-      allow(scenario).to receive(:steps).and_return(steps)
-
-      allow(scenario).to receive(:name).and_return 'Running the scenario'
-      allow(scenario).to receive(:file).and_return \
-        File.join(Dir.getwd, 'features', 'file.feature')
-      allow(scenario).to receive(:line).and_return 5
+      allow(scenario).to receive_messages(feature: feature, steps: steps, name: 'Running the scenario',
+        file: File.join(Dir.getwd, 'features', 'file.feature'), line: 5,)
     end
 
     before do
-      allow(feature).to receive(:backgrounds).and_return(backgrounds)
-
-      allow(feature).to receive(:name).and_return 'Demo feature'
-      allow(feature).to receive(:file).and_return \
-        File.join(Dir.getwd, 'features', 'file.feature')
-      allow(feature).to receive(:line).and_return 1
-      allow(feature).to receive(:description).and_return \
-        "As a developer\n" \
-        "I would like have this spec passed\n" \
-        'In order to work on'
+      allow(feature).to receive_messages(backgrounds: backgrounds, name: 'Demo feature', file: File.join(Dir.getwd, 'features', 'file.feature'), line: 1, description: "As a developer\n" \
+                                                                                                                                                                       "I would like have this spec passed\n" \
+                                                                                                                                                                       'In order to work on',)
     end
 
     context 'with step passing' do
@@ -107,24 +91,18 @@ RSpec.describe Gurke::Reporters::CompactReporter do
       let(:state) { :failed }
 
       before do
-        error = instance_double 'RuntimeError'
-        cause = instance_double 'IOError'
+        error = instance_double RuntimeError
+        cause = instance_double IOError
 
-        allow(error).to receive(:class).and_return(RuntimeError)
-        allow(error).to receive(:message).and_return('An error occurred')
-        allow(error).to receive(:backtrace).and_return([
+        allow(error).to receive_messages(class: RuntimeError, message: 'An error occurred', backtrace: [
           '/path/to/file.rb:5:in `block (4 levels) in <top (required)>\'',
           '/path/to/file.rb:24:in in `fail_with\'',
-        ])
+        ], cause: cause,)
 
-        allow(error).to receive(:cause).and_return(cause)
-
-        allow(cause).to receive(:class).and_return(IOError)
-        allow(cause).to receive(:message).and_return('Socket closed')
-        allow(cause).to receive(:backtrace).and_return([
+        allow(cause).to receive_messages(class: IOError, message: 'Socket closed', backtrace: [
           'script.rb:5:in `a\'',
           'script.rb:10:in `b\'',
-        ])
+        ],)
 
         allow(result).to receive(:exception).and_return error
       end
@@ -158,9 +136,7 @@ RSpec.describe Gurke::Reporters::CompactReporter do
     let(:action) { [:after_scenario, scenario] }
 
     before do
-      allow(scenario).to receive(:failed?).and_return(false)
-      allow(scenario).to receive(:passed?).and_return(true)
-      allow(scenario).to receive(:pending?).and_return(false)
+      allow(scenario).to receive_messages(failed?: false, passed?: true, pending?: false)
     end
 
     it { is_expected.to eq '.' }

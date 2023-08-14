@@ -3,16 +3,15 @@
 require 'spec_helper'
 
 describe Gurke::FeatureList do
-  let(:reporter) { instance_double 'Gurke::Reporters::NullReporter' }
-  let(:runner)   { instance_double 'Gurke::Runner' }
-  let(:feature)  { instance_double 'Gurke::Feature' }
+  let(:reporter) { instance_double Gurke::Reporters::NullReporter }
+  let(:runner)   { instance_double Gurke::Runner }
+  let(:feature)  { instance_double Gurke::Feature }
   let(:features) { described_class.new }
 
   before do
     features << feature
 
-    allow(feature).to receive(:failed?).and_return false
-    allow(feature).to receive(:pending?).and_return false
+    allow(feature).to receive_messages(failed?: false, pending?: false)
     allow(feature).to receive(:run)
     allow(reporter).to receive(:invoke)
     allow(runner).to receive(:hook) {|_, _, &block| block.call }
@@ -28,7 +27,7 @@ describe Gurke::FeatureList do
     it 'runs hooks' do
       expect(runner).to have_received(:hook) do |scope, world|
         expect(scope).to eq :features
-        expect(world).to eq nil
+        expect(world).to be_nil
       end
     end
 
