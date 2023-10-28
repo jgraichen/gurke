@@ -15,8 +15,5 @@ end
 
 group :development do
   gem 'pry'
-  gem 'pry-nav'
-
-  gem 'redcarpet', platform: :ruby
-  gem 'yard'
+  gem 'rake-release'
 end
