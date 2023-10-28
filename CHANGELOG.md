@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.3.5
+
+* Test with Ruby 2.7, 3.0, 3.1, and 3.2
+* Upgrade to Ruby 2.7+
+* Fix required `StringIO` usage
+* Fix `send :include`
+
 ## 3.3.4
 
 * Replace renamed trollop dependency with optimist

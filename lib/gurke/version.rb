@@ -4,7 +4,7 @@ module Gurke
   module VERSION
     MAJOR = 3
     MINOR = 3
-    PATCH = 4
+    PATCH = 5
     STAGE = nil
     STRING = [MAJOR, MINOR, PATCH, STAGE].compact.join('.').freeze
 
