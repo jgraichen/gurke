@@ -1,16 +1,26 @@
 # Gurke
 
-[![Build Status](https://github.com/jgraichen/gurke/workflows/Build/badge.svg?event=push)](https://github.com/jgraichen/gurke/actions?query=workflow%3ABuild)
+[![Build Status](https://github.com/jgraichen/gurke/actions/workflows/test.yml/badge.svg)](https://github.com/jgraichen/gurke/actions/workflows/test.yml)
 
 **Gurke** is an experimental, alternative cucumber runner. It ~~steals~~ borrows ideas and concepts from [turnip](https://github.com/jnicklas/turnip), [rspec](http://rspec.info) and tries to avoid [cucumber](https://github.com/cucumber/cucumber/).
 
-That includes * Step definitions in modules * Before, After and Around hooks * Formatters * Partial step inclusion (via modules) * Keyword-dependent steps * Scenario-local world * Running DRb background test server.
+That includes:
+
+* Step definitions in modules
+* Before, After and Around hooks
+* Formatters
+* Partial step inclusion (via modules)
+* Keyword-dependent steps
+* Scenario-local world
+* Running DRb background test server.
 
 ## Installation
 
 Or install it yourself as:
 
-    $ gem install gurke
+```console
+gem install gurke
+```
 
 Or add it to your `Gemfile` and install it using bundler.
 
@@ -18,11 +28,11 @@ Or add it to your `Gemfile` and install it using bundler.
 
 ## Usage
 
-1. Put features in `features/`.
+First, create your `*.features` files inside `features/`, for example, `features/user/create_account.feature`. Support files and step definitions can be added as Ruby files to `features/support`.
 
-2. Put support and configuration files as ruby into `features/support/**`.
+### Configuration
 
-e.g.
+For example, you can configure the environment or [hooks](#hooks):
 
 ```ruby
 # features/support/gurke.rb
@@ -39,7 +49,9 @@ Gurke.configure do |c|
 end
 ```
 
-3. Put your step definitions into `features/support/**`.
+### Steps
+
+Steps can be defined in Ruby modules as methods, for example in `features/support/steps`:
 
 ```ruby
 # features/support/steps/file_steps.rb
@@ -55,7 +67,7 @@ end
 Gurke.configure{|c| c.include FileSteps }
 ```
 
-You can also use an existing method as a step:
+You can use an existing method as a step too:
 
 ```ruby
 module MySteps
@@ -88,9 +100,9 @@ Gurke.configure do |c|
 end
 ```
 
-Therefore you can use different step implementations for same named steps depending on the tags of the the feature and scenario.
+Therefore, you can use different step implementations for same named steps depending on the tags of the feature and scenario.
 
-### Keyword specific step definitions
+#### Keyword specific step definitions
 
 You can also define steps for only a specific keyword. This also allows you to use the same step pattern for different keywords, e.g.
 
@@ -101,23 +113,23 @@ module PathSteps
 end
 ```
 
-Therefore you can write your scenarios in a documentary style of facts:
+Therefore, you can write your scenarios in a documentary style of facts:
 
-```
-Scenario: Use the back button
-  Given I am on the start page
-  When I click on "Go to another page"
-  And I click the back button
-  Then I am on the start page
+```feature
+  Scenario: Use the back button
+    Given I am on the start page
+    When I click on "Go to another page"
+    And I click the back button
+    Then I am on the start page
 ```
 
 `And` and `But` steps will inherit the keyword type from the step before, e.g. the `And` step above will be of the `when` type.
 
-### Included Step Definitions & Hooks
+### Hooks
 
-Each scenario runs in it's own world. All modules registered to be included will be included in this world. Before and after scenario or step hooks will also be executed within this world. All steps are run in this world.
+Each scenario runs in its own world. All modules registered to be included will be included in this world. Before and after scenario or step hooks will also be executed within this world. All steps are run in this world.
 
-You can define hooks similar to RSpec:
+You can define hooks similar to `rspec`:
 
 ```ruby
 Gurke.configure do |config|
@@ -152,13 +164,13 @@ Examples:
 
 You can also specify a list of files that will be run:
 
-```
+```console
 gurke features/my_feature.feature
 ```
 
 If you append one or more line numbers - separated by colons - only the scenarios defined around the given lines will be run:
 
-```
+```console
 gurke features/my_feature.feature:14:34
 ```
 
@@ -166,7 +178,7 @@ gurke features/my_feature.feature:14:34
 
 If you have scenarios that might fail sometime, you can mark them as `@flaky`:
 
-```
+```feature
 Feature: F
   @flaky
   Scenario: I am flaky
@@ -180,7 +192,7 @@ Gurke will retry a marked scenario only once if a step failed.
 
 You can choose another formatter using a command line switch:
 
-```
+```console
 gurke -f team_city
 ```
 
@@ -200,9 +212,9 @@ Remember to reload e.g. your step definitions before `:features` to pick up chan
   end
 ```
 
-Use the after `:system` hook to shutdown resources.
+Use the after `:system` hook to shut down resources.
 
-Remember to restart background server when changing hooks, configuration or removing/redefining steps as otherwise the changes won't be picked up or steps won't change or are ambiguous now.
+Remember to restart the running background server when changing hooks, configuration or removing/redefining steps as otherwise the changes won't be picked up, steps won't change, or are ambiguous now.
 
 ## TODO
 
@@ -211,16 +223,8 @@ Remember to restart background server when changing hooks, configuration or remo
 * Random run order (rspec)
 * Using strings with placeholders as step pattern (turnip)
 * Custom placeholders (turnip)
-* More reporters (NyanCat / JUnit / TeamCity / Adapter to run multiple reporters)
+* More reporters (NyanCat / JUnit / Adapter to run multiple reporters)
 * SimpleCov support (and use it in own tests)
 * Scope hooks by scenario tags
 * Fast-fail
 * Additional feature-scope and global worlds
-
-## History
-
-Now: * Can finally (start to) test itself.
-
-## Contributing
-
-Send me code.
