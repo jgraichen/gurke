@@ -51,22 +51,41 @@ RSpec.describe Gurke::Reporters::CompactReporter do
     end
 
     before do
-      allow(result).to receive_messages(step: step, scenario: scenario, state: state, exception: exception)
+      allow(result).to receive_messages(
+        step: step,
+        scenario: scenario,
+        state: state,
+        exception: exception,
+      )
     end
 
     before do
-      allow(step).to receive_messages(name: 'the scenario is passing', keyword: 'Given')
+      allow(step).to receive_messages(
+        name: 'the scenario is passing',
+        keyword: 'Given',
+      )
     end
 
     before do
-      allow(scenario).to receive_messages(feature: feature, steps: steps, name: 'Running the scenario',
-        file: File.join(Dir.getwd, 'features', 'file.feature'), line: 5,)
+      allow(scenario).to receive_messages(
+        feature: feature,
+        steps: steps,
+        name: 'Running the scenario',
+        file: File.join(Dir.getwd, 'features', 'file.feature'),
+        line: 5,
+      )
     end
 
     before do
-      allow(feature).to receive_messages(backgrounds: backgrounds, name: 'Demo feature', file: File.join(Dir.getwd, 'features', 'file.feature'), line: 1, description: "As a developer\n" \
-                                                                                                                                                                       "I would like have this spec passed\n" \
-                                                                                                                                                                       'In order to work on',)
+      allow(feature).to receive_messages(
+        backgrounds: backgrounds,
+        name: 'Demo feature',
+        file: File.join(Dir.getwd, 'features', 'file.feature'),
+        line: 1,
+        description: "As a developer\n" \
+                     "I would like have this spec passed\n" \
+                     'In order to work on',
+      )
     end
 
     context 'with step passing' do

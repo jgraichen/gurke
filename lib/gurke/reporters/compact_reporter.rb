@@ -13,6 +13,7 @@ module Gurke::Reporters
     attr_reader :io
 
     def initialize(io = $stdout)
+      super()
       @io = io
     end
 

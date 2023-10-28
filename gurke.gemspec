@@ -12,12 +12,11 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/jgraichen/gurke'
   spec.license       = 'MIT'
 
-  spec.description = \
-    'An alternative gherkin feature runner inspired by rspec and turnip.'
   spec.summary = \
     'An alternative gherkin feature runner inspired by rspec and turnip.'
 
   spec.metadata['rubygems_mfa_required'] = 'true'
+  spec.required_ruby_version = '>= 2.7.0'
 
   spec.files = Dir['**/*'].grep %r{^(
     (bin/|lib/|test/|spec/|features/)|
@@ -30,6 +29,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'colorize'
   spec.add_dependency 'gherkin', '~> 2.0'
   spec.add_dependency 'optimist', '~> 3.0'
-
-  spec.add_development_dependency 'bundler'
 end

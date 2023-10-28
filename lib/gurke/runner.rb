@@ -27,7 +27,7 @@ module Gurke
     def run(files, reporter = self.reporter)
       files.map! do |file|
         split = file.split(':')
-        [split[0], split[1..-1].map {|i| Integer(i) }]
+        [split[0], split[1..].map {|i| Integer(i) }]
       end
 
       features = builder.load(files.map {|file, _| file })

@@ -99,7 +99,7 @@ module Gurke
       end
 
       Step.public_instance_methods(false).each do |mth|
-        class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        class_eval <<-RUBY, __FILE__, __LINE__ + 1 # rubocop:disable Style/DocumentDynamicEvalDefinition
           def #{mth}(*args) @step.send(:#{mth}, *args); end
         RUBY
       end

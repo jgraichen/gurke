@@ -21,11 +21,11 @@ module Gurke
 
     class << self
       def find_step(step, world, type)
-        matches = world.methods.map do |method|
+        matches = world.methods.filter_map do |method|
           next unless method.to_s.start_with?('match: ')
 
           world.send(method.to_s, step.to_s, type)
-        end.compact
+        end
 
         case matches.size
           when 0 then raise Gurke::StepPending.new step.to_s

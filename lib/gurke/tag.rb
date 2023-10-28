@@ -26,7 +26,7 @@ module Gurke
     end
 
     def name
-      raw.name[1..-1]
+      raw.name[1..]
     end
 
     def to_s
@@ -37,7 +37,7 @@ module Gurke
       p rule
       p name
       negated = rule[0] == '~'
-      name = negated ? rule[1..-1] : rule
+      name = negated ? rule[1..] : rule
       negated != (self.name == name)
     end
   end

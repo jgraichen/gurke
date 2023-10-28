@@ -93,7 +93,7 @@ module Gurke
 
       TagFilter = Struct.new(:tag) do
         def name
-          @name ||= negated? ? tag[1..-1] : tag
+          @name ||= negated? ? tag[1..] : tag
         end
 
         def negated?
