@@ -1,9 +1,11 @@
-name: Build
-on: [push]
+name: test
+on:
+  - push
+  - pull_request
 jobs:
   test:
     name: Ruby ${{ matrix.ruby }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
@@ -26,10 +28,24 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "${{ matrix.ruby }}"
-          bundler-cache: true
+          bundler-cache: True
 
       - name: Run rspec
         run: bundle exec rspec --color
 
       - name: Run gurke
         run: bundle exec gurke --formatter compact
+
+  rubocop:
+    name: rubocop
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: True
+
+      - name: Run rubocop
+        run: bundle exec rubocop --parallel --color
