@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rake/release'
+require 'rake/release/task'
 
 Rake::Release::Task.new do |spec|
   spec.sign_tag = true
