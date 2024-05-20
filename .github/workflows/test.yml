@@ -28,11 +28,12 @@ jobs:
           ruby-version: "${{ matrix.ruby }}"
           bundler-cache: True
 
-      - name: Run rspec
-        run: bundle exec rspec --color
+      - run: bundle exec rspec --color
+      - run: bundle exec gurke --formatter compact
 
-      - name: Run gurke
-        run: bundle exec gurke --formatter compact
+      - uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_ORG_TOKEN }}
 
   rubocop:
     name: rubocop

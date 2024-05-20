@@ -2,12 +2,13 @@
 
 require 'rspec'
 require 'simplecov'
-SimpleCov.start
+require 'simplecov-cobertura'
 
-if ENV['CI']
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::CoberturaFormatter,
+])
+SimpleCov.start
 
 require 'gurke'
 
