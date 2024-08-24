@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/jgraichen/gurke'
   spec.license       = 'MIT'
 
-  spec.summary = \
+  spec.summary =
     'An alternative gherkin feature runner inspired by rspec and turnip.'
 
   spec.metadata['rubygems_mfa_required'] = 'true'
