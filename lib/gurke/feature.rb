@@ -65,7 +65,7 @@ module Gurke
 
     def self.new(*args)
       if args.size == 1 && (f = args.first).is_a?(self)
-        super f.file, f.line, f.tags, f.raw
+        super(f.file, f.line, f.tags, f.raw)
       else
         super
       end

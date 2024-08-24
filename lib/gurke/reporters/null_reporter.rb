@@ -6,7 +6,7 @@ module Gurke::Reporters
   #
   class NullReporter < Gurke::Reporter
     Gurke::Reporter::CALLBACKS.each do |cb|
-      class_eval <<-RUBY, __FILE__, __LINE__ + 1  # rubocop:disable Style/DocumentDynamicEvalDefinition
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1 # rubocop:disable Style/DocumentDynamicEvalDefinition
         def #{cb}(*) end
       RUBY
     end
