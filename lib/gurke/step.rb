@@ -46,19 +46,18 @@ module Gurke
     def run(runner, reporter, scenario, world)
       reporter.invoke :before_step, self, scenario
 
-      result = runner.hook(:step, self, world) do
-        run_step runner, reporter, scenario, world
+      run_step(runner, reporter, scenario, world).tap do |result|
+        reporter.invoke :after_step, result, scenario
       end
-
-      reporter.invoke :after_step, result, scenario
     end
 
     private
 
     def run_step(runner, reporter, scenario, world)
-      reporter.invoke :start_step, self, scenario
-
-      result = find_and_run_step runner, scenario, world
+      result = runner.hook(:step, self, world) do
+        reporter.invoke :start_step, self, scenario
+        find_and_run_step runner, scenario, world
+      end
     rescue Interrupt
       scenario.abort!
       result = StepResult.new self, scenario, :aborted

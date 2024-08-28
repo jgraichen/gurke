@@ -200,16 +200,7 @@ module Gurke
     end
 
     def world
-      @world ||= begin
-        cls = Class.new
-        cls.send :include, Gurke.world
-
-        Gurke.config.inclusions.each do |incl|
-          cls.send :include, incl.mod if incl.match?(tag_names)
-        end
-        cls.send :include, Gurke::Steps
-        cls.new
-      end
+      @world ||= Gurke::World.create
     end
   end
 end

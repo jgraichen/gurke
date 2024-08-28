@@ -20,6 +20,7 @@ module Gurke
   require 'gurke/steps'
   require 'gurke/step_definition'
   require 'gurke/reporter'
+  require 'gurke/world'
 
   module Reporters
     require 'gurke/reporters/null_reporter'
@@ -61,7 +62,7 @@ module Gurke
 
     # @api private
     def world
-      @world ||= const_set(:World, Module.new)
+      @world ||= World
     end
   end
 end
