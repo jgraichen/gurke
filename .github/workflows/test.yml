@@ -40,6 +40,11 @@ jobs:
     name: rubocop
     runs-on: ubuntu-22.04
 
+    env:
+      BUNDLE_WITHOUT: test
+      BUNDLE_RETRY: 3
+      BUNDLE_JOBS: 4
+
     steps:
       - uses: actions/checkout@master
       - uses: ruby/setup-ruby@v1
