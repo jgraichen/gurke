@@ -200,7 +200,7 @@ module Gurke
     end
 
     def world
-      @world ||= Gurke::World.create
+      @world ||= Gurke::World.create(tag_names: tag_names)
     end
   end
 end

@@ -3,7 +3,7 @@
 module Gurke
   module World
     class << self
-      def create
+      def create(tag_names: [])
         Class.new.tap do |cls|
           cls.send :include, Gurke.world
 
