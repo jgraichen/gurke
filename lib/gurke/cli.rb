@@ -60,7 +60,7 @@ module Gurke
         opt :help, 'Print this help.'
         opt :version, 'Show program version information.'
         opt :backtrace, 'Show full error backtraces.'
-        opt :formatter, 'Select a special formatter as reporter', \
+        opt :formatter, 'Select a special formatter as reporter',
           default: 'default'
         opt :pattern, 'File pattern matching feature files to be run.',
           default: 'features/**/*.feature'
