@@ -127,20 +127,20 @@ RSpec.describe Gurke::Reporters::CompactReporter do
       end
 
       it do
-        expect(out).to eq unindent <<~TEXT
-          .E
-          .Feature: Demo feature   # features/file.feature:1
-          .  Scenario: Running the scenario   # features/file.feature:5
-          .    Given the scenario is passing
-          .      RuntimeError: An error occurred
-          .        /path/to/file.rb:5:in `block (4 levels) in <top (required)>'
-          .        /path/to/file.rb:24:in in `fail_with'
-          .      caused by: IOError: Socket closed
-          .        script.rb:5:in `a'
-          .        script.rb:10:in `b'
-          .
-          .
-        TEXT
+        expect(out).to eq text(
+          'E',
+          'Feature: Demo feature   # features/file.feature:1',
+          '  Scenario: Running the scenario   # features/file.feature:5',
+          '    Given the scenario is passing',
+          '      RuntimeError: An error occurred',
+          "        /path/to/file.rb:5:in `block (4 levels) in <top (required)>'",
+          "        /path/to/file.rb:24:in in `fail_with'",
+          '      caused by: IOError: Socket closed',
+          "        script.rb:5:in `a'",
+          "        script.rb:10:in `b'",
+          ' ',
+          '',
+        )
       end
     end
   end
@@ -187,12 +187,12 @@ RSpec.describe Gurke::Reporters::CompactReporter do
     let(:action) { [:after_features, []] }
 
     it do
-      expect(out).to eq unindent <<~TEXT
-        .
-        .
-        .0 scenarios: 0 passed, 0 failing, 0 pending
-        .
-      TEXT
+      expect(out).to eq text(
+        ' ',
+        ' ',
+        '0 scenarios: 0 passed, 0 failing, 0 pending',
+        '',
+      )
     end
   end
 end

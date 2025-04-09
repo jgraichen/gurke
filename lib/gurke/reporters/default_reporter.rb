@@ -27,7 +27,7 @@ module Gurke::Reporters
 
       io.print light_black(feature.description.gsub(/^/, '  '))
       io.puts
-      io.puts
+      io.puts ' '
     end
 
     def before_scenario(scenario)
@@ -72,18 +72,18 @@ module Gurke::Reporters
 
     def retry_scenario(scenario)
       if scenario.flaky?
-        io.print "\n  Retry flaky scenario due to previous failure:\n\n"
+        io.print " \n  Retry flaky scenario due to previous failure:\n \n"
       else
-        io.print "\n  Retry scenario due to previous failure:\n\n"
+        io.print " \n  Retry scenario due to previous failure:\n \n"
       end
     end
 
     def after_scenario(*)
-      io.puts
+      io.puts ' '
     end
 
     def after_feature(*)
-      io.puts
+      io.puts ' '
     end
 
     def after_features(features)
@@ -108,7 +108,7 @@ module Gurke::Reporters
         io.puts green message
       end
 
-      io.puts
+      io.puts ' '
     end
 
     protected
@@ -140,6 +140,7 @@ module Gurke::Reporters
 
     def print_exception(exception)
       io.puts red format_exception(exception).gsub(/^/, '        ')
+      io.print ' '
     end
 
     def format_location(obj)

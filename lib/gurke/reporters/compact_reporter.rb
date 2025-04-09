@@ -15,10 +15,10 @@ module Gurke::Reporters
       return unless result.state == :failed
 
       io.print red 'E'
+      io.puts
 
       feature = scenario.feature
 
-      io.puts
       io.print yellow('Feature')
       io.print ': '
       io.print scenario.feature.name
@@ -67,7 +67,7 @@ module Gurke::Reporters
 
       exout = format_exception(result.exception, backtrace: true, indent: 6)
       io.puts red exout
-      io.puts
+      io.puts ' '
     end
 
     def after_scenario(scenario)
@@ -78,13 +78,13 @@ module Gurke::Reporters
       elsif scenario.passed?
         io.print green '.'
       elsif scenario.aborted?
-        io.puts
+        io.puts ' '
       end
     end
 
     def after_features(features)
-      io.puts
-      io.puts
+      io.puts ' '
+      io.puts ' '
 
       scenarios = features.map(&:scenarios).flatten
 

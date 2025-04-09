@@ -18,6 +18,10 @@ module Helper
   def unindent(str)
     str.rstrip.gsub(/^\./, '')
   end
+
+  def text(*args)
+    args.join("\n")
+  end
 end
 
 RSpec.configure do |config|

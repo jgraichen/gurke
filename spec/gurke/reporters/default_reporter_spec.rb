@@ -30,28 +30,28 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     end
 
     it do
-      expect(out).to eq unindent <<~TEXT
-        Feature: Demo feature   # features/file.feature:1
-          As a developer
-          I would like have this spec passed
-          In order to work on
-        .
-        .
-      TEXT
+      expect(out).to eq text(
+        'Feature: Demo feature   # features/file.feature:1',
+        '  As a developer',
+        '  I would like have this spec passed',
+        '  In order to work on',
+        ' ',
+        '',
+      )
     end
 
     context 'with colors' do
       let(:color) { true }
 
       it 'outputs ASCII color codes' do
-        expect(out).to eq unindent <<~TEXT
-          \e[0;33;49mFeature\e[0m: Demo feature   \e[0;90;49m# features/file.feature:1\e[0m
-          \e[0;90;49m  As a developer
-            I would like have this spec passed
-            In order to work on\e[0m
-          .
-          .
-        TEXT
+        expect(out).to eq text(
+          "\e[0;33;49mFeature\e[0m: Demo feature   \e[0;90;49m# features/file.feature:1\e[0m",
+          "\e[0;90;49m  As a developer",
+          '  I would like have this spec passed',
+          "  In order to work on\e[0m",
+          ' ',
+          '',
+        )
       end
     end
   end
@@ -60,10 +60,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     let(:action) { [:start_background, feature] }
 
     it do
-      expect(out).to eq unindent <<~TEXT
-        .    Background:
-        .
-      TEXT
+      expect(out).to eq text(
+        '    Background:',
+        '',
+      )
     end
   end
 
@@ -76,10 +76,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     end
 
     it do
-      expect(out).to eq unindent <<~TEXT
-        .  Scenario: Running the scenario   # features/file.feature:5
-        .
-      TEXT
+      expect(out).to eq text(
+        '  Scenario: Running the scenario   # features/file.feature:5',
+        '',
+      )
     end
   end
 
@@ -91,9 +91,9 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     end
 
     it do
-      expect(out).to eq unindent <<~TEXT
-        .    Given the scenario is passing
-      TEXT
+      expect(out).to eq text(
+        '    Given the scenario is passing',
+      )
     end
   end
 
@@ -109,10 +109,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       let(:state) { :passed }
 
       it do
-        expect(out).to eq unindent <<~TEXT
-          . (passed)
-          .
-        TEXT
+        expect(out).to eq text(
+          ' (passed)',
+          '',
+        )
       end
     end
 
@@ -120,10 +120,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       let(:state) { :pending }
 
       it do
-        expect(out).to eq unindent <<~TEXT
-          . (pending)
-          .
-        TEXT
+        expect(out).to eq text(
+          ' (pending)',
+          '',
+        )
       end
     end
 
@@ -131,10 +131,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       let(:state) { nil }
 
       it do
-        expect(out).to eq unindent <<~TEXT
-          . (skipped)
-          .
-        TEXT
+        expect(out).to eq text(
+          ' (skipped)',
+          '',
+        )
       end
     end
 
@@ -159,17 +159,17 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       end
 
       it do
-        expect(out).to eq unindent <<~TEXT
-          . (failure)
-          .        RuntimeError: An error occurred
-          .          /path/to/file.rb:5:in `block (4 levels) in <top (required)>'
-          .          /path/to/file.rb:24:in in `fail_with'
-          .        caused by: IOError: Socket closed
-          .          script.rb:5:in `a'
-          .          script.rb:10:in `b'
-          .
-          .
-        TEXT
+        expect(out).to eq text(
+          ' (failure)',
+          '        RuntimeError: An error occurred',
+          "          /path/to/file.rb:5:in `block (4 levels) in <top (required)>'",
+          "          /path/to/file.rb:24:in in `fail_with'",
+          '        caused by: IOError: Socket closed',
+          "          script.rb:5:in `a'",
+          "          script.rb:10:in `b'",
+          ' ',
+          '',
+        )
       end
     end
   end
@@ -183,12 +183,12 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       end
 
       it do
-        expect(out).to eq unindent <<~TEXT
-          .
-          .  Retry scenario due to previous failure:
-          .
-          .
-        TEXT
+        expect(out).to eq text(
+          ' ',
+          '  Retry scenario due to previous failure:',
+          ' ',
+          '',
+        )
       end
     end
 
@@ -198,12 +198,12 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
       end
 
       it do
-        expect(out).to eq unindent <<~TEXT
-          .
-          .  Retry flaky scenario due to previous failure:
-          .
-          .
-        TEXT
+        expect(out).to eq text(
+          ' ',
+          '  Retry flaky scenario due to previous failure:',
+          ' ',
+          '',
+        )
       end
     end
   end
@@ -212,10 +212,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     let(:action) { [:after_scenario, scenario] }
 
     it do
-      expect(out).to eq unindent <<~TEXT
-        .
-        .
-      TEXT
+      expect(out).to eq text(
+        ' ',
+        '',
+      )
     end
   end
 
@@ -223,10 +223,10 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     let(:action) { [:after_feature, feature] }
 
     it do
-      expect(out).to eq unindent <<~TEXT
-        .
-        .
-      TEXT
+      expect(out).to eq text(
+        ' ',
+        '',
+      )
     end
   end
 
@@ -234,11 +234,11 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
     let(:action) { [:after_features, []] }
 
     it do
-      expect(out).to eq unindent <<~TEXT
-        .0 scenarios: 0 failing, 0 pending
-        .
-        .
-      TEXT
+      expect(out).to eq text(
+        '0 scenarios: 0 failing, 0 pending',
+        ' ',
+        '',
+      )
     end
   end
 end

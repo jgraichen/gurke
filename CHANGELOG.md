@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Print spaces on empty lines to improve logging GitLab CI/CD
+
 ## [3.5.0] - 2025-04-09
 
 ### Added
