@@ -6,7 +6,7 @@ require 'spec_helper'
 
 RSpec.describe Gurke::Reporters::CompactReporter do
   subject(:out) do
-    reporter = described_class.new(StringIO.new)
+    reporter = described_class.new(io: StringIO.new)
     reporter.send(*action)
     reporter.io.string
   end

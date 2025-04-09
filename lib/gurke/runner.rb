@@ -16,7 +16,7 @@ module Gurke
           .map(&:capitalize)
           .join
 
-        Reporters.const_get(r).new
+        Reporters.const_get(r).new(color: options[:color])
       end
     end
 

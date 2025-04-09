@@ -1,20 +1,14 @@
 # frozen_string_literal: true
 
-require 'colorize'
-
-# Colors
-#   :black, :red, :green, :yellow, :blue,
-#   :magenta, :cyan, :white, :default, :light_black,
-#   :light_red, :light_green, :light_yellow, :light_blue,
-#   :light_magenta, :light_cyan, :light_white
-#
 module Gurke::Reporters
   class CompactReporter < NullReporter
+    include Colored
+
     attr_reader :io
 
-    def initialize(io = $stdout)
-      super()
+    def initialize(io: $stdout, **kwargs)
       @io = io
+      super(**kwargs)
     end
 
     def after_step(result, scenario, *)
@@ -124,13 +118,6 @@ module Gurke::Reporters
       path = file if path.length > file.length
 
       light_black("# #{path}:#{line}")
-    end
-
-    %i[black red green yellow blue
-       magenta cyan white default light_black
-       light_red light_green light_yellow light_blue
-       light_magenta light_cyan light_white].each do |color|
-      define_method(color) {|str| io.tty? ? str.send(color) : str }
     end
   end
 end

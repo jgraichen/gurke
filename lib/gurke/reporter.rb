@@ -36,6 +36,8 @@ module Gurke
       retry_scenario
     ].freeze
 
+    def initialize(**kwargs); end
+
     # Called before the execution of any feature and before any
     # before-features hook is invoked.
     #

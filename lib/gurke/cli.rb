@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'optimist'
+require 'optparse'
 
 module Gurke
   class CLI
@@ -10,13 +10,103 @@ module Gurke
     # @param argv [Array<String>] Tokenized argument list.
     #
     def run(argv)
-      call parser.parse(argv), argv
-    rescue Optimist::VersionNeeded
-      print_version && exit
-    rescue Optimist::HelpNeeded
-      print_help && exit
-    rescue Optimist::CommandlineError => e
-      warn "Error: #{e}"
+      options = {
+        backtrace: false,
+        drb_server: false,
+        drb: false,
+        force_color: false,
+        formatter: 'default',
+        pattern: 'features/**/*.feature',
+        require: [],
+        tags: [],
+      }
+
+      OptionParser.new do |opts| # rubocop:disable Metrics/BlockLength
+        opts.banner = 'Usage: gurke [options] [files...]'
+
+        opts.on('-h', '--help', 'Print this help.') do
+          puts opts
+          exit
+        end
+
+        opts.on('-v', '--version', 'Show program version information.') do
+          puts "gurke v#{Gurke::VERSION}"
+          exit
+        end
+
+        opts.on('-b', '--backtrace', 'Show full error backtraces.') do
+          options[:backtrace] = true
+        end
+
+        opts.on(
+          '-f', '--formatter=<s>',
+          'Select a special formatter as reporter (default: "default")',
+        ) do |arg|
+          options[:formatter] = arg.to_s
+        end
+
+        opts.on(
+          '-r', '--require=<s>',
+          'Files matching this pattern will be required after loading ' \
+          'environment but before running features. ' \
+          '(Default: features/steps/**/*.rb, features/support/steps/**/*.rb)',
+        ) do |arg|
+          options[:require] << arg.to_s
+        end
+
+        opts.on(
+          '-t', '--tags=<s>',
+          'Only run features and scenarios matching given tag ' \
+          'filtering expression. (Default: ~wip)',
+        ) do |arg|
+          options[:tags] << arg.to_s
+        end
+
+        opts.on(
+          '-p', '--pattern=<s>',
+          'File pattern matching feature files to be run. (Default: features/**/*.feature)',
+        ) do |arg|
+          options[:pattern] = arg.to_s
+        end
+
+        opts.on('--drb', 'Run features on already started DRb server. (experimental)') do
+          options[:drb] = true
+        end
+
+        opts.on('--drb-server', 'Run features on already started DRb server. (experimental)') do
+          options[:drb_server] = true
+        end
+
+        opts.on('-c', '--color=<mode>', 'Colored output (default: "auto")') do |arg|
+          value = arg.to_s.downcase
+          if value == 'auto'
+            options[:color] = :auto
+          elsif %w[1 yes on true t force].include?(value)
+            options[:color] = true
+          elsif %w[0 no off false f].include?(value)
+            options[:color] = false
+          else
+            warn "Invalid value for color: #{value}"
+            warn 'Supported values are: 0, 1, yes, no, true, false, t, f, force, auto'
+            exit 255
+          end
+        end
+      end.parse!(argv)
+
+      if options[:require].empty?
+        options[:require] << 'features/steps/**/*.rb'
+        options[:require] << 'features/support/steps/**/*.rb'
+      end
+
+      if options[:tags].empty?
+        options[:tags] << '~wip'
+      end
+
+      pp options
+
+      call(options, argv)
+    rescue OptionParser::InvalidOption => e
+      warn e.message
       warn "Run with `-h' for more information on available arguments."
       exit 255
     end
@@ -43,40 +133,6 @@ module Gurke
                end.new(Gurke.config, options)
 
       Kernel.exit runner.run files
-    end
-
-    def print_version
-      $stdout.puts <<~VSTR
-        gurke v#{Gurke::VERSION}
-      VSTR
-    end
-
-    def print_help
-      parser.educate($stdout)
-    end
-
-    def parser
-      @parser ||= Optimist::Parser.new do
-        opt :help, 'Print this help.'
-        opt :version, 'Show program version information.'
-        opt :backtrace, 'Show full error backtraces.'
-        opt :formatter, 'Select a special formatter as reporter',
-          default: 'default'
-        opt :pattern, 'File pattern matching feature files to be run.',
-          default: 'features/**/*.feature'
-        opt :require, 'Files matching this pattern will be required after' \
-                      'loading environment but before running features.',
-          default: ['features/steps/**/*.rb',
-                    'features/support/steps/**/*.rb',],
-          multi: true
-        opt :tags, 'Only run features and scenarios matching given tag ' \
-                   'filtering expression. TODO: Description.',
-          default: ['~wip'],
-          multi: true
-        opt :drb_server, 'Run gurke DRb server. (experimental)', short: :none
-        opt :drb, 'Run features on already started DRb server. (experimental)',
-          short: :none
-      end
     end
 
     private
