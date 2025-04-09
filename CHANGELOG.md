@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.1] - 2025-04-10
+
 ### Changed
 
 - Print spaces on empty lines to improve logging GitLab CI/CD
@@ -140,7 +142,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2013-12-04
 
-[Unreleased]: https://github.com/jgraichen/gurke/compare/v3.5.0...HEAD
+[Unreleased]: https://github.com/jgraichen/gurke/compare/v3.5.1...HEAD
+[3.5.1]: https://github.com/jgraichen/gurke/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/jgraichen/gurke/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/jgraichen/gurke/compare/v3.3.5...v3.4.0
 [3.3.5]: https://github.com/jgraichen/gurke/compare/v3.3.4...v3.3.5
