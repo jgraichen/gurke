@@ -6,10 +6,12 @@ require 'spec_helper'
 
 RSpec.describe Gurke::Reporters::DefaultReporter do
   subject(:out) do
-    reporter = described_class.new(StringIO.new)
+    reporter = described_class.new(io: StringIO.new, color: color)
     reporter.send(*action)
     reporter.io.string
   end
+
+  let(:color) { nil }
 
   let(:feature) { instance_double(Gurke::Feature) }
   let(:scenario) { instance_double(Gurke::Scenario) }
@@ -36,6 +38,21 @@ RSpec.describe Gurke::Reporters::DefaultReporter do
         .
         .
       TEXT
+    end
+
+    context 'with colors' do
+      let(:color) { true }
+
+      it 'outputs ASCII color codes' do
+        expect(out).to eq unindent <<~TEXT
+          \e[0;33;49mFeature\e[0m: Demo feature   \e[0;90;49m# features/file.feature:1\e[0m
+          \e[0;90;49m  As a developer
+            I would like have this spec passed
+            In order to work on\e[0m
+          .
+          .
+        TEXT
+      end
     end
   end
 

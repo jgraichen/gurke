@@ -6,7 +6,7 @@ require 'spec_helper'
 
 RSpec.describe Gurke::Reporters::TeamCityReporter do
   subject(:statements) do
-    reporter = described_class.new(StringIO.new)
+    reporter = described_class.new(io: StringIO.new)
     reporter.send(*action)
     reporter.io.string.scan(/##teamcity\[.*\]/)
   end

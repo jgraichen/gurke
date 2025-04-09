@@ -23,6 +23,8 @@ module Gurke
   require 'gurke/world'
 
   module Reporters
+    require 'gurke/reporters/colored'
+
     require 'gurke/reporters/null_reporter'
     require 'gurke/reporters/compact_reporter'
     require 'gurke/reporters/default_reporter'
