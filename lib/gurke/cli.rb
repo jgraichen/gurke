@@ -102,8 +102,6 @@ module Gurke
         options[:tags] << '~wip'
       end
 
-      pp options
-
       call(options, argv)
     rescue OptionParser::InvalidOption => e
       warn e.message
