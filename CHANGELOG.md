@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.0] - 2025-04-10
+
 ### Added
 
 - Expose `#id`, `#name`, `#path`, `#line`, `#state`, `#failed?`, `#pending?`, `#passed?`, and `#aborted?` in hook context if available
@@ -146,7 +148,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2013-12-04
 
-[Unreleased]: https://github.com/jgraichen/gurke/compare/v3.5.1...HEAD
+[Unreleased]: https://github.com/jgraichen/gurke/compare/v3.6.0...HEAD
+[3.6.0]: https://github.com/jgraichen/gurke/compare/v3.5.1...v3.6.0
 [3.5.1]: https://github.com/jgraichen/gurke/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/jgraichen/gurke/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/jgraichen/gurke/compare/v3.3.5...v3.4.0
