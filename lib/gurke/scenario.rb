@@ -29,7 +29,17 @@ module Gurke
     #
     attr_reader :steps
 
+    # List of this scenario's tags.
+    #
+    # @return [Array<String>] Steps.
+    #
     attr_reader :tags
+
+    # Internal scenario state
+    #
+    # @return [Nil|Symbol] state
+    #
+    attr_reader :state
 
     # @api private
     attr_reader :raw
@@ -44,6 +54,10 @@ module Gurke
       @tags    = tags
       @raw     = raw
       @state   = nil
+    end
+
+    def id
+      raw.id
     end
 
     # Return name of the scenario.

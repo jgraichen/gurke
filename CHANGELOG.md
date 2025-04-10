@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Expose `#id`, `#name`, `#path`, `#line`, `#state`, `#failed?`, `#pending?`, `#passed?`, and `#aborted?` in hook context if available
+
 ## [3.5.1] - 2025-04-10
 
 ### Changed

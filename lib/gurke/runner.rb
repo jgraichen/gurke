@@ -38,8 +38,8 @@ module Gurke
       scenario.flaky? ? config.flaky_retries : config.default_retries
     end
 
-    def hook(scope, world, context, &block)
-      config.hooks[scope].run world, context, &block
+    def hook(scope, context, world, &block)
+      config.hooks[scope].run(context, world, &block)
     end
 
     def with_filtered_backtrace

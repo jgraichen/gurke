@@ -43,6 +43,10 @@ module Gurke
       @raw  = raw
     end
 
+    def id
+      raw.id
+    end
+
     # Return name of this feature.
     #
     # @return [String] Feature name.
@@ -61,6 +65,14 @@ module Gurke
 
     def pending?
       scenarios.any?(&:pending?)
+    end
+
+    def aborted?
+      scenarios.any?(&:aborted?)
+    end
+
+    def success?
+      scenarios.all?(&:success?)
     end
 
     def self.new(*args)

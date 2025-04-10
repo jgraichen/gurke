@@ -28,6 +28,10 @@ module Gurke
       @raw = raw
     end
 
+    def id
+      raw.id
+    end
+
     def name
       raw.name
     end

@@ -161,6 +161,10 @@ module Gurke
       class Context
         extend Forwardable
 
+        def_delegators :@context,
+          :id, :name, :path, :line, :state,
+          :failed?, :pending?, :passed?, :aborted?
+
         def initialize(context, block)
           @context = context
           @block = block
