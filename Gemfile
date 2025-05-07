@@ -10,7 +10,7 @@ gem 'rake-release'
 
 group :development, :test do
   gem 'pry'
-  gem 'rubocop-config', github: 'jgraichen/rubocop-config', tag: 'v13'
+  gem 'rubocop-config', github: 'jgraichen/rubocop-config', tag: 'v14'
 end
 
 group :test do
