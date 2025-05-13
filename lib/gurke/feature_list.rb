@@ -88,7 +88,7 @@ module Gurke
 
         return false if lines.empty?
 
-        lines.none? {|l| scenario.line <= l && scenario.steps.last.line >= l }
+        lines.none? {|l| l.between?(scenario.line, scenario.steps.last.line) }
       end
 
       TagFilter = Struct.new(:tag) do
