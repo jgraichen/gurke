@@ -12,7 +12,7 @@ module Gurke
     #
     # @api private
     #
-    def run(runner, reporter)
+    def run(runner, reporter) # rubocop:disable Naming/PredicateMethod
       reporter.invoke :before_features, self
 
       runner.hook(:features, nil, nil) do
